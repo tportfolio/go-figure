@@ -13,6 +13,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { green, yellow, lightBlue, grey } from '@material-ui/core/colors';
 import { withTheme } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 
 import { GlobalHotKeys } from "react-hotkeys";
 
@@ -36,16 +37,19 @@ const topIcons = theme => {
     return (
         [
             {
-                icon: <PlayCircleFilledOutlinedIcon style={{color: green["A700"]}}/>,
-                text: "Start session"
-            },    
-            {     
-                icon: <PictureInPictureIcon style={{color: yellow[700]}}/>,
-                text: "Open reference canvas"
+                icon: <PlayCircleFilledOutlinedIcon style={{ color: green["A700"] }} />,
+                text: "Start session",
+                link: "/figuredrawing"
             },
             {
-                icon: <EqualizerIcon style={{color: lightBlue[700]}}/>,
-                text: "View personal statistics"
+                icon: <PictureInPictureIcon style={{ color: yellow[700] }} />,
+                text: "Open reference canvas",
+                link: "/canvas"
+            },
+            {
+                icon: <EqualizerIcon style={{ color: lightBlue[700] }} />,
+                text: "View personal statistics",
+                link: "/canvas"
             }
         ]
     )
@@ -55,45 +59,48 @@ const bottomIcons = theme => {
     return (
         [
             {
-                icon: <SettingsIcon style={{color: grey[500]}}/>,
-                text: "Settings"
+                icon: <SettingsIcon style={{ color: grey[500] }} />,
+                text: "Settings",
+                link: "/canvas"
             },
             {
-                icon: <InfoIcon style={{color: lightBlue[50]}}/>,
-                text: "About app"
+                icon: <InfoIcon style={{ color: lightBlue[50] }} />,
+                text: "About app",
+                link: "/canvas"
             }
         ]
     )
 };
 
 const Sidebar = props => {
-    const {theme} = props;
+    const { theme } = props;
     const classes = useStyles();
     const [state, setState] = React.useState(false);
 
     console.log("entered sidebar functional component");
     const sideList = () => (
-        <div
-        className={classes.list}
-        role="presentation"
-        >
-        <List>
-            {topIcons(theme).map(i => (
-            <ListItem button key={i.text} onClick={() => console.log(`${i.text} was clicked`)}>
-                <ListItemIcon>{i.icon}</ListItemIcon>
-                <ListItemText primary={i.text} />
-            </ListItem>
-            ))}
-        </List>
-        <Divider classes={{root: classes.divider}}/>
-        <List>
-            {bottomIcons(theme).map(i => (
-            <ListItem button key={i.text} onClick={() => console.log(`${i.text} was clicked`)}>
-                <ListItemIcon>{i.icon}</ListItemIcon>
-                <ListItemText primary={i.text} />
-            </ListItem>
-            ))}
-        </List>
+        <div role="presentation">
+            <List>
+                {topIcons(theme).map(i => (
+                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon>{i.icon}</ListItemIcon>
+                            <ListItemText primary={i.text} className={classes.list}/>
+                        </ListItem>
+                    </Link>
+                ))}
+            </List>
+            <Divider classes={{ root: classes.divider }} />
+            <List>
+                {bottomIcons(theme).map(i => (
+                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon>{i.icon}</ListItemIcon>
+                            <ListItemText primary={i.text} className={classes.list}/>
+                        </ListItem>
+                    </Link>
+                ))}
+            </List>
         </div>
     );
 
@@ -115,7 +122,7 @@ const Sidebar = props => {
 
     return (
         <GlobalHotKeys handlers={handlers}>
-            <Drawer open={state} classes={{paper: classes.root}}>
+            <Drawer open={state} classes={{ paper: classes.root }}>
                 {sideList()}
             </Drawer>
         </GlobalHotKeys>

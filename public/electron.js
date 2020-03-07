@@ -45,6 +45,7 @@ app.on('activate', () => {
 });
 
 ipcMain.on("toMain", (event, args) => {
+  console.log('tomain getting called');
   console.log(args);
 
   fs.readFile(args, "base64", (error, data) => {

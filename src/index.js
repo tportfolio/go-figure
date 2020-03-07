@@ -1,21 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import { GlobalHotKeys } from "react-hotkeys";
 import * as serviceWorker from './serviceWorker';
 
-const keyMap = {
-    TOGGLE_SIDEBAR_ON: "right",
-    TOGGLE_SIDEBAR_OFF: "left"
-};  
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import { managePictures } from "./store/reducer";
+import ElectronListener from "./store/reducer";
+import { keyMap, theme, routing } from "./constants";
+
+import { ThemeProvider } from '@material-ui/core/styles';
+const store = createStore(managePictures);
 
 ReactDOM.render(
-    (
-        <GlobalHotKeys keyMap={keyMap}>
-            <App />
-        </GlobalHotKeys>
-    ), 
+    <Provider store={store}>
+        <ThemeProvider theme={theme}>
+            <GlobalHotKeys keyMap={keyMap}>
+                {routing}
+                <ElectronListener/>
+            </GlobalHotKeys>
+        </ThemeProvider>
+    </Provider>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
