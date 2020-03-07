@@ -29,6 +29,17 @@
     "electron-builder": "^22.3.6",
     "electron-packager": "^14.2.1"
   },
+  "electronWebpack": {  
+    "main": {
+      "webpackConfig": "webpack.config.js"
+    },  
+    "renderer": {
+      "webpackConfig": "webpack.config.js"
+    }
+  },
+  "browser": {
+    "fs": false
+  },
   "build": {
     "appId": "com.example.electron-cra",
     "files": [

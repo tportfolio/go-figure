@@ -1,23 +1,31 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const child_process = require('child_process');
+const {BrowserWindow, ipcMain, app} = require('electron');
+const path = require("path");
+const fs = require("fs");
 
-// const server = require('./server'); //TODO: split out code to frontend/backend
-// console.log("found server");
-// console.log(server);
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
 
-const path = require('path');
 const isDev = require('electron-is-dev');
 const url = require('url');
 
 let mainWindow;
 
-function createWindow() {
-	mainWindow = new BrowserWindow({width: 900, height: 680});
+async function createWindow() {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({
+    width: 1920,
+    height: 1080,
+    webPreferences: {
+      nodeIntegration: false, // is default value after Electron v5
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      preload: path.join(__dirname, "preload.js") // use a preload script
+    }
+  });
+
+  // Load app
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
 	mainWindow.setMenuBarVisibility(isDev);
-	child_process.fork(isDev ? path.resolve(__dirname, "../public/server.js") : path.resolve(__dirname, "server.js"));
 
 	mainWindow.on('closed', () => mainWindow = null);
 }
@@ -34,4 +42,12 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on("toMain", (event, args) => {
+  console.log(args);
+
+  fs.readFile(args, "base64", (error, data) => {
+    mainWindow.webContents.send("fromMain", data);  
+  });
 });
