@@ -1,33 +1,49 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Rnd } from 'react-rnd';
+import { updatePictureState } from "../store/reducer";
 
 const ModifiableImage = props => {
     const targetRef = React.useRef();
-
-    const [dimensions, setDimensions] = React.useState({ height: 0, width: 0 });
+    const {data, cachedDimensions, saveDimensionsToStore} = props;
+    const [dimensions, setDimensions] = React.useState(cachedDimensions);
 
     React.useEffect(() => {
-        if (targetRef.current) {
-            console.log("ref is current");
-            setDimensions({
-                width: targetRef.current.offsetWidth,
-                height: targetRef.current.offsetHeight
-            });
+        console.log(dimensions);
+        if ((dimensions.height === 0 || dimensions.width === 0) && targetRef.current) {
+            const newDimensions = {height: targetRef.current.offsetHeight, width: targetRef.current.offsetWidth};
+            saveDimensionsToStore({data: data, dimensions: newDimensions});
+            setDimensions(newDimensions);
         }
-    }, []);
+    }, [data, cachedDimensions, saveDimensionsToStore]);
 
-    console.log(`my height is ${dimensions.height}`);
+    const {height, width} = dimensions;
+
     return (
-        <Rnd ref={targetRef}
+        <Rnd ref={targetRef} style={{ zIndex: 9 }} lockAspectRatio={true}
             onResize={(e, direction, ref, delta, position) => {
                 setDimensions({ height: ref.style.height, width: ref.style.width });
             }}
+            onResizeStop={(e, direction, ref, delta, position) => {
+                saveDimensionsToStore({ data: data, dimensions: {height: ref.style.height, width: ref.style.width }});
+            }}
         >
-            <img height={dimensions.height} width={dimensions.width}
-                draggable={false} src={`data:image/png;base64,${props.data}`}
-            />
+            <img  height={height} width={width} draggable={false} src={`data:image/png;base64,${data}`} />
         </Rnd>
     );
 };
 
-export default React.memo(ModifiableImage);
+const mapStateToProps = (state, ownProps) => {
+    const cachedDimensions = state.pictureProperties[ownProps.data];     
+    return {
+        cachedDimensions: cachedDimensions ? cachedDimensions : {height: 0, width: 0}
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        saveDimensionsToStore: (data, dimensions) => dispatch(updatePictureState(data, dimensions))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModifiableImage);

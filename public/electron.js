@@ -1,13 +1,10 @@
 const {BrowserWindow, ipcMain, app} = require('electron');
 const path = require("path");
 const fs = require("fs");
+const isDev = require('electron-is-dev');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-
-const isDev = require('electron-is-dev');
-const url = require('url');
-
 let mainWindow;
 
 async function createWindow() {
@@ -45,10 +42,11 @@ app.on('activate', () => {
 });
 
 ipcMain.on("toMain", (event, args) => {
-  console.log('tomain getting called');
   console.log(args);
 
-  fs.readFile(args, "base64", (error, data) => {
-    mainWindow.webContents.send("fromMain", data);  
-  });
+  args.forEach(f => {
+    fs.readFile(f, "base64", (error, data) => {
+      mainWindow.webContents.send("fromMain", data);  
+    });
+  })
 });

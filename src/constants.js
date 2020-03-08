@@ -1,23 +1,27 @@
 import React from 'react';
 
 import { createMuiTheme } from '@material-ui/core/styles';
-import { blue, indigo } from '@material-ui/core/colors';
+import { blue, indigo, blueGrey } from '@material-ui/core/colors';
 import { Switch, Route, HashRouter } from 'react-router-dom';
 import App from './App';
 import Canvas from "./views/Canvas";
 import FigureDrawing from "./views/FigureDrawing";
+import StatsOverview from "./views/StatsOverview";
+import Settings from "./views/Settings";
+import About from "./views/About";
 import Sidebar from "./sidebar/Sidebar";
 
 export const routing = (
     <HashRouter>
-        <div>
-            <Sidebar />
-            <Switch>
-                <Route path="/canvas" component={Canvas} />
-                <Route path="/figuredrawing" component={FigureDrawing} />
-                <Route path="/" exact component={App} />
-            </Switch>
-        </div>
+        <Sidebar />
+        <Switch>
+            <Route path="/canvas" component={Canvas} />
+            <Route path="/figuredrawing" component={FigureDrawing} />
+            <Route path="/statsoverview" component={StatsOverview} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/about" component={About} />
+            <Route path="/" exact component={App} />
+        </Switch>
     </HashRouter>
 );
 
