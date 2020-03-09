@@ -1,5 +1,3 @@
-import { connect } from 'react-redux';
-
 const ADD_PICTURE_ACTION = "ADD_PICTURE";
 const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
 
@@ -43,21 +41,3 @@ export const updatePictureState = (data, updatedProperties) => {
         }
     }
 };
-
-// kludge to separate out async return from the canvas itself
-const ElectronListener = props => {
-    window.api.receive("fromMain", (data) => {
-        console.log(`Received ${data} from main process`);
-        props.addPicture(data);
-    });   
-
-    return null;
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        addPicture: picture => dispatch(addPicture(picture))
-    }
-};   
-
-export default connect(null, mapDispatchToProps)(ElectronListener);

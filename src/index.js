@@ -7,7 +7,7 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { managePictures } from "./store/reducer";
-import ElectronListener from "./store/reducer";
+import ElectronListener from "./store/ElectronListener";
 import { keyMap, theme, routing } from "./constants";
 
 import { ThemeProvider } from '@material-ui/core/styles';
