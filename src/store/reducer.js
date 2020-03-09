@@ -4,45 +4,42 @@ const ADD_PICTURE_ACTION = "ADD_PICTURE";
 const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
 
 const initialState = {
-    pictures: [],
-    pictureProperties: {}
+    pictures: {}
 };
 
 export const managePictures = (state = initialState, action) => {
     switch (action.type) {
-        //TODO: combine pictures and pictureProperties (just initialize with empty object for properties)
         case ADD_PICTURE_ACTION:
             return {
                 ...state,
-                pictures: [...state.pictures, action.payload.picture]
+                pictures: {...state.pictures, [action.payload.data]: {}}
             }
         case UPDATE_PICTURE_STATE:
             return {
                 ...state,
-                pictureProperties : {...state.pictureProperties, [action.payload.data]: action.payload.dimensions}
+                pictures : {...state.pictures, [action.payload.data]: Object.assign(state.pictures[action.payload.data], action.payload.updatedProperties)}
             }
         default:
             return state;
     }
 }
 
-export const addPicture = picture => {
-    console.log("hit add picture with ", picture);
+export const addPicture = data => {
     return {
         type: ADD_PICTURE_ACTION,
         payload: {
-            picture: picture
+            data: data
         }
     }
 };
 
-export const updatePictureState = picture => {
-    console.log("hit update picture with ", picture);
+export const updatePictureState = (data, updatedProperties) => {
+    console.log("incoming properties are ", updatedProperties);
     return {
         type: UPDATE_PICTURE_STATE,
         payload: {
-            data: picture.data,
-            dimensions: picture.dimensions
+            data: data,
+            updatedProperties: updatedProperties
         }
     }
 };

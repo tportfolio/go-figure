@@ -11,6 +11,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import SettingsApplicationsSharpIcon from '@material-ui/icons/SettingsApplicationsSharp';
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';
+import keys from "lodash/keys";
 
 const onChangeHandler = event => {
     console.log('onchange handler called');
@@ -28,7 +29,7 @@ const Canvas = props => {
     const { pictures, theme } = props;
     const inputFileRef = React.useRef(null);
 
-    console.log(`size of pictures is ${pictures.length}`);
+    console.log(`size of pictures is ${keys(pictures).length}`);
     return (
         <div>
             <input type='file' id='file' multiple ref={inputFileRef} style={{ display: 'none' }} onChange={onChangeHandler} />
@@ -58,7 +59,7 @@ const Canvas = props => {
                 </Grid>
             </Toolbar>
             <div>
-                {pictures.map(p => <ModifiableImage key={hashCode(p)} data={p} />)}
+                {keys(pictures).map(p => <ModifiableImage key={hashCode(p)} data={p} />)}
             </div>
         </div>
     );
@@ -70,4 +71,7 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(withTheme(Canvas));
+// canvas only cares when the number of pictures changes on the screen; the pictures themselves are self-managing
+const isEqual = (prevProps, nextProps) => keys(prevProps.pictures).length === keys(nextProps.pictures).length;
+
+export default connect(mapStateToProps)(React.memo(withTheme(Canvas), isEqual));

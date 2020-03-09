@@ -4,45 +4,48 @@ import { Rnd } from 'react-rnd';
 import { updatePictureState } from "../store/reducer";
 
 const ModifiableImage = props => {
+    const {data, cachedProperties, updateProperties} = props;
+    const {dimensions: cachedDimensions} = cachedProperties;
+    const cachedPosition = cachedProperties.position ? cachedProperties.position : {x: 0, y: 0};
+    const [dimensions, setDimensions] = React.useState(cachedDimensions ? cachedDimensions : {height: 0, width: 0});
     const targetRef = React.useRef();
-    const {data, cachedDimensions, saveDimensionsToStore} = props;
-    const [dimensions, setDimensions] = React.useState(cachedDimensions);
-
+    
     React.useEffect(() => {
-        console.log(dimensions);
-        if ((dimensions.height === 0 || dimensions.width === 0) && targetRef.current) {
+        console.log("Calling useEffect with dimensions", cachedDimensions);
+        if (!cachedDimensions && targetRef.current) {
             const newDimensions = {height: targetRef.current.offsetHeight, width: targetRef.current.offsetWidth};
-            saveDimensionsToStore({data: data, dimensions: newDimensions});
             setDimensions(newDimensions);
         }
-    }, [data, cachedDimensions, saveDimensionsToStore]);
+    }, [cachedDimensions]);
 
     const {height, width} = dimensions;
-
     return (
-        <Rnd ref={targetRef} style={{ zIndex: 9 }} lockAspectRatio={true}
+        <Rnd ref={targetRef} style={{ zIndex: 9 }} lockAspectRatio={true} default={cachedPosition}
             onResize={(e, direction, ref, delta, position) => {
                 setDimensions({ height: ref.style.height, width: ref.style.width });
             }}
             onResizeStop={(e, direction, ref, delta, position) => {
-                saveDimensionsToStore({ data: data, dimensions: {height: ref.style.height, width: ref.style.width }});
+                updateProperties(data, {dimensions: {height: ref.style.height, width: ref.style.width }, position: position});
+            }}
+            onDragStop={(e, position) => {
+                updateProperties(data, {position: {x: position.x, y: position.y}});
             }}
         >
-            <img  height={height} width={width} draggable={false} src={`data:image/png;base64,${data}`} />
+            <img height={height} width={width} draggable={false} src={`data:image/png;base64,${data}`} />
         </Rnd>
     );
 };
 
 const mapStateToProps = (state, ownProps) => {
-    const cachedDimensions = state.pictureProperties[ownProps.data];     
+    const cachedProperties = state.pictures[ownProps.data];     
     return {
-        cachedDimensions: cachedDimensions ? cachedDimensions : {height: 0, width: 0}
+        cachedProperties: cachedProperties ? cachedProperties : {}
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        saveDimensionsToStore: (data, dimensions) => dispatch(updatePictureState(data, dimensions))
+        updateProperties: (data, properties) => dispatch(updatePictureState(data, properties))
     }
 };
 
