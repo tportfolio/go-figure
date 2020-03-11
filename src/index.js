@@ -6,18 +6,20 @@ import * as serviceWorker from './serviceWorker';
 
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import { managePictures } from "./store/reducer";
+import rootReducer from "./store/reducer";
 import ElectronListener from "./store/ElectronListener";
-import { keyMap, theme, routing } from "./constants";
+import { keyMap, theme } from "./constants";
+import routing from "./views/routing";
+import Sidebar from "./sidebar/Sidebar";
 
 import { ThemeProvider } from '@material-ui/core/styles';
-const store = createStore(managePictures);
+const store = createStore(rootReducer);
 
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
             <GlobalHotKeys keyMap={keyMap}>
-                {routing}
+                {routing(Sidebar)}
                 <ElectronListener/>
             </GlobalHotKeys>
         </ThemeProvider>

@@ -1,4 +1,4 @@
-import { addPicture } from "./reducer";
+import { addPicture } from "./ImageCacheReducer";
 import { connect } from 'react-redux';
 
 // kludge to separate out async return from the canvas itself

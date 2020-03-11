@@ -26,6 +26,7 @@
     "react-rnd": "^10.1.6",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-sketch": "^0.5.1",
     "redux": "^4.0.5",
     "wait-on": "^4.0.1"
   },
