@@ -8,7 +8,7 @@ import classNames from "classnames";
 import ImageSlider from "./ImageSlider";
 
 const ModifiableImage = props => {
-    const { data, cachedProperties, updateProperties, togglePictureSelection, isSelected } = props;
+    const { data, hash, cachedProperties, updateProperties, togglePictureSelection, isSelected } = props;
     const { dimensions: cachedDimensions } = cachedProperties;
     const [dimensions, setDimensions] = React.useState(cachedDimensions ? cachedDimensions : { height: 0, width: 0 });
     const cachedPosition = cachedProperties.position ? cachedProperties.position : { x: 0, y: 0 };
@@ -28,9 +28,9 @@ const ModifiableImage = props => {
 
     const onDragStop = (e, position) => {
         if (position.x === cachedPosition.x && position.y === cachedPosition.y) {
-            togglePictureSelection(data);
+            togglePictureSelection(hash);
         } else {
-            updateProperties(data, { position: { x: position.x, y: position.y } });
+            updateProperties(hash, { position: { x: position.x, y: position.y } });
         }
     }
 
@@ -40,7 +40,7 @@ const ModifiableImage = props => {
                 setDimensions({ height: ref.style.height, width: ref.style.width });
             }}
             onResizeStop={(e, direction, ref, delta, position) => {
-                updateProperties(data, { dimensions: { height: ref.style.height, width: ref.style.width }, position: position });
+                updateProperties(hash, { dimensions: { height: ref.style.height, width: ref.style.width }, position: position });
             }}
             onDragStop={onDragStop}
         >
@@ -50,17 +50,17 @@ const ModifiableImage = props => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-    const cachedProperties = state.imagecache.pictures[ownProps.data];
+    const cachedProperties = state.imagecache.pictures[ownProps.hash];
     return {
         cachedProperties: cachedProperties ? cachedProperties : {},
-        isSelected: state.imagecache.selectedPictures.includes(ownProps.data)
+        isSelected: state.imagecache.selectedPictures.includes(ownProps.hash)
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateProperties: (data, properties) => dispatch(updatePictureState(data, properties)),
-        togglePictureSelection: data => dispatch(togglePictureSelection(data))
+        updateProperties: (hash, properties) => dispatch(updatePictureState(hash, properties)),
+        togglePictureSelection: hash => dispatch(togglePictureSelection(hash))
     }
 };
 

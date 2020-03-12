@@ -1,4 +1,5 @@
 import pull from "lodash/pull";
+import { imageHash } from "../utils/utils";
 
 const ADD_PICTURE_ACTION = "ADD_PICTURE";
 const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
@@ -14,39 +15,46 @@ export const managePictures = (state = initialState, action) => {
         case ADD_PICTURE_ACTION:
             return {
                 ...state,
-                pictures: { ...state.pictures, [action.payload.data]: {} }
-            }
+                pictures: addNewModifiableImage(state, action.payload.data)
+            };
         case UPDATE_PICTURE_STATE:
             return {
                 ...state,
-                pictures: { ...state.pictures, [action.payload.data]: Object.assign({...state.pictures[action.payload.data]}, action.payload.updatedProperties) }
-            }
+                pictures: updateModifiableImage(state, action.payload.hash, action.payload.updatedProperties)
+            };
         case TOGGLE_PICTURE_SELECTION:
-            const {data} = action.payload;
-            let result;
-            if (state.selectedPictures.includes(data)) {
-                result = pull([...state.selectedPictures], data);
-            } else {
-                result = [...state.selectedPictures, action.payload.data];
-            }
             return {
                 ...state,
-                selectedPictures: result
-            }
+                selectedPictures: toggleModifiableImageSelection(state, action.payload.hash)
+            };
         default:
             return state;
     }
 }
 
-export const togglePictureSelection = data => {
-    return {
-        type: TOGGLE_PICTURE_SELECTION,
-        payload: {
-            data: data
-        }
-    }
-}
+const addNewModifiableImage = (state, data) => {
+    const hash = imageHash(data);
+    return { ...state.pictures, [hash]: { data: data } };
+};
 
+const updateModifiableImage = (state, hash, properties) => {
+    return { ...state.pictures, [hash]: Object.assign({ ...state.pictures[hash] }, properties) };
+};
+
+const toggleModifiableImageSelection = (state, hash) => {
+    let result;
+    if (state.selectedPictures.includes(hash)) {
+        result = pull([...state.selectedPictures], hash);
+    } else {
+        result = [...state.selectedPictures, hash];
+    }
+    return result;
+};
+
+
+/*
+* dispatch methods
+*/
 
 export const addPicture = data => {
     return {
@@ -57,13 +65,21 @@ export const addPicture = data => {
     }
 };
 
-export const updatePictureState = (data, updatedProperties) => {
-    console.log("incoming properties are ", updatedProperties);
+export const updatePictureState = (hash, updatedProperties) => {
     return {
         type: UPDATE_PICTURE_STATE,
         payload: {
-            data: data,
+            hash: hash,
             updatedProperties: updatedProperties
+        }
+    }
+};
+
+export const togglePictureSelection = hash => {
+    return {
+        type: TOGGLE_PICTURE_SELECTION,
+        payload: {
+            hash: hash
         }
     }
 };
