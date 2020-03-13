@@ -8,6 +8,9 @@ import StatsOverview from "./StatsOverview";
 import Settings from "./Settings";
 import About from "./About";
 import App from "../App";
+import "./cacheview.css";
+
+const styling = cached => cached ? { style: { display: "none" }} : { id: "cached-view" };
 
 const routing = sidebar => {
     const Sidebar = sidebar;
@@ -15,7 +18,7 @@ const routing = sidebar => {
         <HashRouter>
             <Sidebar />
             <CacheSwitch>
-                <CacheRoute path="/canvas" component={Canvas} />
+                <CacheRoute path="/canvas" component={Canvas} behavior={styling} />
                 <Route path="/figuredrawing" component={FigureDrawing} />
                 <Route path="/statsoverview" component={StatsOverview} />
                 <Route path="/settings" component={Settings} />

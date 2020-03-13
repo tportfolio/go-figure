@@ -2,9 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import keys from "lodash/keys";
 import { SketchField, Tools } from 'react-sketch';
+import { HotKeys } from "react-hotkeys";
+import range from "lodash/range";
+
 import CanvasToolbar from "./CanvasToolbar";
 import ModifiableImage from "../../components/ModifiableImage";
+import { transparencyKeys } from "../../constants";
 import "./canvas.css";
+
+const keyMap = Object.assign({}, ...range(1, 10).map(n => ({[transparencyKeys[n-1]]: n.toString()})));
 
 const Canvas = props => {
     const { pictures } = props;
@@ -22,7 +28,7 @@ const Canvas = props => {
     }, []);
 
     return (
-        <>
+        <HotKeys keyMap={keyMap} id={"hotkey-canvas-wrapper"}>
             <CanvasToolbar />
             {keys(pictures).map(key => (
                 <div key={key}>
@@ -32,7 +38,7 @@ const Canvas = props => {
             <div id="canvas-div" ref={canvasDivRef}>
                 <SketchField {...canvasProps} />
             </div>
-        </>
+        </HotKeys>
     );
 };
 
