@@ -22,6 +22,7 @@
     "react-dom": "^16.13.0",
     "react-dropzone": "^10.2.1",
     "react-hotkeys": "^2.0.0",
+    "react-hotkeys-hook": "^1.6.0",
     "react-redux": "^7.2.0",
     "react-rnd": "^10.1.6",
     "react-router-cache-route": "^1.8.4",

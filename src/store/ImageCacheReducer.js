@@ -4,10 +4,12 @@ import { imageHash } from "../utils/utils";
 const ADD_PICTURE_ACTION = "ADD_PICTURE";
 const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
 const TOGGLE_PICTURE_SELECTION = "TOGGLE_PICTURE_SELECTION";
+const UPDATE_GLOBAL_PICTURE_STATE = "UPDATE_GLOBAL_PICTURE_STATE";
 
 const initialState = {
-    pictures: {},
-    selectedPictures: []
+    pictures: {},               // base64 data only (k: hash, v: base64 data)
+    pictureProperties: {},      // properties only (k: hash, v: {...})
+    selectedPictures: []        
 };
 
 export const managePictures = (state = initialState, action) => {
@@ -20,12 +22,18 @@ export const managePictures = (state = initialState, action) => {
         case UPDATE_PICTURE_STATE:
             return {
                 ...state,
-                pictures: updateModifiableImage(state, action.payload.hash, action.payload.updatedProperties)
+                pictureProperties: updateImageProperties(state, action.payload.hash, action.payload.updatedProperties)
             };
         case TOGGLE_PICTURE_SELECTION:
             return {
                 ...state,
                 selectedPictures: toggleModifiableImageSelection(state, action.payload.hash)
+            };
+        case UPDATE_GLOBAL_PICTURE_STATE:
+            console.log("entered update");
+            return {
+                ...state,
+                pictureProperties: updateGlobalImageProperties(state, action.payload.updatedProperties)
             };
         default:
             return state;
@@ -34,11 +42,16 @@ export const managePictures = (state = initialState, action) => {
 
 const addNewModifiableImage = (state, data) => {
     const hash = imageHash(data);
-    return { ...state.pictures, [hash]: { data: data } };
+    return { ...state.pictures, [hash]: data };
 };
 
-const updateModifiableImage = (state, hash, properties) => {
-    return { ...state.pictures, [hash]: Object.assign({ ...state.pictures[hash] }, properties) };
+const updateImageProperties = (state, hash, properties) => {
+    return { ...state.pictureProperties, [hash]: Object.assign({ ...state.pictureProperties[hash] }, properties) };
+};
+
+const updateGlobalImageProperties = (state, properties) => {
+    const updatedImages = [...state.selectedPictures].map(hash => ({[hash]: Object.assign({ ...state.pictureProperties[hash] }, properties)}));
+    return Object.assign({...state.pictureProperties}, ...updatedImages);
 };
 
 const toggleModifiableImageSelection = (state, hash) => {
@@ -70,6 +83,16 @@ export const updatePictureState = (hash, updatedProperties) => {
         type: UPDATE_PICTURE_STATE,
         payload: {
             hash: hash,
+            updatedProperties: updatedProperties
+        }
+    }
+};
+
+export const updateGlobalPictureState = (updatedProperties) => {
+    console.log('entered updateglobalpicturestate');
+    return {
+        type: UPDATE_GLOBAL_PICTURE_STATE,
+        payload: {
             updatedProperties: updatedProperties
         }
     }

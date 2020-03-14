@@ -1,8 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { blue, indigo } from '@material-ui/core/colors';
-import range from "lodash/range";
-
-export const transparencyKeys = range(1, 10).map(n => "SET_TRANSPARENCY_" + (10 * n) + "_PCT");
 
 export const keyMap = {
     TOGGLE_SIDEBAR_ON: "right",
