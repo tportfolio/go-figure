@@ -1,3 +1,11 @@
 .selected {
     box-shadow: 0 0 5px 5px #aef4af;
 }
+
+.mirror-h {
+    transform: rotateY(180deg);
+}
+
+.mirror-v {
+    transform: rotateX(180deg);
+}

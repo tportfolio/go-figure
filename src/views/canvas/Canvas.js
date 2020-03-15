@@ -3,20 +3,22 @@ import { connect } from 'react-redux';
 import keys from "lodash/keys";
 import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
+import classNames from "classnames";
 
 import CanvasToolbar from "./CanvasToolbar";
 import ModifiableImage from "../../components/ModifiableImage";
-import { updateGlobalPictureState } from "../../store/ImageCacheReducer";
+import { updateGlobalPictureState, selectAllPictures, clearSelection, deleteSelectedImages } from "../../store/ImageCacheReducer";
+import { toggleEnabledState } from "../../store/CanvasSettingsReducer";
 import "./canvas.css";
 
 const Canvas = props => {
-    const { pictures, updateGlobalPictureProperties } = props;
+    const { pictures, isCanvasEnabled, updateGlobalPictureProperties, toggleCanvasEnabledState, selectAllPictures, clearSelection, deleteSelected } = props;
     let canvasProps = { tool: Tools.Pencil, lineColor: 'black', lineWidth: 3 };
     const [canvasHeight, setCanvasHeight] = React.useState(null);
     const canvasDivRef = React.useRef();
 
     if (canvasHeight) {
-        canvasProps = { ...canvasProps, height: canvasHeight };
+        canvasProps = { ...canvasProps, height: canvasHeight, className: classNames({"disabled-canvas": !isCanvasEnabled})};
     }
 
     //TODO: listen for resize
@@ -34,6 +36,10 @@ const Canvas = props => {
     useHotkeys('8', () => updateGlobalPictureProperties({ opacity: 0.8 }));
     useHotkeys('9', () => updateGlobalPictureProperties({ opacity: 0.9 }));
     useHotkeys('0', () => updateGlobalPictureProperties({ opacity: 1 }));
+    useHotkeys('c', () => toggleCanvasEnabledState());
+    useHotkeys('ctrl+a', () => selectAllPictures());
+    useHotkeys('ctrl+d', () => clearSelection());
+    useHotkeys('del', () => deleteSelected());
 
     return (
         <>
@@ -52,17 +58,27 @@ const Canvas = props => {
 
 const mapStateToProps = state => {
     return {
-        pictures: state.imagecache.pictures
+        pictures: state.imagecache.pictures,
+        isCanvasEnabled: state.canvassettings.isEnabled
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateGlobalPictureProperties: properties => dispatch(updateGlobalPictureState(properties))
+        updateGlobalPictureProperties: properties => dispatch(updateGlobalPictureState(properties)),
+        toggleCanvasEnabledState: () => dispatch(toggleEnabledState()),
+        selectAllPictures: () => dispatch(selectAllPictures()),
+        clearSelection: () => dispatch(clearSelection()),
+        deleteSelected: () => dispatch(deleteSelectedImages())
     }
 };
 
-// canvas only cares when the number of pictures changes on the screen; the pictures themselves are self-managing
-const isEqual = (prevProps, nextProps) => keys(prevProps.pictures).length === keys(nextProps.pictures).length;
+// 1. canvas only cares when the number of pictures changes on the screen; the pictures themselves are self-managing
+// 2. canvas needs to know when hot key for canvas enabling has changed
+const isEqual = (prevProps, nextProps) =>{
+    const isKeyLengthEqual = keys(prevProps.pictures).length === keys(nextProps.pictures).length;
+    const isCanvasStateEqual = prevProps.isCanvasEnabled === nextProps.isCanvasEnabled;
+    return isKeyLengthEqual && isCanvasStateEqual;
+} 
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Canvas, isEqual));

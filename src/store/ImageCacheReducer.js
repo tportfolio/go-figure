@@ -1,15 +1,20 @@
 import pull from "lodash/pull";
 import { imageHash } from "../utils/utils";
+import keys from "lodash/keys";
+import omit from "lodash/omit";
 
 const ADD_PICTURE_ACTION = "ADD_PICTURE";
 const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
 const TOGGLE_PICTURE_SELECTION = "TOGGLE_PICTURE_SELECTION";
 const UPDATE_GLOBAL_PICTURE_STATE = "UPDATE_GLOBAL_PICTURE_STATE";
+const SELECT_ALL_PICTURES = "SELECT_ALL_PICTURES";
+const CLEAR_SELECTION = "CLEAR_SELECTION";
+const DELETE_SELECTED = "DELETE_SELECTED";
 
 const initialState = {
     pictures: {},               // base64 data only (k: hash, v: base64 data)
     pictureProperties: {},      // properties only (k: hash, v: {...})
-    selectedPictures: []        
+    selectedPictures: []
 };
 
 export const managePictures = (state = initialState, action) => {
@@ -27,14 +32,28 @@ export const managePictures = (state = initialState, action) => {
         case TOGGLE_PICTURE_SELECTION:
             return {
                 ...state,
-                selectedPictures: toggleModifiableImageSelection(state, action.payload.hash)
+                selectedPictures: toggleModifiableImageSelection(state, action.payload.hash, action.payload.isCtrlKeyPressed)
             };
         case UPDATE_GLOBAL_PICTURE_STATE:
-            console.log("entered update");
             return {
                 ...state,
                 pictureProperties: updateGlobalImageProperties(state, action.payload.updatedProperties)
             };
+        case SELECT_ALL_PICTURES:
+            return {
+                ...state,
+                selectedPictures: keys(state.pictures)
+            };
+        case CLEAR_SELECTION:
+            return {
+                ...state,
+                selectedPictures: []
+            };
+        case DELETE_SELECTED:
+            return {
+                ...state,
+                ...removePictures(state)
+            }
         default:
             return state;
     }
@@ -50,18 +69,32 @@ const updateImageProperties = (state, hash, properties) => {
 };
 
 const updateGlobalImageProperties = (state, properties) => {
-    const updatedImages = [...state.selectedPictures].map(hash => ({[hash]: Object.assign({ ...state.pictureProperties[hash] }, properties)}));
-    return Object.assign({...state.pictureProperties}, ...updatedImages);
+    const updatedImages = [...state.selectedPictures].map(hash => ({ [hash]: Object.assign({ ...state.pictureProperties[hash] }, properties) }));
+    return Object.assign({ ...state.pictureProperties }, ...updatedImages);
 };
 
-const toggleModifiableImageSelection = (state, hash) => {
+const toggleModifiableImageSelection = (state, hash, isCtrlKeyPressed) => {
     let result;
-    if (state.selectedPictures.includes(hash)) {
-        result = pull([...state.selectedPictures], hash);
+    if (isCtrlKeyPressed) {
+        if (state.selectedPictures.includes(hash)) {
+            result = pull([...state.selectedPictures], hash);
+        } else {
+            result = [...state.selectedPictures, hash];
+        }
     } else {
-        result = [...state.selectedPictures, hash];
+        result = [hash];
     }
     return result;
+};
+
+const removePictures = state => {
+    const updatedData = omit(state.pictures, state.selectedPictures);
+    const updatedProperties = omit(state.pictureProperties, state.selectedPictures);
+    return {
+        pictures: updatedData,
+        pictureProperties: updatedProperties,
+        selectedPictures: []
+    };
 };
 
 
@@ -89,7 +122,6 @@ export const updatePictureState = (hash, updatedProperties) => {
 };
 
 export const updateGlobalPictureState = (updatedProperties) => {
-    console.log('entered updateglobalpicturestate');
     return {
         type: UPDATE_GLOBAL_PICTURE_STATE,
         payload: {
@@ -98,13 +130,37 @@ export const updateGlobalPictureState = (updatedProperties) => {
     }
 };
 
-export const togglePictureSelection = hash => {
+export const togglePictureSelection = (hash, isCtrlKeyPressed) => {
     return {
         type: TOGGLE_PICTURE_SELECTION,
         payload: {
-            hash: hash
+            hash: hash,
+            isCtrlKeyPressed: isCtrlKeyPressed
         }
     }
 };
+
+export const selectAllPictures = () => {
+    return {
+        type: SELECT_ALL_PICTURES,
+        payload: {}
+    }
+}
+
+
+export const clearSelection = () => {
+    return {
+        type: CLEAR_SELECTION,
+        payload: {}
+    }
+}
+
+export const deleteSelectedImages = () => {
+    return {
+        type: DELETE_SELECTED,
+        payload: {}
+    }
+}
+
 
 export default managePictures;

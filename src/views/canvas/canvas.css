@@ -2,3 +2,8 @@
     flex: 1;    
     overflow: hidden;
 }
+
+.disabled-canvas {
+    pointer-events: none;
+    cursor: default;
+}

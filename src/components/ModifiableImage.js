@@ -33,12 +33,12 @@ const ModifiableImage = props => {
     // if we've loaded the image, these can be added
     const { height, width } = dimensions;
     if (height && width) {
-        imgProps = { ...imgProps, height: height, width: width, className: className, style: { opacity: opacity } };
+        imgProps = { ...imgProps, height: height, width: width, className: className, style: { opacity: opacity, userSelect: "none" } };
     }
 
     const onDragStop = (e, position) => {
         if (position.x === cachedPosition.x && position.y === cachedPosition.y) {
-            togglePictureSelection(hash);
+            togglePictureSelection(hash, e.ctrlKey);
         } else {
             updateProperties(hash, { position: { x: position.x, y: position.y } });
         }
@@ -71,7 +71,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
     return {
         updateProperties: (hash, properties) => dispatch(updatePictureState(hash, properties)),
-        togglePictureSelection: hash => dispatch(togglePictureSelection(hash)),
+        togglePictureSelection: (hash, isCtrlKeyPressed) => dispatch(togglePictureSelection(hash, isCtrlKeyPressed)),
     }
 };
 
