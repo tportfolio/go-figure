@@ -4,15 +4,21 @@ import keys from "lodash/keys";
 import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from "classnames";
+import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";
 import ModifiableImage from "../../components/ModifiableImage";
-import { updateGlobalPictureState, selectAllPictures, clearSelection, deleteSelectedImages } from "../../store/ImageCacheReducer";
+import { updateGlobalPictureState, selectAllPictures, clearSelection, deleteSelectedImages, toggleGlobalPictureState } from "../../store/ImageCacheReducer";
 import { toggleEnabledState } from "../../store/CanvasSettingsReducer";
 import "./canvas.css";
 
 const Canvas = props => {
-    const { pictures, isCanvasEnabled, updateGlobalPictureProperties, toggleCanvasEnabledState, selectAllPictures, clearSelection, deleteSelected } = props;
+    // redux data:
+    const { pictures, isCanvasEnabled } = props;
+
+    // redux setters:
+    const { updateGlobalPictureProperties, toggleCanvasEnabledState, selectAllPictures, clearSelection, deleteSelected, toggleGlobalPictureState } = props;
+
     let canvasProps = { tool: Tools.Pencil, lineColor: 'black', lineWidth: 3 };
     const [canvasHeight, setCanvasHeight] = React.useState(null);
     const canvasDivRef = React.useRef();
@@ -37,18 +43,21 @@ const Canvas = props => {
     useHotkeys('9', () => updateGlobalPictureProperties({ opacity: 0.9 }));
     useHotkeys('0', () => updateGlobalPictureProperties({ opacity: 1 }));
     useHotkeys('c', () => toggleCanvasEnabledState());
-    useHotkeys('ctrl+a', () => selectAllPictures());
+    useHotkeys('ctrl+a', e => {
+        e.preventDefault(); // don't want the standard select all behavior from browser
+        selectAllPictures();
+    });
     useHotkeys('ctrl+d', () => clearSelection());
     useHotkeys('del', () => deleteSelected());
+    useHotkeys('h', () => toggleGlobalPictureState("mirrorH"));
+    useHotkeys('v', () => toggleGlobalPictureState("mirrorV"));
 
     return (
         <>
             <CanvasToolbar />
-            {keys(pictures).map(key => (
-                <div key={key}>
-                    <ModifiableImage data={pictures[key]} hash={key} />
-                </div>
-            ))}
+            <div> 
+                {keys(pictures).map(key => <ModifiableImage key={key} data={pictures[key]} hash={key} />)}
+            </div>
             <div id="canvas-div" ref={canvasDivRef}>
                 <SketchField {...canvasProps} />
             </div>
@@ -66,6 +75,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         updateGlobalPictureProperties: properties => dispatch(updateGlobalPictureState(properties)),
+        toggleGlobalPictureState: property => dispatch(toggleGlobalPictureState(property)),
         toggleCanvasEnabledState: () => dispatch(toggleEnabledState()),
         selectAllPictures: () => dispatch(selectAllPictures()),
         clearSelection: () => dispatch(clearSelection()),

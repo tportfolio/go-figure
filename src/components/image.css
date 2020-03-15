@@ -1,11 +1,10 @@
+.modifiable-image {
+    user-select: none;
+    z-index: 8;
+}
+
 .selected {
     box-shadow: 0 0 5px 5px #aef4af;
-}
-
-.mirror-h {
-    transform: rotateY(180deg);
-}
-
-.mirror-v {
-    transform: rotateX(180deg);
+    z-index: 9;
+    /* border: 5px solid #aef4af; */
 }

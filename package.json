@@ -17,6 +17,7 @@
     "cross-env": "^7.0.1",
     "dotenv": "^8.2.0",
     "electron-is-dev": "^1.1.0",
+    "electron-localshortcut": "^3.2.1",
     "lodash": "^4.17.15",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
@@ -28,6 +29,7 @@
     "react-router-cache-route": "^1.8.4",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-selectable-fast": "^3.3.0",
     "react-sketch": "^0.5.1",
     "redux": "^4.0.5",
     "wait-on": "^4.0.1"

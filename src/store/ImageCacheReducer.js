@@ -10,6 +10,7 @@ const UPDATE_GLOBAL_PICTURE_STATE = "UPDATE_GLOBAL_PICTURE_STATE";
 const SELECT_ALL_PICTURES = "SELECT_ALL_PICTURES";
 const CLEAR_SELECTION = "CLEAR_SELECTION";
 const DELETE_SELECTED = "DELETE_SELECTED";
+const TOGGLE_GLOBAL_PICTURE_STATE = "TOGGLE_GLOBAL_PICTURE_STATE";
 
 const initialState = {
     pictures: {},               // base64 data only (k: hash, v: base64 data)
@@ -39,6 +40,11 @@ export const managePictures = (state = initialState, action) => {
                 ...state,
                 pictureProperties: updateGlobalImageProperties(state, action.payload.updatedProperties)
             };
+        case TOGGLE_GLOBAL_PICTURE_STATE:
+            return {
+                ...state,
+                pictureProperties: toggleGlobalImageProperty(state, action.payload.propertyToToggle)
+            }
         case SELECT_ALL_PICTURES:
             return {
                 ...state,
@@ -70,6 +76,11 @@ const updateImageProperties = (state, hash, properties) => {
 
 const updateGlobalImageProperties = (state, properties) => {
     const updatedImages = [...state.selectedPictures].map(hash => ({ [hash]: Object.assign({ ...state.pictureProperties[hash] }, properties) }));
+    return Object.assign({ ...state.pictureProperties }, ...updatedImages);
+};
+
+const toggleGlobalImageProperty = (state, property) => {
+    const updatedImages = [...state.selectedPictures].map(hash => ({ [hash]: { ...state.pictureProperties[hash], [property]: !state.pictureProperties[hash][property] } }));
     return Object.assign({ ...state.pictureProperties }, ...updatedImages);
 };
 
@@ -126,6 +137,15 @@ export const updateGlobalPictureState = (updatedProperties) => {
         type: UPDATE_GLOBAL_PICTURE_STATE,
         payload: {
             updatedProperties: updatedProperties
+        }
+    }
+};
+
+export const toggleGlobalPictureState = propertyToToggle => {
+    return {
+        type: TOGGLE_GLOBAL_PICTURE_STATE,
+        payload: {
+            propertyToToggle: propertyToToggle
         }
     }
 };

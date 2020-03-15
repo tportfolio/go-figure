@@ -1,4 +1,4 @@
-const {BrowserWindow, ipcMain, app} = require('electron');
+const {BrowserWindow, ipcMain, app, globalShortcut} = require('electron');
 const path = require("path");
 const fs = require("fs");
 const isDev = require('electron-is-dev');
@@ -24,7 +24,8 @@ async function createWindow() {
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
 	mainWindow.setMenuBarVisibility(isDev);
 
-	mainWindow.on('closed', () => mainWindow = null);
+  mainWindow.on('closed', () => mainWindow = null);
+  globalShortcut.unregister("Control+A");
 }
 
 app.on('ready', createWindow);
