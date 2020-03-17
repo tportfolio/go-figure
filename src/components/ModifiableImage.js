@@ -10,8 +10,8 @@ class ModifiableImage extends React.Component {
     constructor(props) {
         super(props);
 
-        // redux/parent data:
-        const { data, hash, cachedProperties } = props;
+        // parent data
+        const { data, hash } = props;
 
         // initial image loading getting/setting
         this.ref = React.createRef();
@@ -19,11 +19,11 @@ class ModifiableImage extends React.Component {
         this.blob = URL.createObjectURL(base64StringToBlob(data, "image/png"));
 
         // prop setup
-        this.imgProps = { ref: this.ref, src: this.blob, draggable: false, onLoad: e => this.onLoad(e.target) };
+        this.imgProps = { alt: "", ref: this.ref, src: this.blob, draggable: false, onLoad: e => this.onLoad(e.target) };
 
         this.state = {
-            dimensions: cachedProperties.cachedDimensions ? cachedProperties.cachedDimensions : { height: 0, width: 0 },         // dynamic image dimension setting via react-rnd
             isDragActive: false,
+            isRotateActive: false,
             boxCenter: null,
             cursorPosition: null
         };
@@ -35,13 +35,10 @@ class ModifiableImage extends React.Component {
         }
     }
 
-    onLoad = target => this.setState({dimensions: { height: target.height, width: target.width }});
+    onLoad = target => this.props.updateProperties(this.hash, { dimensions: { height: target.height, width: target.width } });
 
-
-    // TODO: manage key presses better to keep focus on image
-    // TODO: do rotation of zIndex values when newest image is clicked
-    // TODO: block pointer events on all images not being actively clicked
     // TODO: correctly determine direction of rotation/mirroring when translation has occurred
+    // TODO: correctly determine direction of translation when rotation/mirroring has occurred
     mouseDownHandler = e => {
         const { left, top, width, height } = this.ref.current.getBoundingClientRect();
         const { pageX, pageY } = e;
@@ -52,35 +49,33 @@ class ModifiableImage extends React.Component {
         if (e.shiftKey) {
             const boxCenterX = left + width / 2;
             const boxCenterY = top + height / 2;
-
-            this.setState({boxCenter: { x: boxCenterX, y: boxCenterY }});
+            this.setState({ isRotateActive: true, boxCenter: { x: boxCenterX, y: boxCenterY } });
         } else {
-            console.log(`mouse down, no shift`);
-            this.setState({cursorPosition: { x: pageX, y: pageY }});
+            this.setState({ isDragActive: true, cursorPosition: { x: pageX, y: pageY } });
         }
 
         document.addEventListener('mousemove', this.mouseMove);
         document.addEventListener('mouseup', this.mouseUpHandler);
-        console.log(`adding event listeners for mouse down`);
 
         this.props.togglePictureSelection(this.hash, e.ctrlKey);
-        this.setState({isDragActive: true});
     };
 
     mouseUpHandler = e => {
         const { pageX, pageY, which } = e;
-        console.log(`mouse up handler called`);
 
+        // TODO: consider initial mouse down position and use that as starting point for rotation increment to avoid jumping
         let [rotation, offset] = [{}, {}];
-        if (e.shiftKey) {
+        if (e.shiftKey && this.state.isRotateActive) {
             const radians = Math.atan2(pageX - this.state.boxCenter.x, pageY - this.state.boxCenter.y);
             const degree = (radians * (180 / Math.PI) * -1) + 90;
             rotation = { rotation: degree };
-        } else if (which === 1) {
+            this.setState({ isRotateActive: false });
+        } else if (which === 1 && this.state.isDragActive) {
             const cachedOffset = this.getTranslateObject();
             const offsetX = pageX - this.state.cursorPosition.x + cachedOffset.x;
             const offsetY = pageY - this.state.cursorPosition.y + cachedOffset.y;
             offset = { offset: { x: offsetX, y: offsetY } };
+            this.setState({ isDragActive: false });
         } else {
             return;
         }
@@ -91,44 +86,46 @@ class ModifiableImage extends React.Component {
         const { width, height } = this.ref.current.getBoundingClientRect();
         const propertyObject = { height: height, width: width, ...offset, ...rotation };
         this.props.updateProperties(this.hash, propertyObject);
-        this.setState({isDragActive: false});
     };
 
     mouseMove = e => {
         const { pageX, pageY, which } = e;
 
         // TODO: add resizing with aspect ratio locked
-        if (e.shiftKey) {
+        if (e.shiftKey && this.state.isRotateActive && this.state.boxCenter) {
             const radians = Math.atan2(pageX - this.state.boxCenter.x, pageY - this.state.boxCenter.y);
             const degree = (radians * (180 / Math.PI) * -1) + 90;
             this.ref.current.style.transform = this.getTransformString({ rotate: degree });
-        } else if (which === 1 && this.state.cursorPosition) {
+        } else if (which === 1 && this.state.isDragActive && this.state.cursorPosition) {
             const cachedOffset = this.getTranslateObject();
             const offsetX = pageX - this.state.cursorPosition.x + cachedOffset.x;
             const offsetY = pageY - this.state.cursorPosition.y + cachedOffset.y;
             this.ref.current.style.transform = this.getTransformString({ translate: { x: offsetX, y: offsetY } });
-        } else {
-            console.log(`failed this check`);
         }
     }
 
+    getDimensions = () => {
+        const { dimensions } = this.props.cachedProperties;
+        return dimensions ? dimensions : { height: 0, width: 0 };
+    }
+
     getMirrorStyle = () => {
-        const {mirrorH, mirrorV} = this.props.cachedProperties;
+        const { mirrorH, mirrorV } = this.props.cachedProperties;
         return mirrorH && mirrorV ? "scale(-1, -1)" : mirrorH ? "scale(-1, 1)" : mirrorV ? "scale(1, -1)" : "";
     }
 
     getOpacity = () => {
-        const {opacity} = this.props.cachedProperties;
+        const { opacity } = this.props.cachedProperties;
         return opacity ? opacity : 1;
     }
 
     getTranslateObject = () => {
-        const {offset} = this.props.cachedProperties;
+        const { offset } = this.props.cachedProperties;
         return offset ? offset : { x: 0, y: 0 };
     }
 
     getRotate = () => {
-        const {rotation} = this.props.cachedProperties;
+        const { rotation } = this.props.cachedProperties;
         return rotation ? rotation : 0;
     };
 
@@ -137,7 +134,6 @@ class ModifiableImage extends React.Component {
     };
 
     render() {
-        console.log("updating image");
         const { isSelected } = this.props;
         const className = classNames("modifiable-image", { selected: isSelected, dragging: this.state.isDragActive });
 
@@ -145,7 +141,7 @@ class ModifiableImage extends React.Component {
         let extendedImgProps = { ...this.imgProps, style: styleProp };
 
         // if we've loaded the image, these can be added
-        const { height, width } = this.state.dimensions;
+        const { height, width } = this.getDimensions();
         if (height && width) {
             extendedImgProps = { ...extendedImgProps, height: height, width: width, className: className };
         }
