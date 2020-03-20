@@ -19,7 +19,7 @@ class ModifiableImage extends React.Component {
         this.blob = URL.createObjectURL(base64StringToBlob(data, "image/png"));
 
         // prop setup
-        this.imgProps = { alt: "", ref: this.ref, src: this.blob, draggable: false, onLoad: e => this.onLoad(e.target) };
+        this.imgProps = { ref: this.ref, src: this.blob, draggable: false, onLoad: e => this.onLoad(e.target) };
 
         this.state = {
             isDragActive: false,
@@ -64,17 +64,17 @@ class ModifiableImage extends React.Component {
         const { pageX, pageY, which } = e;
 
         // TODO: consider initial mouse down position and use that as starting point for rotation increment to avoid jumping
-        let [rotation, offset] = [{}, {}];
+        let [rotation, picturePosition] = [{}, {}];
         if (e.shiftKey && this.state.isRotateActive) {
             const radians = Math.atan2(pageX - this.state.boxCenter.x, pageY - this.state.boxCenter.y);
             const degree = (radians * (180 / Math.PI) * -1) + 90;
             rotation = { rotation: degree };
             this.setState({ isRotateActive: false });
         } else if (which === 1 && this.state.isDragActive) {
-            const cachedOffset = this.getTranslateObject();
-            const offsetX = pageX - this.state.cursorPosition.x + cachedOffset.x;
-            const offsetY = pageY - this.state.cursorPosition.y + cachedOffset.y;
-            offset = { offset: { x: offsetX, y: offsetY } };
+            const cachedPosition = this.getPosition();
+            const newX = pageX - this.state.cursorPosition.x + cachedPosition.x;
+            const newY = pageY - this.state.cursorPosition.y + cachedPosition.y;
+            picturePosition = { position: { x: newX, y: newY } };
             this.setState({ isDragActive: false });
         } else {
             return;
@@ -84,7 +84,7 @@ class ModifiableImage extends React.Component {
         document.removeEventListener('mouseup', this.mouseUpHandler);
 
         const { width, height } = this.ref.current.getBoundingClientRect();
-        const propertyObject = { height: height, width: width, ...offset, ...rotation };
+        const propertyObject = { height: height, width: width, ...picturePosition, ...rotation };
         this.props.updateProperties(this.hash, propertyObject);
     };
 
@@ -97,9 +97,8 @@ class ModifiableImage extends React.Component {
             const degree = (radians * (180 / Math.PI) * -1) + 90;
             this.ref.current.style.transform = this.getTransformString({ rotate: degree });
         } else if (which === 1 && this.state.isDragActive && this.state.cursorPosition) {
-            const cachedOffset = this.getTranslateObject();
-            const offsetX = pageX - this.state.cursorPosition.x + cachedOffset.x;
-            const offsetY = pageY - this.state.cursorPosition.y + cachedOffset.y;
+            const offsetX = pageX - this.state.cursorPosition.x;
+            const offsetY = pageY - this.state.cursorPosition.y;
             this.ref.current.style.transform = this.getTransformString({ translate: { x: offsetX, y: offsetY } });
         }
     }
@@ -119,9 +118,9 @@ class ModifiableImage extends React.Component {
         return opacity ? opacity : 1;
     }
 
-    getTranslateObject = () => {
-        const { offset } = this.props.cachedProperties;
-        return offset ? offset : { x: 0, y: 0 };
+    getPosition = () => {
+        const { position } = this.props.cachedProperties;
+        return position ? position : { x: 0, y: 0 };
     }
 
     getRotate = () => {
@@ -129,7 +128,7 @@ class ModifiableImage extends React.Component {
         return rotation ? rotation : 0;
     };
 
-    getTransformString = ({ rotate = this.getRotate(), translate = this.getTranslateObject() }) => {
+    getTransformString = ({ rotate = this.getRotate(), translate = {x: 0, y: 0} }) => {
         return `${this.getMirrorStyle()} translate(${translate.x}px, ${translate.y}px) rotate(${rotate}deg)`;
     };
 
@@ -137,18 +136,20 @@ class ModifiableImage extends React.Component {
         const { isSelected } = this.props;
         const className = classNames("modifiable-image", { selected: isSelected, dragging: this.state.isDragActive });
 
-        const styleProp = { position: "absolute", opacity: this.getOpacity() };
-        let extendedImgProps = { ...this.imgProps, style: styleProp };
+        let extendedImgProps = { ...this.imgProps };
+        let styleProp = { position: "absolute", opacity: this.getOpacity() };
 
         // if we've loaded the image, these can be added
         const { height, width } = this.getDimensions();
+        const { x, y } = this.getPosition();
         if (height && width) {
-            extendedImgProps = { ...extendedImgProps, height: height, width: width, className: className };
+            styleProp = {...styleProp, height: height, width: width, left: x, top: y};
+            extendedImgProps = { ...extendedImgProps, style: styleProp, className: className };
         }
 
         return (
             <div key={this.hash} draggable={false}>
-                <img {...extendedImgProps} onMouseDown={this.mouseDownHandler} />
+                <img {...extendedImgProps} alt="" onMouseDown={this.mouseDownHandler} />
             </div>
         );
     }
