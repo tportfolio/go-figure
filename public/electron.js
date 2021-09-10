@@ -12,6 +12,7 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
+    icon: path.join(__dirname, "favicon.ico"),
     webPreferences: {
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
