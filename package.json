@@ -48,7 +48,7 @@
     "fs": false
   },
   "build": {
-    "appId": "com.example.electron-cra",
+    "appId": "io.timportfol.go-figure",
     "files": [
       "build/**/*",
       "node_modules/**/*"
@@ -79,6 +79,7 @@
     "production": [
       ">0.2%",
       "not dead",
+      "not ie <= 11",
       "not op_mini all"
     ],
     "development": [
