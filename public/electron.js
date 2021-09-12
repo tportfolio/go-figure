@@ -2,10 +2,11 @@ const { BrowserWindow, ipcMain, app, globalShortcut } = require('electron');
 const path = require("path");
 const fs = require("fs");
 const isDev = require('electron-is-dev');
+const { RECEIVER_CHANNEL, SENDER_CHANNEL } = require("./constants");
+
 
 let mainWindow;
 function createWindow() {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
@@ -15,7 +16,6 @@ function createWindow() {
     }
   });
 
-  // Load app
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.setMenuBarVisibility(isDev);
   globalShortcut.unregister("Control+A");
@@ -38,12 +38,12 @@ app.on('window-all-closed', () => {
 });
 
 
-ipcMain.on("toMain", (event, args) => {
+ipcMain.on(SENDER_CHANNEL, (event, args) => {
   console.log(args);
 
   args.forEach(f => {
     fs.readFile(f, "base64", (error, data) => {
-      mainWindow.webContents.send("fromMain", data);
+      mainWindow.webContents.send(RECEIVER_CHANNEL, data);
     });
   })
 });

@@ -21,3 +21,6 @@ export const theme = createMuiTheme({
         ].join(','),
     }
 });
+
+export const RECEIVER_CHANNEL = "fromMain";
+export const SENDER_CHANNEL = "toMain";

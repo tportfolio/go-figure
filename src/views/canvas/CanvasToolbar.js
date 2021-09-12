@@ -10,13 +10,15 @@ import SettingsApplicationsSharpIcon from '@material-ui/icons/SettingsApplicatio
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';
 import { withTheme } from '@material-ui/core/styles';
 
+import { SENDER_CHANNEL } from "../../constants";
+
 const onChangeHandler = event => {
     console.log('onchange handler called');
     const { files } = event.target; // this is a FileList; convert to array for ease
     if (files.length > 0) {
         const fileArray = Array.from(files).map(f => f.path);
         console.log(fileArray);
-        window.api.send("toMain", fileArray);
+        window.api.send(SENDER_CHANNEL, fileArray);
     }
 }
 

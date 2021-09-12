@@ -128,7 +128,7 @@ class ModifiableImage extends React.Component {
         return rotation ? rotation : 0;
     };
 
-    getTransformString = ({ rotate = this.getRotate(), translate = {x: 0, y: 0} }) => {
+    getTransformString = ({ rotate = this.getRotate(), translate = { x: 0, y: 0 } }) => {
         return `${this.getMirrorStyle()} translate(${translate.x}px, ${translate.y}px) rotate(${rotate}deg)`;
     };
 
@@ -137,13 +137,12 @@ class ModifiableImage extends React.Component {
         const className = classNames("modifiable-image", { selected: isSelected, dragging: this.state.isDragActive });
 
         let extendedImgProps = { ...this.imgProps };
-        let styleProp = { position: "absolute", opacity: this.getOpacity() };
 
         // if we've loaded the image, these can be added
         const { height, width } = this.getDimensions();
         const { x, y } = this.getPosition();
         if (height && width) {
-            styleProp = {...styleProp, height: height, width: width, left: x, top: y};
+            const styleProp = { position: "absolute", opacity: this.getOpacity(), height: height, width: width, left: x, top: y };
             extendedImgProps = { ...extendedImgProps, style: styleProp, className: className };
         }
 

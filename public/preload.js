@@ -1,22 +1,17 @@
-const {
-    contextBridge,
-    ipcRenderer
-} = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
+const { RECEIVER_CHANNEL, SENDER_CHANNEL } = require("./constants");
 
-// Expose protected methods that allow the renderer process to use
-// the ipcRenderer without exposing the entire object
+// code to expose/abstract filesystem interactions
+// template from: https://github.com/electron/electron/issues/9920#issuecomment-575839738
 contextBridge.exposeInMainWorld(
     "api", {
         send: (channel, data) => {
-            // whitelist channels
-            let validChannels = ["toMain"];
-            if (validChannels.includes(channel)) {
+            if (channel === SENDER_CHANNEL) {
                 ipcRenderer.send(channel, data);
             }
         },
         receive: (channel, func) => {
-            let validChannels = ["fromMain"];
-            if (validChannels.includes(channel)) {
+            if (channel === RECEIVER_CHANNEL) {
                 // Deliberately strip event as it includes `sender` 
                 ipcRenderer.on(channel, (event, ...args) => func(...args));
             }
