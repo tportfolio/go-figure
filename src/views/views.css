@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+.MuiAccordion-root {
+    width: 45%;
+}
+
+#cached-view, #faq-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+
+}
+
+#faq-container {
+    padding-top: 10%;
+    align-items: center;
+}
+
+#faq-container p {
+    font-family: 'Quicksand', sans-serif;
+    color: #003333; 
+    font-size: 20px;
+}
+
+#faq-header {
+    color: #FFFFFF !important;
+    font-size: 48px !important;
+}
+  

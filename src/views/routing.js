@@ -8,7 +8,7 @@ import StatsOverview from "./StatsOverview";
 import Settings from "./Settings";
 import About from "./About";
 import App from "../App";
-import "./cacheview.css";
+import "./views.css";
 
 const styling = cached => cached ? { style: { display: "none" }} : { id: "cached-view" };
 

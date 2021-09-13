@@ -1,19 +1,30 @@
 import React from 'react';
-import { makeStyles, withTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import PlayCircleFilledOutlinedIcon from '@material-ui/icons/PlayCircleFilledOutlined';
-import PictureInPictureIcon from '@material-ui/icons/PictureInPicture';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
-import InfoIcon from '@material-ui/icons/Info';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { green, yellow, lightBlue, grey } from '@material-ui/core/colors';
+import {
+    Divider,
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText
+} from '@material-ui/core';
+import {
+    Equalizer as EqualizerIcon,
+    Info as InfoIcon,
+    PictureInPicture as PictureInPictureIcon,
+    PlayCircleFilledOutlined as PlayCircleFilledOutlinedIcon,
+    Settings as SettingsIcon
+} from '@material-ui/icons';
+import {
+    makeStyles,
+    withTheme
+} from '@material-ui/core/styles';
+import { 
+    green, 
+    yellow, 
+    lightBlue, 
+    grey 
+} from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
-
 import { GlobalHotKeys } from "react-hotkeys";
 
 
@@ -83,7 +94,7 @@ const Sidebar = props => {
                     <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }} onClick={() => setState(false)}>
                         <ListItem button>
                             <ListItemIcon>{i.icon}</ListItemIcon>
-                            <ListItemText primary={i.text} className={classes.list}/>
+                            <ListItemText primary={i.text} className={classes.list} />
                         </ListItem>
                     </Link>
                 ))}
@@ -94,7 +105,7 @@ const Sidebar = props => {
                     <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }} onClick={() => setState(false)}>
                         <ListItem button>
                             <ListItemIcon>{i.icon}</ListItemIcon>
-                            <ListItemText primary={i.text} className={classes.list}/>
+                            <ListItemText primary={i.text} className={classes.list} />
                         </ListItem>
                     </Link>
                 ))}
