@@ -18,14 +18,14 @@ p {
   color: white;
 }
 
-.left-arrow-hint {
+#left-arrow-hint {
   font-size: 36px;
 }
 
-.splash-screen-title {
+#splash-screen-title {
   font-size: 192px;
 }
 
-.paint-brush-icon {
+#paint-brush-icon {
   transform: rotate(-30deg);
 }

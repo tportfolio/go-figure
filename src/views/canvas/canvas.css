@@ -1,6 +1,6 @@
-#canvas-div {
-    flex: 1;    
-    overflow: hidden;
+#canvas-wrapper-div, #canvas-div {
+    width: 100%;
+    height: 100%;
 }
 
 .disabled-canvas {

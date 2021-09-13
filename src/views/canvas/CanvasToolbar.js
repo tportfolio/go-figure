@@ -30,7 +30,7 @@ const CanvasToolbar = props => {
         <div>
             <input type='file' id='file' multiple ref={inputFileRef} style={{ display: 'none' }} onChange={onChangeHandler} />
             <Toolbar style={{ background: theme.palette.secondary.light, zIndex: 10 }} >
-                <Grid container justify="center" alignItems="center">
+                <Grid container justifyContent="center" alignItems="center">
                     <Button onClick={() => inputFileRef.current.click()}>
                         <AddIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
                 Add to layout...

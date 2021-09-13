@@ -53,7 +53,7 @@ const Canvas = props => {
     useHotkeys('v', () => toggleGlobalPictureState("mirrorV"));
 
     return (
-        <>
+        <div id="canvas-wrapper-div">
             <CanvasToolbar />
             <div> 
                 {keys(pictures).map(key => <ModifiableImage key={key} data={pictures[key]} hash={key} />)}
@@ -61,7 +61,7 @@ const Canvas = props => {
             <div id="canvas-div" ref={canvasDivRef}>
                 <SketchField {...canvasProps} />
             </div>
-        </>
+        </div>
     );
 };
 

@@ -6,25 +6,29 @@ import './App.css';
 
 const TITLE_TRANSITION_DURATION_MSECS = 3000;
 
+/**
+ * Displays the initial splash screen with the app name and menu hint.
+ * @returns Grid representation of the splash screen
+ */
 const App = () => {
     return (
-        <Grid container direction="column">
-            <Fade in={true} timeout={TITLE_TRANSITION_DURATION_MSECS}>      
-                <Grid container direction="row" justify="center" alignItems="center">
-                    <Grid item>                  
-                        <p className="splash-screen-title">
+        <Grid container direction="column" align="center" justifyContent="center">
+            <Fade in={true} timeout={TITLE_TRANSITION_DURATION_MSECS}>
+                <Grid container direction="row" justifyContent="center" alignItems="center">
+                    <Grid item>
+                        <p id="splash-screen-title">
                             go figure
                         </p>
-                        </Grid>  
-                        <Grid item>
-                        <BrushIcon className="paint-brush-icon" style={{color: "white", fontSize: "96px"}}/>
-                    </Grid>    
+                    </Grid>
+                    <Grid item>
+                        <BrushIcon id="paint-brush-icon" style={{ color: "white", fontSize: "96px" }} />
+                    </Grid>
                 </Grid>
             </Fade>
-            <Grid container direction="row" justify="center">
+            <Grid container direction="row" justifyContent="center">
                 <Grid item>
-                    <Fade in={true} style={{ transitionDelay: TITLE_TRANSITION_DURATION_MSECS + 'ms'}} timeout={TITLE_TRANSITION_DURATION_MSECS}>
-                        <p className="left-arrow-hint">
+                    <Fade in={true} style={{ transitionDelay: TITLE_TRANSITION_DURATION_MSECS + 'ms' }} timeout={TITLE_TRANSITION_DURATION_MSECS}>
+                        <p id="left-arrow-hint">
                             (press left/right arrow keys to toggle menu)
                         </p>
                     </Fade>
