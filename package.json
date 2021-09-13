@@ -17,6 +17,7 @@
     "cross-env": "^7.0.3",
     "electron-is-dev": "^1.2.0",
     "lodash": "^4.17.21",
+    "loglevel": "^1.7.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-dropzone": "^10.2.2",

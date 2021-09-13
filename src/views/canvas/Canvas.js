@@ -1,15 +1,25 @@
 import React from 'react';
+import { useDropzone } from 'react-dropzone';
 import { connect } from 'react-redux';
 import keys from "lodash/keys";
 import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from "classnames";
+import * as log from 'loglevel';
 import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";
 import ModifiableImage from "../../components/ModifiableImage";
-import { updateGlobalPictureState, selectAllPictures, clearSelection, deleteSelectedImages, toggleGlobalPictureState } from "../../store/ImageCacheReducer";
 import { toggleEnabledState } from "../../store/CanvasSettingsReducer";
+import {
+    updateGlobalPictureState,
+    selectAllPictures,
+    clearSelection,
+    deleteSelectedImages,
+    toggleGlobalPictureState,
+    addPicture
+} from "../../store/ImageCacheReducer";
+
 import "./canvas.css";
 
 const Canvas = props => {
@@ -24,14 +34,29 @@ const Canvas = props => {
     const canvasDivRef = React.useRef();
 
     if (canvasHeight) {
-        canvasProps = { ...canvasProps, height: canvasHeight, className: classNames({"disabled-canvas": !isCanvasEnabled})};
+        canvasProps = { ...canvasProps, height: canvasHeight, className: classNames({ "disabled-canvas": !isCanvasEnabled }) };
     }
 
     //TODO: listen for resize
     React.useEffect(() => {
         setCanvasHeight(canvasDivRef.current.offsetHeight);
     }, []);
-    
+
+    const onDrop = acceptedFiles => {
+        console.log(`Received ${acceptedFiles}`);
+        for (let f of acceptedFiles) {
+            const reader = new FileReader();
+            reader.readAsDataURL(f);
+            reader.onload = () => {
+                const base64Data = reader.result.split(',')[1];
+                log.debug(`Received data from drag 'n' drop: ${base64Data.slice(0, 100) + "..."}`);
+                props.addPicture(base64Data);
+            };
+        }
+    };
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, noClick: true })
+
     useHotkeys('1', () => updateGlobalPictureProperties({ opacity: 0.1 }));
     useHotkeys('2', () => updateGlobalPictureProperties({ opacity: 0.2 }));
     useHotkeys('3', () => updateGlobalPictureProperties({ opacity: 0.3 }));
@@ -55,11 +80,14 @@ const Canvas = props => {
     return (
         <div id="canvas-wrapper-div">
             <CanvasToolbar />
-            <div> 
+            <div>
                 {keys(pictures).map(key => <ModifiableImage key={key} data={pictures[key]} hash={key} />)}
             </div>
             <div id="canvas-div" ref={canvasDivRef}>
-                <SketchField {...canvasProps} />
+                <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <SketchField {...canvasProps} />
+                </div>
             </div>
         </div>
     );
@@ -74,6 +102,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        addPicture: picture => dispatch(addPicture(picture)),
         updateGlobalPictureProperties: properties => dispatch(updateGlobalPictureState(properties)),
         toggleGlobalPictureState: property => dispatch(toggleGlobalPictureState(property)),
         toggleCanvasEnabledState: () => dispatch(toggleEnabledState()),
@@ -85,10 +114,10 @@ const mapDispatchToProps = dispatch => {
 
 // 1. canvas only cares when the number of pictures changes on the screen; the pictures themselves are self-managing
 // 2. canvas needs to know when hot key for canvas enabling has changed
-const isEqual = (prevProps, nextProps) =>{
+const isEqual = (prevProps, nextProps) => {
     const isKeyLengthEqual = keys(prevProps.pictures).length === keys(nextProps.pictures).length;
     const isCanvasStateEqual = prevProps.isCanvasEnabled === nextProps.isCanvasEnabled;
     return isKeyLengthEqual && isCanvasStateEqual;
-} 
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Canvas, isEqual));
