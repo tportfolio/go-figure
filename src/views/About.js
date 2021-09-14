@@ -1,37 +1,29 @@
 import React from 'react';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import classNames from 'classnames';
+import { mapEntryToAccordion } from '../utils/utils';
 
-// baseline source from simple accordion example: https://material-ui.com/components/accordion/
+const faqEntries = [
+    {
+        summary: "What is Go Figure?",
+        details: "Go Figure is a program intended to support artists who need a one-stop shop \
+        for figure drawing and image reference organization."
+    },
+    {
+        summary: "What are the hot keys for the program?",
+        details: (
+            <span>
+                DEL - removes highlighted image(s)<br />
+                CTRL - selects/deselects image
+            </span>
+        )
+    }
+];
+
 const About = () => {
     return (
-        <div id="faq-container">
-            <p id="faq-header">Frequently Asked Questions</p>
-            <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography>What is Go Figure?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>
-                        Go Figure is a program intended to support artists who need a one-stop shop
-                        for figure drawing and image reference organization.
-                    </Typography>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography>What are the hot keys for the program?</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>
-                        DEL - removes highlighted image(s)<br />
-                        CTRL - selects/deselects image
-                    </Typography>
-                </AccordionDetails>
-            </Accordion>
+        <div className={classNames("accordion-container", "view-container")}>
+            <p className="view-header">Frequently Asked Questions</p>
+            {faqEntries.map(entry => mapEntryToAccordion(entry))}
         </div>
     );
 }

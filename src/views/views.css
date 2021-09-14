@@ -4,26 +4,32 @@
     width: 45%;
 }
 
-#cached-view, #faq-container {
+#cached-view, .view-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     min-height: 100vh; 
-
-}
-
-#faq-container {
-    padding-top: 10%;
     align-items: center;
 }
 
-#faq-container p {
+.view-container p {
     font-family: 'Quicksand', sans-serif;
     color: #003333; 
     font-size: 20px;
 }
 
-#faq-header {
+.stats-container {
+    padding: 5% 15%;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.accordion-container {
+    padding-top: 5%;
+}
+
+.view-header {
     color: #FFFFFF !important;
     font-size: 48px !important;
 }
