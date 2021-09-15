@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { GlobalHotKeys } from "react-hotkeys";
 import * as serviceWorker from './serviceWorker';
 import * as log from 'loglevel';
 
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import rootReducer from "./store/reducer";
 import ElectronListener from "./store/ElectronListener";
-import { keyMap, theme } from "./constants";
+import { theme } from "./constants";
 import routing from "./views/routing";
 import Sidebar from "./sidebar/Sidebar";
 
@@ -21,10 +20,8 @@ log.setLevel(!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? l
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
-            <GlobalHotKeys keyMap={keyMap}>
-                {routing(Sidebar)}
-                <ElectronListener/>
-            </GlobalHotKeys>
+            {routing(Sidebar)}
+            <ElectronListener/>
         </ThemeProvider>
     </Provider>,
     document.getElementById('root'));

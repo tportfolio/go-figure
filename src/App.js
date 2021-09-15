@@ -28,8 +28,8 @@ const App = () => {
             <Grid container direction="row" justifyContent="center">
                 <Grid item>
                     <Fade in={true} style={{ transitionDelay: TITLE_TRANSITION_DURATION_MSECS + 'ms' }} timeout={TITLE_TRANSITION_DURATION_MSECS}>
-                        <p id="left-arrow-hint">
-                            (press left/right arrow keys to toggle menu)
+                        <p id="start-hint">
+                            (hover over left-hand drawer to expand menu)
                         </p>
                     </Fade>
                 </Grid>

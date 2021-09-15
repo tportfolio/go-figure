@@ -29,7 +29,6 @@
     "react-scripts": "3.4.0",
     "react-selectable-fast": "^3.4.0",
     "react-sketch": "^0.5.1",
-    "react-vis": "^1.11.7",
     "recharts": "^2.1.2",
     "redux": "^4.1.1",
     "wait-on": "^4.0.2"

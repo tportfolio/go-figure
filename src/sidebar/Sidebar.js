@@ -1,45 +1,55 @@
 import React from 'react';
-import {
-    Divider,
-    Drawer,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText
-} from '@material-ui/core';
+import { makeStyles, withTheme } from '@material-ui/core/styles';
+import { green, yellow, lightBlue, grey } from '@material-ui/core/colors';
+import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
     Equalizer as EqualizerIcon,
-    Info as InfoIcon,
-    PictureInPicture as PictureInPictureIcon,
+    Info as InfoIcon, PictureInPicture as PictureInPictureIcon,
     PlayCircleFilledOutlined as PlayCircleFilledOutlinedIcon,
     Settings as SettingsIcon
 } from '@material-ui/icons';
-import {
-    makeStyles,
-    withTheme
-} from '@material-ui/core/styles';
-import { 
-    green, 
-    yellow, 
-    lightBlue, 
-    grey 
-} from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
-import { GlobalHotKeys } from "react-hotkeys";
+import classNames from 'classnames';
 
-
-const useStyles = makeStyles(theme => ({
+// baseline template from MUI:
+// https://material-ui.com/components/drawers/#MiniDrawer.js
+const drawerWidth = 300;
+const useStyles = makeStyles((theme) => ({
     root: {
-        background: theme.palette.primary.main,
+        display: 'flex',
+        background: theme.palette.primary.dark
     },
     divider: {
         background: theme.palette.secondary.light,
     },
     list: {
         ...theme.typography,
-        width: 300,
-        background: theme.palette.primary.main,
+        background: theme.palette.primary.dark,
         color: theme.palette.secondary.light
+    },
+    drawer: {
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+    },
+    drawerOpen: {
+        background: theme.palette.primary.dark,
+        width: drawerWidth,
+        overflowX: 'hidden',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerClose: {
+        background: theme.palette.primary.dark,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        overflowX: 'hidden',
+        [theme.breakpoints.up('sm')]: {
+            width: theme.spacing(7) + 1,
+        },
     }
 }));
 
@@ -85,13 +95,13 @@ const bottomIcons = theme => {
 const Sidebar = props => {
     const { theme } = props;
     const classes = useStyles();
-    const [state, setState] = React.useState(false);
+    const [isExpanded, setExpanded] = React.useState(false);
 
     const sideList = () => (
-        <div role="presentation">
+        <>
             <List>
                 {topIcons(theme).map(i => (
-                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }} onClick={() => setState(false)}>
+                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>{i.icon}</ListItemIcon>
                             <ListItemText primary={i.text} className={classes.list} />
@@ -102,7 +112,7 @@ const Sidebar = props => {
             <Divider classes={{ root: classes.divider }} />
             <List>
                 {bottomIcons(theme).map(i => (
-                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }} onClick={() => setState(false)}>
+                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
                         <ListItem button>
                             <ListItemIcon>{i.icon}</ListItemIcon>
                             <ListItemText primary={i.text} className={classes.list} />
@@ -110,29 +120,38 @@ const Sidebar = props => {
                     </Link>
                 ))}
             </List>
-        </div>
+        </>
     );
 
-    const toggleOn = React.useCallback(() => {
-        setState(true);
+    const expandDrawer = React.useCallback(() => {
+        setExpanded(true);
     }, []);
 
-    const toggleOff = React.useCallback(() => {
-        setState(false);
+    const retractDrawer = React.useCallback(() => {
+        setExpanded(false);
     }, []);
 
-
-    const handlers = {
-        TOGGLE_SIDEBAR_ON: toggleOn,
-        TOGGLE_SIDEBAR_OFF: toggleOff
-    };
 
     return (
-        <GlobalHotKeys handlers={handlers}>
-            <Drawer open={state} classes={{ paper: classes.root }}>
+        <div className={classes.root}>
+            <Drawer
+                onMouseEnter={expandDrawer}
+                onMouseLeave={retractDrawer}
+                variant="permanent"
+                className={classNames(classes.drawer, {
+                    [classes.drawerOpen]: isExpanded,
+                    [classes.drawerClose]: !isExpanded,
+                })}
+                classes={{
+                    paper: classNames({
+                        [classes.drawerOpen]: isExpanded,
+                        [classes.drawerClose]: !isExpanded,
+                    }),
+                }}
+            >
                 {sideList()}
             </Drawer>
-        </GlobalHotKeys>
+        </div>
     );
 }
 
