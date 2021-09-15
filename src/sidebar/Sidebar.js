@@ -92,7 +92,7 @@ const bottomIcons = theme => {
     )
 };
 
-const Sidebar = props => {
+const MiniSidebar = props => {
     const { theme } = props;
     const classes = useStyles();
     const [isExpanded, setExpanded] = React.useState(false);
@@ -155,4 +155,6 @@ const Sidebar = props => {
     );
 }
 
-export default withTheme(Sidebar);
+const Sidebar = withTheme(MiniSidebar);
+
+export default Sidebar;

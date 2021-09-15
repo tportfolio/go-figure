@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import * as serviceWorker from './serviceWorker';
-import * as log from 'loglevel';
-
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { ThemeProvider } from '@material-ui/core/styles';
+import * as log from 'loglevel';
+
 import rootReducer from "./store/reducer";
 import ElectronListener from "./store/ElectronListener";
 import { theme } from "./constants";
-import routing from "./views/routing";
-import Sidebar from "./sidebar/Sidebar";
+import Router from "./views/routing";
+import * as serviceWorker from './serviceWorker';
 
-import { ThemeProvider } from '@material-ui/core/styles';
+import './index.css';
+
 const store = createStore(rootReducer);
 
 log.setLevel(!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? log.levels.DEBUG : log.levels.INFO);
@@ -20,7 +20,7 @@ log.setLevel(!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? l
 ReactDOM.render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
-            {routing(Sidebar)}
+            <Router />
             <ElectronListener/>
         </ThemeProvider>
     </Provider>,

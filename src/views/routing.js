@@ -8,25 +8,45 @@ import StatsOverview from "./StatsOverview";
 import Settings from "./Settings";
 import About from "./About";
 import App from "../App";
+import Sidebar from "../sidebar/Sidebar";
 import "./views.css";
 
-const styling = cached => cached ? { style: { display: "none" }} : { id: "cached-view" };
+const styling = cached => cached ? { style: { display: "none" }} : { className: "view-container" };
 
-const routing = sidebar => {
-    const Sidebar = sidebar;
+const routes = [
+    {
+        path: "/canvas",
+        component: Canvas
+    },
+    {
+        path: "/figuredrawing",
+        component: FigureDrawing
+    },
+    {
+        path: "/statsoverview",
+        component: StatsOverview
+    },
+    {
+        path: "/settings",
+        component: Settings
+    },
+    {
+        path: "/about",
+        component: About
+    },
+    
+]
+
+const Router = () => {
     return (
         <HashRouter>
             <Sidebar />
             <CacheSwitch>
-                <CacheRoute path="/canvas" component={Canvas} behavior={styling} />
-                <Route path="/figuredrawing" component={FigureDrawing} />
-                <Route path="/statsoverview" component={StatsOverview} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/about" component={About} />
+                {routes.map(({ path, component: Component }) => <CacheRoute path={path} component={Component} behavior={styling} />)}
                 <Route path="/" exact component={App} />
             </CacheSwitch>
         </HashRouter>
     );
 }
 
-export default routing;
+export default Router;

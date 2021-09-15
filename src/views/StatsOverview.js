@@ -72,7 +72,7 @@ const StatsOverview = () => {
         }
     ];
     return (
-        <div className={classNames("view-container", "stats-container")}>
+        <div className="stats-container">
             <p className="view-header">App Statistics</p>
             {dataProps.map(({field, color}) => createAreaChart(data, "date", field, color))}
         </div>

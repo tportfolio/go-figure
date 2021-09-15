@@ -4,7 +4,7 @@
     width: 45%;
 }
 
-#cached-view, .view-container {
+.view-container, .accordion-container, .stats-container {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -19,10 +19,8 @@
 }
 
 .stats-container {
-    padding: 5% 15%;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
+    padding: 5% 0%;
+    width: 90%;
 }
 
 .accordion-container {
