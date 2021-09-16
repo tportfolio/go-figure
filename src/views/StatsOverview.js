@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 /**
@@ -15,7 +14,7 @@ const createAreaChart = (data, x, y, color) => {
     return (
         // note: width at 99% is a workaround to container not resizing correctly on window resize
         // https://stackoverflow.com/a/53205850
-        <ResponsiveContainer width="99%" height={300}>
+        <ResponsiveContainer id={x} width="99%" height={300}>
             <AreaChart
                 data={data}
                 syncId="anyId"

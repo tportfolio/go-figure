@@ -3,7 +3,7 @@ import { Route, HashRouter } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 
 import Canvas from "./canvas/Canvas";
-import FigureDrawing from "./FigureDrawing";
+import FigureDrawing from "./figuredrawing/FigureDrawing";
 import StatsOverview from "./StatsOverview";
 import Settings from "./Settings";
 import About from "./About";
@@ -42,7 +42,7 @@ const Router = () => {
         <HashRouter>
             <Sidebar />
             <CacheSwitch>
-                {routes.map(({ path, component: Component }) => <CacheRoute path={path} component={Component} behavior={styling} />)}
+                {routes.map(({ path, component: Component }) => <CacheRoute key={path} path={path} component={Component} behavior={styling} />)}
                 <Route path="/" exact component={App} />
             </CacheSwitch>
         </HashRouter>

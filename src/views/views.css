@@ -4,11 +4,11 @@
     width: 45%;
 }
 
-.view-container, .accordion-container, .stats-container {
+.view-container, .accordion-container, .stats-container, .figure-drawing-container {
     width: 100%;
+    height: 100%;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh; 
+    flex-direction: column; 
     align-items: center;
 }
 
@@ -18,17 +18,41 @@
     font-size: 20px;
 }
 
-.stats-container {
-    padding: 5% 0%;
-    width: 90%;
-}
-
-.accordion-container {
-    padding-top: 5%;
-}
-
 .view-header {
     color: #FFFFFF !important;
     font-size: 48px !important;
+}
+
+.accordion-container, .stats-container {
+    padding: 100px 0;
+}
+
+.stats-container {
+    width: 90%;
+}
+
+.figure-drawing-container {
+    height: inherit;
+    width: inherit;
+}
+
+.current-image-container {
+    flex-grow: 1;
+}
+  
+.figure-drawing-buttons-container {
+    height: 75px;
+    width: 375px;
+    margin: 10px 15px;
+    display: flex;
+    flex-direction: row;
+}
+
+.MuiIconButton-root.figure-drawing-button {
+    width: 70px;
+    height: 70px;
+    margin: 0 4px;
+    color: white;
+    background: rgba(20, 35, 48, 0.445);
 }
   

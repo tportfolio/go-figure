@@ -13,7 +13,7 @@ export const imageHash = s => '' + (s.split('').reduce((a, b) => (((a << 5) - a)
 // baseline source from simple accordion example: https://material-ui.com/components/accordion/
 export const mapEntryToAccordion = ({ summary, details }) => {
     return (
-        <Accordion>
+        <Accordion key={summary}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography>{summary}</Typography>
             </AccordionSummary>
