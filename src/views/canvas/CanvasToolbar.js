@@ -33,25 +33,25 @@ const CanvasToolbar = props => {
                 <Grid container justifyContent="center" alignItems="center">
                     <Button onClick={() => inputFileRef.current.click()}>
                         <AddIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                Add to layout...
-            </Button>
+                        Add to layout...
+                    </Button>
                     <Button>
                         <GetAppIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                Load layout...
-            </Button>
+                        Load layout...
+                    </Button>
                     <Button>
                         <SaveIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                Save current layout
-            </Button>
+                        Save current layout
+                    </Button>
                     <Button>
                         <SettingsApplicationsSharpIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                Layout settings
-            </Button>
+                        Layout settings
+                    </Button>
                     <Divider orientation="vertical" flexItem />
                     <Button style={{ color: "red" }}>
                         <ClearSharpIcon fontSize="small" style={{ color: "red" }} />
-                Clear layout...
-            </Button>
+                        Clear layout...
+                    </Button>
                 </Grid>
             </Toolbar>
         </div>

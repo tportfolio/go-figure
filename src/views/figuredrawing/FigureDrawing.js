@@ -1,34 +1,28 @@
-import React, { useState } from 'react';
-import PlayPauseButton from './buttons/PlayPauseButton';
-import RestartButton from './buttons/RestartButton';
-import RewindButton from './buttons/RewindButton';
-import ForwardButton from './buttons/ForwardButton';
-import StopButton from './buttons/StopButton';
+import React from 'react';
+import { connect } from 'react-redux';
+
 import FigureDrawingSettings from './FigureDrawingSettings';
+import ActiveDrawingSessionLayout from './ActiveDrawingSessionLayout';
+import * as StateConstants from "./constants";
 
-const ActiveDrawingSessionLayout = () => {
-    return (
-        <>
-            <div className="current-image-container"></div>
-            <div className="figure-drawing-buttons-container">
-                <RestartButton />
-                <RewindButton />
-                <PlayPauseButton />
-                <ForwardButton />
-                <StopButton />
-            </div>
-        </>
-    );
-}
+const stateToComponentMap = {
+    [StateConstants.STATE_SELECT_SETTINGS]: <FigureDrawingSettings />,
+    [StateConstants.STATE_SESSION_RUNNING]: <ActiveDrawingSessionLayout />
+};
 
-const FigureDrawing = () => {
-    const [isSessionActive, setIsSessionActive] = useState(false);
-    const InnerComponent = isSessionActive ? ActiveDrawingSessionLayout : FigureDrawingSettings;
+const FigureDrawing = props => {
+    console.log(`Current state is: ${props.sessionState}`)
     return (
         <div className="figure-drawing-container">
-            <InnerComponent />
+            {stateToComponentMap[props.sessionState]}
         </div>
     );
 }
 
-export default FigureDrawing;
+const mapStateToProps = state => {
+    return {
+        sessionState: state.figuredrawing.sessionState,
+    }
+};
+
+export default connect(mapStateToProps)(FigureDrawing);
