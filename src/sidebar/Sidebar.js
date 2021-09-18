@@ -1,13 +1,13 @@
 import React from 'react';
-import { makeStyles, withTheme } from '@material-ui/core/styles';
-import { green, yellow, lightBlue, grey } from '@material-ui/core/colors';
-import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { makeStyles, withTheme } from '@mui/styles';
+import { green, yellow, lightBlue, grey } from '@mui/material/colors';
+import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
     Equalizer as EqualizerIcon,
     Info as InfoIcon, PictureInPicture as PictureInPictureIcon,
     PlayCircleFilledOutlined as PlayCircleFilledOutlinedIcon,
     Settings as SettingsIcon
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
         }),
         overflowX: 'hidden',
         [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(7) + 1,
+            width: theme.spacing(7),
         },
     }
 }));

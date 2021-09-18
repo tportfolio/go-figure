@@ -1,14 +1,14 @@
 import React from 'react';
-import { Toolbar } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import AddIcon from '@material-ui/icons/Add';
-import SaveIcon from '@material-ui/icons/Save';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import SettingsApplicationsSharpIcon from '@material-ui/icons/SettingsApplicationsSharp';
-import ClearSharpIcon from '@material-ui/icons/ClearSharp';
-import { withTheme } from '@material-ui/core/styles';
+import { Toolbar } from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicationsSharp';
+import ClearSharpIcon from '@mui/icons-material/ClearSharp';
+import { withTheme } from '@mui/styles';
 
 import { SENDER_CHANNEL } from "../../constants";
 

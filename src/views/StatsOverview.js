@@ -14,7 +14,7 @@ const createAreaChart = (data, x, y, color) => {
     return (
         // note: width at 99% is a workaround to container not resizing correctly on window resize
         // https://stackoverflow.com/a/53205850
-        <ResponsiveContainer id={x} width="99%" height={300}>
+        <ResponsiveContainer key={y} width="99%" height={300}>
             <AreaChart
                 data={data}
                 syncId="anyId"

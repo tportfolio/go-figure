@@ -13,6 +13,10 @@
     <title>Go Figure</title>
   </head>
   <body>
+    <!-- Mitigate CORS issue: https://github.com/facebook/create-react-app/issues/10474#issuecomment-811987438-->
+    <script>
+      if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;
+    </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>

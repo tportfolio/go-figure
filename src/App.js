@@ -1,7 +1,7 @@
 import React from 'react';
-import { Fade } from '@material-ui/core';
-import { Grid } from '@material-ui/core';
-import BrushIcon from '@material-ui/icons/Brush';
+import { Fade } from '@mui/material';
+import { Grid } from '@mui/material';
+import BrushIcon from '@mui/icons-material/Brush';
 import './App.css';
 
 const TITLE_TRANSITION_DURATION_MSECS = 3000;

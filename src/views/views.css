@@ -39,6 +39,11 @@
 .current-image-container {
     flex-grow: 1;
 }
+
+.figure-drawing-settings {
+    width: 45%;
+    height: 60%;
+}
   
 .figure-drawing-buttons-container {
     height: 75px;

@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core/styles';
-import Slider from '@material-ui/core/Slider';
+import { withStyles } from '@mui/styles';
+import Slider from '@mui/material/Slider';
 
 // sample code from MUI for Pretto slider
 const ImageSlider = withStyles({

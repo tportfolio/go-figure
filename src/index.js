@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import * as log from 'loglevel';
 
 import rootReducer from "./store/reducer";
@@ -19,10 +19,12 @@ log.setLevel(!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? l
 
 ReactDOM.render(
     <Provider store={store}>
-        <ThemeProvider theme={theme}>
-            <Router />
-            <ElectronListener/>
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+                <Router />
+                <ElectronListener/>
+            </ThemeProvider>
+        </StyledEngineProvider>
     </Provider>,
     document.getElementById('root'));
 
