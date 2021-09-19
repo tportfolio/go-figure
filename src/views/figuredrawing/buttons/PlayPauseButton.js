@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pause as PauseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 
-const PlayPauseButton = () => {
-    const [isPlaying, setIsPlaying] = useState(true);
-    const Component = isPlaying ? PauseIcon : PlayArrowIcon;
+const PlayPauseButton = props => {
+    const Component = props.isActive ? PauseIcon : PlayArrowIcon;
 
     return (
         <IconButton
             className="figure-drawing-button"
             key="Play/Pause"
-            onClick={() => setIsPlaying(!isPlaying)}
+            onClick={props.onClickHandler}
             size="large">
             <Component />
         </IconButton>

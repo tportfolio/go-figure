@@ -6,19 +6,20 @@ import {
     Image as ImageIcon
 } from '@mui/icons-material';
 
-import { setSessionState, addSessionImages } from "../../store/FigureDrawingReducer";
+import { setSessionState, setImageDuration } from "../../store/FigureDrawingReducer";
 import SettingsSlider from './settings/SettingsSlider';
 import SettingsRadioButtonGroup from './settings/SettingsRadioButtonGroup';
 import { STATE_SESSION_RUNNING } from './constants';
-import { FIGURE_DRAWING_FILE_SENDER_CHANNEL, FIGURE_DRAWING_FILE_RECEIVER_CHANNEL } from '../../constants';
+import { FIGURE_DRAWING_FILE_SENDER_CHANNEL } from '../../constants';
 
-const DurationSlider = () => {
+const DurationSlider = props => {
     return (
         <SettingsSlider
             minValue={15}
             maxValue={120}
             step={15}
             defaultValue={30}
+            onChangeHandler={props.onChangeHandler}
             header="Duration per image (seconds)"
             displayIcon={<AccessTimeIcon />}
         />
@@ -82,7 +83,7 @@ const FigureDrawingSettings = props => {
         <div className="figure-drawing-settings-container">
             <p className="view-header">New Session Settings</p>
             <Paper className="figure-drawing-settings" elevation={3}>
-                <DurationSlider />
+                <DurationSlider onChangeHandler={props.setImageDuration} />
                 <MaxImagesSlider />
                 <OrderingRadioButtons />
                 <FileInputSelect />
@@ -97,7 +98,8 @@ const FigureDrawingSettings = props => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setSessionState: sessionState => dispatch(setSessionState(sessionState))
+        setSessionState: sessionState => dispatch(setSessionState(sessionState)),
+        setImageDuration: duration => dispatch(setImageDuration(duration)),
     }
 };
 

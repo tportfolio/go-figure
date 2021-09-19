@@ -7,6 +7,7 @@ import * as StateConstants from "./constants";
 
 const stateToComponentMap = {
     [StateConstants.STATE_SELECT_SETTINGS]: <FigureDrawingSettings />,
+    [StateConstants.STATE_SESSION_COMPLETE]: <FigureDrawingSettings />,
     [StateConstants.STATE_SESSION_RUNNING]: <ActiveDrawingSessionLayout />
 };
 

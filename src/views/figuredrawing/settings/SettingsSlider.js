@@ -3,11 +3,12 @@ import { Slider, Typography, Grid, Input } from '@mui/material';
 
 // base example from: https://mui.com/components/slider/#InputSlider.js
 const SettingsSlider = props => {
-    const { minValue, maxValue, step, defaultValue, header, displayIcon } = props;
+    const { minValue, maxValue, step, defaultValue, header, displayIcon, onChangeHandler } = props;
     const [value, setValue] = useState(defaultValue);
 
     const handleSliderChange = (event, newValue) => {
         setValue(newValue);
+        onChangeHandler(newValue);
     };
 
     const handleInputChange = (event) => {

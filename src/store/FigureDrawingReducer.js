@@ -3,10 +3,12 @@ import { imageHash } from "../utils/utils";
 
 const SET_SESSION_STATE = "set-session-state";
 const ADD_SESSION_IMAGES = "add-session-images";
+const SET_IMAGE_DURATION = "set-image-duration";
 
 const initialState = {
     sessionState: STATE_SELECT_SETTINGS,
     sessionImages: {}, // base64 data only (k: hash, v: base64 data)
+    imageDuration: 30
 };
 
 export const handleSettings = (state = initialState, action) => {
@@ -22,6 +24,11 @@ export const handleSettings = (state = initialState, action) => {
                 ...state,
                 sessionImages: {...state.sessionImages, [hash]: action.payload.value}
             };
+        case SET_IMAGE_DURATION:
+            return {
+                ...state,
+                imageDuration: action.payload.value
+            }
         default:
             return state;
     }
@@ -41,6 +48,15 @@ export const addSessionImage = images => {
         type: ADD_SESSION_IMAGES,
         payload: {
             value: images
+        }
+    }
+}
+
+export const setImageDuration = duration => {
+    return {
+        type: SET_IMAGE_DURATION,
+        payload: {
+            value: duration
         }
     }
 }

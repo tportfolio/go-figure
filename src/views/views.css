@@ -57,7 +57,7 @@
 }
 
 .current-image-container {
-    padding: 0.4% 0;
+    padding: 0.25% 0;
     height: 89%;
     max-width: 97.5%;
 }
@@ -72,7 +72,7 @@
 }
   
 .figure-drawing-buttons-container {
-    flex-grow: 1;
+    flex-grow: 2;
     display: flex;
     flex-direction: row;
 }
@@ -91,15 +91,20 @@
 .current-image-timer-container {
     flex-grow: 1;
     display: flex;
-    align-items:center;
+    align-items: center;
 }
 
-.current-image-timer {
+.current-image-timer, .current-image-time-remaining  {
     height: 20px;
     width: 500px;
     display: flex;
-    align-self: center;
     justify-content: center;
+}
+
+.current-image-time-remaining {
+    position: absolute;
+    z-index: 1;
+    transform: translateY(-25%);
 }
 
 .accordion-container .MuiAccordion-root {
