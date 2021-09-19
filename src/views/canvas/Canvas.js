@@ -5,7 +5,7 @@ import keys from "lodash/keys";
 import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from "classnames";
-import * as log from 'loglevel';
+import * as logger from 'loglevel';
 import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";
@@ -49,7 +49,7 @@ const Canvas = props => {
             reader.readAsDataURL(f);
             reader.onload = () => {
                 const base64Data = reader.result.split(',')[1];
-                log.debug(`Received data from drag 'n' drop: ${base64Data.slice(0, 100) + "..."}`);
+                logger.debug(`Received data from drag 'n' drop: ${base64Data.slice(0, 100) + "..."}`);
                 props.addPicture(base64Data);
             };
         }

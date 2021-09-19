@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Slider, Typography, Grid, Input } from '@mui/material';
 
+// base example from: https://mui.com/components/slider/#InputSlider.js
 const SettingsSlider = props => {
     const { minValue, maxValue, step, defaultValue, header, displayIcon } = props;
     const [value, setValue] = useState(defaultValue);
@@ -46,7 +47,6 @@ const SettingsSlider = props => {
                         onChange={handleInputChange}
                         onBlur={handleBlur}
                         inputProps={{
-                            step: step,
                             min: minValue,
                             max: maxValue,
                             type: 'number'

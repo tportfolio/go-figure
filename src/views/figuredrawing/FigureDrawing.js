@@ -12,11 +12,7 @@ const stateToComponentMap = {
 
 const FigureDrawing = props => {
     console.log(`Current state is: ${props.sessionState}`)
-    return (
-        <div className="figure-drawing-container">
-            {stateToComponentMap[props.sessionState]}
-        </div>
-    );
+    return stateToComponentMap[props.sessionState];
 }
 
 const mapStateToProps = state => {

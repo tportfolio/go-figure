@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
 
-.MuiAccordion-root {
-    width: 45%;
-}
-
-.view-container, .accordion-container, .stats-container, .figure-drawing-container {
-    width: 100%;
+/* push down height/weight + centering to individual views */ 
+.view-container, 
+.accordion-container, 
+.stats-container, 
+.figure-drawing-container, 
+.figure-drawing-settings-container {
+    width: 100%; 
     height: 100%;
     display: flex;
     flex-direction: column; 
@@ -23,7 +24,7 @@
     font-size: 48px !important;
 }
 
-.accordion-container, .stats-container {
+.accordion-container, .stats-container, .figure-drawing-settings-container {
     padding: 100px 0;
 }
 
@@ -31,22 +32,19 @@
     width: 90%;
 }
 
-.figure-drawing-container {
-    height: inherit;
-    width: inherit;
-}
-
-.current-image-container {
-    flex-grow: 1;
-}
-
 .figure-drawing-settings-container {
     width: 45%;
-    height: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.figure-drawing-settings {
     padding: 20px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 90%;
+    height: 60%;
 }
 
 .figure-drawing-setting {
@@ -57,11 +55,15 @@
     flex-direction: column;
     justify-content: center;
 }
+
+.current-image-container {
+    padding-top: 20px;
+    height: 90%;
+    max-width: 97.5%;
+}
   
 .figure-drawing-buttons-container {
-    height: 75px;
-    width: 375px;
-    margin: 10px 15px;
+    flex-grow: 1;
     display: flex;
     flex-direction: row;
 }
@@ -72,5 +74,10 @@
     margin: 0 4px;
     color: white;
     background: rgba(20, 35, 48, 0.445);
+    align-self: center;
+}
+
+.accordion-container .MuiAccordion-root {
+    width: 45%;
 }
   

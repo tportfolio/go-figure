@@ -3,7 +3,12 @@ const path = require("path");
 const fs = require("fs");
 const isDev = require('electron-is-dev');
 
-const { RECEIVER_CHANNEL, SENDER_CHANNEL } = require("./constants");
+const { 
+  RECEIVER_CHANNEL, 
+  SENDER_CHANNEL,
+  FIGURE_DRAWING_FILE_RECEIVER_CHANNEL,
+  FIGURE_DRAWING_FILE_SENDER_CHANNEL
+} = require("./constants");
 
 let mainWindow;
 function createWindow() {
@@ -38,14 +43,28 @@ app.on('window-all-closed', () => {
 });
 
 /**
- * Loader for image data from filesystem. 
+ * Generic method for sending/receiving file data on a channel pair.
+ * @param {*} receiverChannel - channel requesting data
+ * @returns array of base64 image representations
  */
-ipcMain.on(SENDER_CHANNEL, (event, args) => {
-  console.log(args);
+const retrieveImages = receiverChannel => {
+  return (event, args) => {
+    console.log(args);
 
-  args.forEach(f => {
-    fs.readFile(f, "base64", (error, data) => {
-      mainWindow.webContents.send(RECEIVER_CHANNEL, data);
-    });
-  })
-});
+    args.forEach(f => {
+      fs.readFile(f, "base64", (error, data) => {
+        mainWindow.webContents.send(receiverChannel, data);
+      });
+    })
+  }
+};
+
+/**
+ * Loader for image data from filesystem to reference canvas. 
+ */
+ipcMain.on(SENDER_CHANNEL, retrieveImages(RECEIVER_CHANNEL));
+
+/**
+ * Loader for image data from filesystem to figure drawing session.
+ */
+ipcMain.on(FIGURE_DRAWING_FILE_SENDER_CHANNEL, retrieveImages(FIGURE_DRAWING_FILE_RECEIVER_CHANNEL));
