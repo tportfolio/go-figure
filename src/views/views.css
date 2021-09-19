@@ -57,9 +57,18 @@
 }
 
 .current-image-container {
-    padding-top: 20px;
-    height: 90%;
+    padding: 0.4% 0;
+    height: 89%;
     max-width: 97.5%;
+}
+
+.current-image {
+    max-height: 100%;
+    max-width: 100%;
+    /* for vertical centering: https://stackoverflow.com/a/28424339 */
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
   
 .figure-drawing-buttons-container {
@@ -69,12 +78,28 @@
 }
 
 .MuiIconButton-root.figure-drawing-button {
-    width: 70px;
-    height: 70px;
+    max-width: 70px;
+    max-height: 70px;
+    width: auto;
+    height: auto;
     margin: 0 4px;
     color: white;
     background: rgba(20, 35, 48, 0.445);
     align-self: center;
+}
+
+.current-image-timer-container {
+    flex-grow: 1;
+    display: flex;
+    align-items:center;
+}
+
+.current-image-timer {
+    height: 20px;
+    width: 500px;
+    display: flex;
+    align-self: center;
+    justify-content: center;
 }
 
 .accordion-container .MuiAccordion-root {

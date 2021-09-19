@@ -3,7 +3,7 @@ import { Pause as PauseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-mater
 import IconButton from '@mui/material/IconButton';
 
 const PlayPauseButton = () => {
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true);
     const Component = isPlaying ? PauseIcon : PlayArrowIcon;
 
     return (

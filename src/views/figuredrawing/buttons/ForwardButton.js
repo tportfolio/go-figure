@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FastForward as FastForwardIcon } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 
-const ForwardButton = () => {
+const ForwardButton = props => {
     return (
-        <IconButton className="figure-drawing-button" key="Forward" size="large">
+        <IconButton onClick={props.onClickHandler} className="figure-drawing-button" key="Forward" size="large">
             <FastForwardIcon />
         </IconButton>
     );

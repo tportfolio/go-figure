@@ -15,6 +15,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
+    minWidth: 1920,
+    minHeight: 1080,
     icon: path.join(__dirname, "favicon.ico"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js") // use a preload script
