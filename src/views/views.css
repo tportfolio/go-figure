@@ -107,6 +107,12 @@
     transform: translateY(-25%);
 }
 
+.fade-out {
+    opacity: 0;
+    -webkit-transition: opacity 5000ms linear;
+    transition: opacity 5000ms linear;
+}
+
 .accordion-container .MuiAccordion-root {
     width: 45%;
 }

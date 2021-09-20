@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { base64StringToBlob } from 'blob-util';
 import { Typography, LinearProgress } from '@mui/material';
+import classNames from 'classnames';
 
 import PlayPauseButton from './buttons/PlayPauseButton';
 import RestartButton from './buttons/RestartButton';
@@ -12,6 +13,7 @@ import { setSessionState } from "../../store/FigureDrawingReducer";
 import { STATE_SESSION_COMPLETE } from './constants';
 
 const MAX_PROGRESS_COUNTER_VALUE = 100;
+const FADE_DURATION_SECS = 5;
 
 const ActiveDrawingSessionLayout = props => {
     const [imageIndex, setImageIndex] = useState(0);
@@ -20,10 +22,36 @@ const ActiveDrawingSessionLayout = props => {
     const increment = MAX_PROGRESS_COUNTER_VALUE / props.imageDuration;
 
     const keys = Object.keys(props.images);
-    let blob = null;
-    if (imageIndex !== keys.length) {
-        blob = URL.createObjectURL(base64StringToBlob(props.images[keys[imageIndex]], "image/png"));
-    } else {
+    const blob = URL.createObjectURL(base64StringToBlob(props.images[keys[imageIndex]], "image/png"));
+
+    const goToNext = () => {
+        const nextIndex = imageIndex + 1;
+
+        if (nextIndex === keys.length) {
+            props.setSessionState(STATE_SESSION_COMPLETE);
+        } else {
+            setImageIndex(nextIndex);
+            setSecsRemaining(props.imageDuration);
+        }
+    };
+
+    const goToPrevious = () => {
+        setImageIndex(Math.max(imageIndex - 1, 0));
+        setSecsRemaining(props.imageDuration);
+    };
+
+    const toggleActiveState = () => {
+        if (!isActive && secsRemaining <= FADE_DURATION_SECS) {
+            setSecsRemaining(FADE_DURATION_SECS);
+        }
+        setIsActive(!isActive);
+    }
+
+    const refreshTimer = () => {
+        setSecsRemaining(props.imageDuration);
+    }
+
+    const endSession = () => {
         props.setSessionState(STATE_SESSION_COMPLETE);
     }
 
@@ -38,28 +66,13 @@ const ActiveDrawingSessionLayout = props => {
     });
 
     if (!secsRemaining) {
-        setSecsRemaining(props.imageDuration);
-        setImageIndex(imageIndex + 1);
-    }
-
-    const goToNext = () => {
-        setImageIndex(Math.min(imageIndex + 1, keys.length - 1));
-        setSecsRemaining(props.imageDuration);
-    };
-
-    const goToPrevious = () => {
-        setImageIndex(Math.max(imageIndex - 1, 0));
-        setSecsRemaining(props.imageDuration);
-    };
-
-    const toggleActiveState = () => {
-        setIsActive(!isActive);
+        goToNext();
     }
 
     return (
         <div className="figure-drawing-container">
             <div className="current-image-container">
-                <img className="current-image" src={blob} />
+                <img className={classNames("current-image", {"fade-out": secsRemaining <= FADE_DURATION_SECS && isActive})} src={blob} />
             </div>
             <div className="current-image-timer-container">
                 <Typography className="current-image-time-remaining">
@@ -68,11 +81,11 @@ const ActiveDrawingSessionLayout = props => {
                 <LinearProgress className="current-image-timer" variant="determinate" value={secsRemaining * increment} />
             </div>
             <div className="figure-drawing-buttons-container">
-                <RestartButton />
+                <RestartButton onClickHandler={refreshTimer}/>
                 <RewindButton onClickHandler={goToPrevious} />
                 <PlayPauseButton onClickHandler={toggleActiveState} isActive={isActive} />
                 <ForwardButton onClickHandler={goToNext} />
-                <StopButton />
+                <StopButton onClickHandler={endSession} />
             </div>
         </div>
     );

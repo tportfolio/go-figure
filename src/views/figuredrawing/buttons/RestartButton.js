@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 
-const RestartButton = () => {
+const RestartButton = props => {
     return (
-        <IconButton className="figure-drawing-button" key="Restart" size="large">
+        <IconButton onClick={props.onClickHandler} className="figure-drawing-button" key="Restart" size="large">
             <RefreshIcon />
         </IconButton>
     );

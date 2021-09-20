@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Paper, Button } from '@mui/material';
+import { Paper, Button, Typography } from '@mui/material';
 import {
     AccessTime as AccessTimeIcon,
     Image as ImageIcon
@@ -64,11 +64,12 @@ const FileInputSelect = () => {
                 variant="contained"
                 component="label"
             >
-                Add files to session...
+                <Typography style={{ color: "white" }}>
+                    Add files to session...
+                </Typography>
                 <input
                     accept="image/*"
                     style={{ display: 'none' }}
-                    id="raised-button-file"
                     multiple
                     type="file"
                     onChange={onChangeHandler}
@@ -88,9 +89,16 @@ const FigureDrawingSettings = props => {
                 <OrderingRadioButtons />
                 <FileInputSelect />
             </Paper>
-            <Button onClick={() => props.setSessionState(STATE_SESSION_RUNNING)}>
-                <ImageIcon fontSize="small" />
-                Start session
+            <Button
+                variant="contained"
+                component="label"
+                onClick={() => props.setSessionState(STATE_SESSION_RUNNING)}
+                style={{ marginTop: "20px" }}
+            >
+                <ImageIcon fontSize="small" style={{ paddingRight: "10px" }} />
+                <Typography style={{ color: "white" }}>
+                    Start session
+                </Typography>
             </Button>
         </div>
     );

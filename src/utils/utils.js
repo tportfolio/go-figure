@@ -15,7 +15,9 @@ export const mapEntryToAccordion = ({ summary, details }) => {
     return (
         <Accordion key={summary}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{summary}</Typography>
+                <Typography>
+                    {summary}
+                </Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Typography>

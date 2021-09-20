@@ -11,7 +11,14 @@ const SettingsRadioButtonGroup = props => {
                     {header}
                 </Typography>
                 <RadioGroup row>
-                    {options.map(v => <FormControlLabel key={v} value={v} control={<Radio />} label={v} />)}
+                    {options.map(v =>
+                        <FormControlLabel
+                            key={v}
+                            value={v}
+                            control={<Radio />}
+                            label={<Typography>{v}</Typography>}
+                        />
+                    )}
                 </RadioGroup>
             </FormControl>
         </div>
