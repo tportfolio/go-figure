@@ -1,3 +1,5 @@
+import { base64StringToBlob } from 'blob-util';
+
 import { STATE_SELECT_SETTINGS } from "../../src/views/figuredrawing/constants";
 import { imageHash } from "../utils/utils";
 
@@ -20,9 +22,10 @@ export const handleSettings = (state = initialState, action) => {
             };
         case ADD_SESSION_IMAGES:
             const hash = imageHash(action.payload.value);
+            const blob = URL.createObjectURL(base64StringToBlob(action.payload.value, "image/png"));
             return {
                 ...state,
-                sessionImages: {...state.sessionImages, [hash]: action.payload.value}
+                sessionImages: {...state.sessionImages, [hash]: blob}
             };
         case SET_IMAGE_DURATION:
             return {

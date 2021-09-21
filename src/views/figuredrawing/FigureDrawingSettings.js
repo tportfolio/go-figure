@@ -18,7 +18,7 @@ const DurationSlider = props => {
             minValue={15}
             maxValue={120}
             step={15}
-            defaultValue={30}
+            defaultValue={props.duration}
             onChangeHandler={props.onChangeHandler}
             header="Duration per image (seconds)"
             displayIcon={<AccessTimeIcon />}
@@ -84,7 +84,7 @@ const FigureDrawingSettings = props => {
         <div className="figure-drawing-settings-container">
             <p className="view-header">New Session Settings</p>
             <Paper className="figure-drawing-settings" elevation={3}>
-                <DurationSlider onChangeHandler={props.setImageDuration} />
+                <DurationSlider duration={props.imageDuration} onChangeHandler={props.setImageDuration} />
                 <MaxImagesSlider />
                 <OrderingRadioButtons />
                 <FileInputSelect />
@@ -104,6 +104,12 @@ const FigureDrawingSettings = props => {
     );
 }
 
+const mapStateToProps = state => {
+    return {
+        imageDuration: state.figuredrawing.imageDuration
+    }
+};
+
 const mapDispatchToProps = dispatch => {
     return {
         setSessionState: sessionState => dispatch(setSessionState(sessionState)),
@@ -111,4 +117,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(null, mapDispatchToProps)(FigureDrawingSettings);
+export default connect(mapStateToProps, mapDispatchToProps)(FigureDrawingSettings);

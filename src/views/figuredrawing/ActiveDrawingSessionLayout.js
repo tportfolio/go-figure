@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { base64StringToBlob } from 'blob-util';
+
 import { Typography, LinearProgress } from '@mui/material';
 import classNames from 'classnames';
 
@@ -16,45 +16,45 @@ const MAX_PROGRESS_COUNTER_VALUE = 100;
 const FADE_DURATION_SECS = 5;
 
 const ActiveDrawingSessionLayout = props => {
+    const {setSessionState, imageDuration, images} = props;
     const [imageIndex, setImageIndex] = useState(0);
-    const [secsRemaining, setSecsRemaining] = useState(props.imageDuration);
+    const [secsRemaining, setSecsRemaining] = useState(imageDuration);
     const [isActive, setIsActive] = useState(true);
-    const increment = MAX_PROGRESS_COUNTER_VALUE / props.imageDuration;
+    const increment = MAX_PROGRESS_COUNTER_VALUE / imageDuration;
+    
+    const keys = Object.keys(images);
+    const hash = keys[imageIndex];
+    const blob = images[hash];
 
-    const keys = Object.keys(props.images);
-    const blob = URL.createObjectURL(base64StringToBlob(props.images[keys[imageIndex]], "image/png"));
-
-    const goToNext = () => {
-        const nextIndex = imageIndex + 1;
-
-        if (nextIndex === keys.length) {
-            props.setSessionState(STATE_SESSION_COMPLETE);
-        } else {
-            setImageIndex(nextIndex);
-            setSecsRemaining(props.imageDuration);
-        }
-    };
-
-    const goToPrevious = () => {
-        setImageIndex(Math.max(imageIndex - 1, 0));
-        setSecsRemaining(props.imageDuration);
-    };
-
-    const toggleActiveState = () => {
-        if (!isActive && secsRemaining <= FADE_DURATION_SECS) {
-            setSecsRemaining(FADE_DURATION_SECS);
-        }
-        setIsActive(!isActive);
-    }
-
+    // set secsRemaining back to max value
     const refreshTimer = () => {
-        setSecsRemaining(props.imageDuration);
-    }
+        setSecsRemaining(imageDuration);
+    };
 
+    // increment image index
+    const goToNext = () => {
+        setImageIndex(prevIndex => prevIndex + 1);
+        refreshTimer();
+    };
+
+    // decrement image index
+    const goToPrevious = () => {
+        setImageIndex(prevIndex => Math.max(prevIndex - 1, 0));
+        refreshTimer();
+    };
+
+    // toggle play/pause state; reset fade effect if going from active to paused
+    const toggleActiveState = () => {
+        setIsActive(prevActiveState => !prevActiveState);
+        setSecsRemaining(prevSecsRemaining => Math.max(FADE_DURATION_SECS, prevSecsRemaining));
+    };
+
+    // force session to end early by skipping to (max image index + 1)
     const endSession = () => {
-        props.setSessionState(STATE_SESSION_COMPLETE);
-    }
+        setImageIndex(keys.length);
+    };
 
+    // decrement secsRemaining every second while session is active
     useEffect(() => {
         const timer = setTimeout(() => {
             if (isActive) {
@@ -65,6 +65,15 @@ const ActiveDrawingSessionLayout = props => {
         return () => clearTimeout(timer);
     });
 
+    // end session if all images exhausted
+    // move Redux update to useEffect to avoid bad state change
+    useEffect(() => {
+        if (imageIndex === keys.length) {
+            setSessionState(STATE_SESSION_COMPLETE);
+        };
+    }, [imageIndex, setSessionState, keys]);
+
+    
     if (!secsRemaining) {
         goToNext();
     }
@@ -72,7 +81,8 @@ const ActiveDrawingSessionLayout = props => {
     return (
         <div className="figure-drawing-container">
             <div className="current-image-container">
-                <img className={classNames("current-image", {"fade-out": secsRemaining <= FADE_DURATION_SECS && isActive})} src={blob} />
+                {/* note: key property is needed to force image to refresh during transition; see https://stackoverflow.com/a/62934425 */}
+                <img className={classNames("current-image", {"fade-out": secsRemaining <= 5 && isActive})} src={blob} key={hash} alt=""/>
             </div>
             <div className="current-image-timer-container">
                 <Typography className="current-image-time-remaining">
