@@ -81,7 +81,7 @@ const Canvas = props => {
         <div id="canvas-wrapper-div">
             <CanvasToolbar />
             <div>
-                {keys(pictures).map(key => <ModifiableImage key={key} data={pictures[key]} hash={key} />)}
+                {Object.keys(pictures).map(k => <ModifiableImage key={k} metadata={pictures[k]} />)}
             </div>
             <div id="canvas-div" ref={canvasDivRef}>
                 <div {...getRootProps()}>

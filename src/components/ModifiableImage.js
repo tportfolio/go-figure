@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { base64StringToBlob } from 'blob-util';
 import classNames from "classnames";
 
 import { updatePictureState, togglePictureSelection } from "../store/ImageCacheReducer";
@@ -11,15 +10,14 @@ class ModifiableImage extends React.Component {
         super(props);
 
         // parent data
-        const { data, hash } = props;
+        const { blob, hash } = props.metadata;
 
         // initial image loading getting/setting
         this.ref = React.createRef();
         this.hash = hash;
-        this.blob = URL.createObjectURL(base64StringToBlob(data, "image/png"));
 
         // prop setup
-        this.imgProps = { ref: this.ref, src: this.blob, draggable: false, onLoad: e => this.onLoad(e.target) };
+        this.imgProps = { ref: this.ref, src: blob, draggable: false, onLoad: e => this.onLoad(e.target) };
 
         this.state = {
             isDragActive: false,
@@ -155,10 +153,10 @@ class ModifiableImage extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const cachedProperties = state.imagecache.pictureProperties[ownProps.hash];
+    const cachedProperties = state.imagecache.pictureProperties[ownProps.metadata.hash];
     return {
         cachedProperties: cachedProperties ? cachedProperties : {},
-        isSelected: state.imagecache.selectedPictures.includes(ownProps.hash)
+        isSelected: state.imagecache.selectedPictures.includes(ownProps.metadata.hash)
     }
 };
 

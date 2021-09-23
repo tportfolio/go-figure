@@ -17,7 +17,7 @@ export const SortOrder = Object.freeze({
 
 const initialState = {
     sessionState: STATE_SELECT_SETTINGS,
-    sessionImages: {}, // base64 data only (k: hash, v: base64 data)
+    sessionImages: {},
     imageDuration: 30,
     maxImages: 20,
     sortOrder: SortOrder.RANDOM

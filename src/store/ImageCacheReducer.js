@@ -15,7 +15,7 @@ const DELETE_SELECTED = "DELETE_SELECTED";
 const TOGGLE_GLOBAL_PICTURE_STATE = "TOGGLE_GLOBAL_PICTURE_STATE";
 
 const initialState = {
-    pictures: {},               // base64 data only (k: hash, v: base64 data)
+    pictures: {},               // k: hash, v: metadata (filename, size, blob, etc.)
     pictureProperties: {},      // properties only (k: hash, v: {...})
     selectedPictures: []
 };
@@ -71,10 +71,7 @@ const addNewModifiableImage = (state, value) => {
     const hash = imageHash(value.data);
     const blob = URL.createObjectURL(base64StringToBlob(value.data, "image/png"));
     const {filename, filesize} = value;
-    return {
-        ...state,
-        pictures: { ...state.pictures, [hash]: {hash, blob, filename, filesize} }
-    };
+    return { ...state.pictures, [hash]: {hash, blob, filename, filesize} };
 };
 
 const updateImageProperties = (state, hash, properties) => {
