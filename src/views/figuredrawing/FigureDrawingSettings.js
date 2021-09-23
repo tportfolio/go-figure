@@ -6,7 +6,7 @@ import {
     Image as ImageIcon
 } from '@mui/icons-material';
 
-import { setSessionState, setImageDuration } from "../../store/FigureDrawingReducer";
+import { setSessionState, setImageDuration, setMaxImages, SortOrder, setSortOrder } from "../../store/FigureDrawingReducer";
 import SettingsSlider from './settings/SettingsSlider';
 import SettingsRadioButtonGroup from './settings/SettingsRadioButtonGroup';
 import { STATE_SESSION_RUNNING } from './constants';
@@ -26,24 +26,27 @@ const DurationSlider = props => {
     );
 };
 
-const MaxImagesSlider = () => {
+const MaxImagesSlider = props => {
     return (
         <SettingsSlider
             minValue={5}
             maxValue={100}
             step={5}
-            defaultValue={20}
+            defaultValue={props.maxImages}
+            onChangeHandler={props.onChangeHandler}
             header="Maximum images for session"
             displayIcon={<ImageIcon />}
         />
     );
 }
 
-const OrderingRadioButtons = () => {
+const OrderingRadioButtons = props => {
     return (
         <SettingsRadioButtonGroup
             header={"Image ordering"}
-            options={["Random", "Alphabetical", "File size"]}
+            options={SortOrder}
+            selected={props.sortOrder}
+            onChangeHandler={props.onChangeHandler}
         />
     );
 }
@@ -85,8 +88,8 @@ const FigureDrawingSettings = props => {
             <p className="view-header">New Session Settings</p>
             <Paper className="figure-drawing-settings" elevation={3}>
                 <DurationSlider duration={props.imageDuration} onChangeHandler={props.setImageDuration} />
-                <MaxImagesSlider />
-                <OrderingRadioButtons />
+                <MaxImagesSlider maxImages={props.maxImages} onChangeHandler={props.setMaxImages} />
+                <OrderingRadioButtons sortOrder={props.sortOrder} onChangeHandler={props.setSortOrder}/>
                 <FileInputSelect />
             </Paper>
             <Button
@@ -106,7 +109,9 @@ const FigureDrawingSettings = props => {
 
 const mapStateToProps = state => {
     return {
-        imageDuration: state.figuredrawing.imageDuration
+        imageDuration: state.figuredrawing.imageDuration,
+        maxImages: state.figuredrawing.maxImages,
+        sortOrder: state.figuredrawing.sortOrder
     }
 };
 
@@ -114,6 +119,8 @@ const mapDispatchToProps = dispatch => {
     return {
         setSessionState: sessionState => dispatch(setSessionState(sessionState)),
         setImageDuration: duration => dispatch(setImageDuration(duration)),
+        setMaxImages: maxImages => dispatch(setMaxImages(maxImages)),
+        setSortOrder: sortOrder => dispatch(setSortOrder(sortOrder))
     }
 };
 

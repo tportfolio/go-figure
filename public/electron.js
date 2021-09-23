@@ -55,7 +55,12 @@ const retrieveImages = receiverChannel => {
 
     args.forEach(f => {
       fs.readFile(f, "base64", (error, data) => {
-        mainWindow.webContents.send(receiverChannel, data);
+        const metadata = {
+            data,
+            filename: path.basename(f),
+            filesize: fs.statSync(f).size
+        };
+        mainWindow.webContents.send(receiverChannel, metadata);
       });
     })
   }

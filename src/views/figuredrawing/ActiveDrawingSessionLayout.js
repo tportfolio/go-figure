@@ -1,30 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
-
 import { Typography, LinearProgress } from '@mui/material';
 import classNames from 'classnames';
+import { shuffle } from 'lodash';
 
 import PlayPauseButton from './buttons/PlayPauseButton';
 import RestartButton from './buttons/RestartButton';
 import StopButton from './buttons/StopButton';
 import ForwardButton from './buttons/ForwardButton';
 import RewindButton from './buttons/RewindButton';
-import { setSessionState } from "../../store/FigureDrawingReducer";
+import { setSessionState, SortOrder } from "../../store/FigureDrawingReducer";
 import { STATE_SESSION_COMPLETE } from './constants';
 
 const MAX_PROGRESS_COUNTER_VALUE = 100;
 const FADE_DURATION_SECS = 5;
 
 const ActiveDrawingSessionLayout = props => {
-    const {setSessionState, imageDuration, images} = props;
+    const { setSessionState, imageDuration, images, maxImages, sortOrder } = props;
     const [imageIndex, setImageIndex] = useState(0);
     const [secsRemaining, setSecsRemaining] = useState(imageDuration);
     const [isActive, setIsActive] = useState(true);
     const increment = MAX_PROGRESS_COUNTER_VALUE / imageDuration;
-    
-    const keys = Object.keys(images);
-    const hash = keys[imageIndex];
-    const blob = images[hash];
+
+    const sortedImages = useMemo(() => {
+        const imagesToSort = Object.values(images);
+        switch (sortOrder) {
+            case SortOrder.RANDOM:
+                shuffle(imagesToSort);
+                break;
+            case SortOrder.ALPHABETICAL:
+                imagesToSort.sort((a, b) => a.filename.localeCompare(b.filename));
+                break;
+            case SortOrder.FILE_SIZE:
+                imagesToSort.sort((a, b) => a.filesize - b.filesize);
+                break;
+            default: break;
+        }
+
+        return imagesToSort.slice(0, maxImages);
+    }, [images, maxImages, sortOrder]);
 
     // set secsRemaining back to max value
     const refreshTimer = () => {
@@ -51,7 +65,7 @@ const ActiveDrawingSessionLayout = props => {
 
     // force session to end early by skipping to (max image index + 1)
     const endSession = () => {
-        setImageIndex(keys.length);
+        setImageIndex(sortedImages.length);
     };
 
     // decrement secsRemaining every second while session is active
@@ -68,12 +82,12 @@ const ActiveDrawingSessionLayout = props => {
     // end session if all images exhausted
     // move Redux update to useEffect to avoid bad state change
     useEffect(() => {
-        if (imageIndex === keys.length) {
+        if (imageIndex === sortedImages.length) {
             setSessionState(STATE_SESSION_COMPLETE);
         };
-    }, [imageIndex, setSessionState, keys]);
+    }, [imageIndex, setSessionState, sortedImages]);
 
-    
+
     if (!secsRemaining) {
         goToNext();
     }
@@ -82,7 +96,11 @@ const ActiveDrawingSessionLayout = props => {
         <div className="figure-drawing-container">
             <div className="current-image-container">
                 {/* note: key property is needed to force image to refresh during transition; see https://stackoverflow.com/a/62934425 */}
-                <img className={classNames("current-image", {"fade-out": secsRemaining <= 5 && isActive})} src={blob} key={hash} alt=""/>
+                <img className={classNames("current-image", { "fade-out": secsRemaining <= 5 && isActive })}
+                    src={sortedImages[imageIndex]?.blob}
+                    key={imageIndex}
+                    alt=""
+                />
             </div>
             <div className="current-image-timer-container">
                 <Typography className="current-image-time-remaining">
@@ -91,7 +109,7 @@ const ActiveDrawingSessionLayout = props => {
                 <LinearProgress className="current-image-timer" variant="determinate" value={secsRemaining * increment} />
             </div>
             <div className="figure-drawing-buttons-container">
-                <RestartButton onClickHandler={refreshTimer}/>
+                <RestartButton onClickHandler={refreshTimer} />
                 <RewindButton onClickHandler={goToPrevious} />
                 <PlayPauseButton onClickHandler={toggleActiveState} isActive={isActive} />
                 <ForwardButton onClickHandler={goToNext} />
@@ -104,7 +122,9 @@ const ActiveDrawingSessionLayout = props => {
 const mapStateToProps = state => {
     return {
         images: state.figuredrawing.sessionImages,
-        imageDuration: state.figuredrawing.imageDuration
+        imageDuration: state.figuredrawing.imageDuration,
+        maxImages: state.figuredrawing.maxImages,
+        sortOrder: state.figuredrawing.sortOrder
     }
 };
 

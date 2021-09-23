@@ -4,13 +4,23 @@ import { STATE_SELECT_SETTINGS } from "../../src/views/figuredrawing/constants";
 import { imageHash } from "../utils/utils";
 
 const SET_SESSION_STATE = "set-session-state";
-const ADD_SESSION_IMAGES = "add-session-images";
+const ADD_SESSION_IMAGE = "add-session-image";
 const SET_IMAGE_DURATION = "set-image-duration";
+const SET_MAX_IMAGES = "set-max-images";
+const SET_SORT_ORDER = "set-sort-order";
+
+export const SortOrder = Object.freeze({
+    RANDOM: {name: "Random"},
+    ALPHABETICAL: {name: "Alphabetical"},
+    FILE_SIZE: {name: "File size"}
+});
 
 const initialState = {
     sessionState: STATE_SELECT_SETTINGS,
     sessionImages: {}, // base64 data only (k: hash, v: base64 data)
-    imageDuration: 30
+    imageDuration: 30,
+    maxImages: 20,
+    sortOrder: SortOrder.RANDOM
 };
 
 export const handleSettings = (state = initialState, action) => {
@@ -20,18 +30,29 @@ export const handleSettings = (state = initialState, action) => {
                 ...state,
                 sessionState: action.payload.value
             };
-        case ADD_SESSION_IMAGES:
-            const hash = imageHash(action.payload.value);
-            const blob = URL.createObjectURL(base64StringToBlob(action.payload.value, "image/png"));
+        case ADD_SESSION_IMAGE:
+            const hash = imageHash(action.payload.value.data);
+            const blob = URL.createObjectURL(base64StringToBlob(action.payload.value.data, "image/png"));
+            const {filename, filesize} = action.payload.value;
             return {
                 ...state,
-                sessionImages: {...state.sessionImages, [hash]: blob}
+                sessionImages: { ...state.sessionImages, [hash]: {hash, blob, filename, filesize} }
             };
         case SET_IMAGE_DURATION:
             return {
                 ...state,
                 imageDuration: action.payload.value
-            }
+            };
+        case SET_MAX_IMAGES:
+            return {
+                ...state,
+                maxImages: action.payload.value
+            };
+        case SET_SORT_ORDER:
+            return {
+                ...state,
+                sortOrder: action.payload.value
+            };
         default:
             return state;
     }
@@ -46,11 +67,11 @@ export const setSessionState = sessionState => {
     }
 }
 
-export const addSessionImage = images => {
+export const addSessionImage = image => {
     return {
-        type: ADD_SESSION_IMAGES,
+        type: ADD_SESSION_IMAGE,
         payload: {
-            value: images
+            value: image
         }
     }
 }
@@ -60,6 +81,24 @@ export const setImageDuration = duration => {
         type: SET_IMAGE_DURATION,
         payload: {
             value: duration
+        }
+    }
+}
+
+export const setMaxImages = maxImages => {
+    return {
+        type: SET_MAX_IMAGES,
+        payload: {
+            value: maxImages
+        }
+    }
+}
+
+export const setSortOrder = sortOrder => {
+    return {
+        type: SET_SORT_ORDER,
+        payload: {
+            value: sortOrder
         }
     }
 }

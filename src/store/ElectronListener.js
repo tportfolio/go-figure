@@ -18,7 +18,7 @@ const ElectronListener = props => {
     });   
 
     window.api.receive(FIGURE_DRAWING_FILE_RECEIVER_CHANNEL, (data) => {
-        logger.trace(`Received ${data} for figure drawing session`);
+        logger.info(`Received ${data.filename} of size ${data.filesize} for figure drawing session`);
         props.addSessionImage(data);
     });   
 

@@ -3,7 +3,7 @@ import { FormControl, FormControlLabel, RadioGroup, Radio, Typography } from '@m
 
 // base template: https://mui.com/components/radio-buttons/#RowRadioButtonsGroup.js
 const SettingsRadioButtonGroup = props => {
-    const { header, options } = props;
+    const { header, options, selected, onChangeHandler } = props;
     return (
         <div className="figure-drawing-setting">
             <FormControl component="fieldset">
@@ -11,12 +11,14 @@ const SettingsRadioButtonGroup = props => {
                     {header}
                 </Typography>
                 <RadioGroup row>
-                    {options.map(v =>
+                    {Object.keys(options).map(k =>
                         <FormControlLabel
-                            key={v}
-                            value={v}
+                            key={options[k].name}
+                            value={options[k].name}
                             control={<Radio />}
-                            label={<Typography>{v}</Typography>}
+                            label={<Typography>{options[k].name}</Typography>}
+                            checked={selected.name === options[k].name}
+                            onClick={() => onChangeHandler(options[k])}
                         />
                     )}
                 </RadioGroup>

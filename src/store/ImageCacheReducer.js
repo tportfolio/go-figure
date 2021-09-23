@@ -2,6 +2,8 @@ import pull from "lodash/pull";
 import { imageHash } from "../utils/utils";
 import keys from "lodash/keys";
 import omit from "lodash/omit";
+import { base64StringToBlob } from 'blob-util';
+
 
 const ADD_PICTURE_ACTION = "ADD_PICTURE";
 const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
@@ -65,9 +67,14 @@ export const managePictures = (state = initialState, action) => {
     }
 }
 
-const addNewModifiableImage = (state, data) => {
-    const hash = imageHash(data);
-    return { ...state.pictures, [hash]: data };
+const addNewModifiableImage = (state, value) => {
+    const hash = imageHash(value.data);
+    const blob = URL.createObjectURL(base64StringToBlob(value.data, "image/png"));
+    const {filename, filesize} = value;
+    return {
+        ...state,
+        pictures: { ...state.pictures, [hash]: {hash, blob, filename, filesize} }
+    };
 };
 
 const updateImageProperties = (state, hash, properties) => {
