@@ -1,6 +1,6 @@
 import { base64StringToBlob } from 'blob-util';
 
-import { STATE_SELECT_SETTINGS } from "../../src/views/figuredrawing/constants";
+import { SessionState } from "../views/figuredrawing/figureDrawingConstants";
 import { imageHash } from "../utils/utils";
 
 const SET_SESSION_STATE = "set-session-state";
@@ -16,7 +16,7 @@ export const SortOrder = Object.freeze({
 });
 
 const initialState = {
-    sessionState: STATE_SELECT_SETTINGS,
+    sessionState: SessionState.SELECT_SETTINGS,
     sessionImages: {},
     imageDuration: 30,
     maxImages: 20,
@@ -26,9 +26,11 @@ const initialState = {
 export const handleSettings = (state = initialState, action) => {
     switch (action.type) {
         case SET_SESSION_STATE:
+            const imagesProp = action.payload.value === SessionState.SELECT_SETTINGS ? {sessionImages: {}} : {};
             return {
                 ...state,
-                sessionState: action.payload.value
+                ...imagesProp,
+                sessionState: action.payload.value,
             };
         case ADD_SESSION_IMAGE:
             const hash = imageHash(action.payload.value.data);

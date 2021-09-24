@@ -11,7 +11,7 @@ import App from "../App";
 import Sidebar from "../sidebar/Sidebar";
 import "./views.css";
 
-const styling = cached => cached ? { style: { display: "none" }} : { className: "view-container" };
+const styling = cached => cached ? { style: { display: "none" }} : { className: "cached-view-container" };
 
 const routes = [
     {

@@ -10,7 +10,7 @@ import StopButton from './buttons/StopButton';
 import ForwardButton from './buttons/ForwardButton';
 import RewindButton from './buttons/RewindButton';
 import { setSessionState, SortOrder } from "../../store/FigureDrawingReducer";
-import { STATE_SESSION_COMPLETE } from './constants';
+import { SessionState } from './figureDrawingConstants';
 
 const MAX_PROGRESS_COUNTER_VALUE = 100;
 const FADE_DURATION_SECS = 5;
@@ -23,10 +23,10 @@ const ActiveDrawingSessionLayout = props => {
     const increment = MAX_PROGRESS_COUNTER_VALUE / imageDuration;
 
     const sortedImages = useMemo(() => {
-        const imagesToSort = Object.values(images);
+        let imagesToSort = Object.values(images);
         switch (sortOrder) {
             case SortOrder.RANDOM:
-                shuffle(imagesToSort);
+                imagesToSort = shuffle(imagesToSort);
                 break;
             case SortOrder.ALPHABETICAL:
                 imagesToSort.sort((a, b) => a.filename.localeCompare(b.filename));
@@ -83,7 +83,7 @@ const ActiveDrawingSessionLayout = props => {
     // move Redux update to useEffect to avoid bad state change
     useEffect(() => {
         if (imageIndex === sortedImages.length) {
-            setSessionState(STATE_SESSION_COMPLETE);
+            setSessionState(SessionState.COMPLETE);
         };
     }, [imageIndex, setSessionState, sortedImages]);
 
@@ -93,10 +93,10 @@ const ActiveDrawingSessionLayout = props => {
     }
 
     return (
-        <div className="figure-drawing-container">
+        <>
             <div className="current-image-container">
                 {/* note: key property is needed to force image to refresh during transition; see https://stackoverflow.com/a/62934425 */}
-                <img className={classNames("current-image", { "fade-out": secsRemaining <= 5 && isActive })}
+                <img className={classNames("current-image", "vertically-centered", { "fade-out": secsRemaining <= 5 && isActive })}
                     src={sortedImages[imageIndex]?.blob}
                     key={imageIndex}
                     alt=""
@@ -115,7 +115,7 @@ const ActiveDrawingSessionLayout = props => {
                 <ForwardButton onClickHandler={goToNext} />
                 <StopButton onClickHandler={endSession} />
             </div>
-        </div>
+        </>
     );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 /**
@@ -71,7 +72,7 @@ const StatsOverview = () => {
         }
     ];
     return (
-        <div className="stats-container">
+        <div className={classNames("view-container", "stats-container")}>
             <p className="view-header">App Statistics</p>
             {dataProps.map(({field, color}) => createAreaChart(data, "date", field, color))}
         </div>

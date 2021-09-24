@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+
 import { mapEntryToAccordion } from '../utils/utils';
 
 const settingEntries = [
@@ -14,7 +16,7 @@ const settingEntries = [
 
 const Settings = () => {
     return (
-        <div className="accordion-container">
+        <div className={classNames("view-container", "accordion-container")}>
             <p className="view-header">Settings</p>
             {settingEntries.map(entry => mapEntryToAccordion(entry))}
         </div>

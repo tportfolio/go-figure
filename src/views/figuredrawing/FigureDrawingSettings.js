@@ -5,11 +5,12 @@ import {
     AccessTime as AccessTimeIcon,
     Image as ImageIcon
 } from '@mui/icons-material';
+import classNames from 'classnames';
 
 import { setSessionState, setImageDuration, setMaxImages, SortOrder, setSortOrder } from "../../store/FigureDrawingReducer";
 import SettingsSlider from './settings/SettingsSlider';
 import SettingsRadioButtonGroup from './settings/SettingsRadioButtonGroup';
-import { STATE_SESSION_RUNNING } from './constants';
+import { SessionState } from './figureDrawingConstants';
 import { FIGURE_DRAWING_FILE_SENDER_CHANNEL } from '../../constants';
 
 const DurationSlider = props => {
@@ -84,7 +85,7 @@ const FileInputSelect = () => {
 
 const FigureDrawingSettings = props => {
     return (
-        <div className="figure-drawing-settings-container">
+        <div className={classNames("view-container", "figure-drawing-settings-container")}>
             <p className="view-header">New Session Settings</p>
             <Paper className="figure-drawing-settings" elevation={3}>
                 <DurationSlider duration={props.imageDuration} onChangeHandler={props.setImageDuration} />
@@ -95,7 +96,7 @@ const FigureDrawingSettings = props => {
             <Button
                 variant="contained"
                 component="label"
-                onClick={() => props.setSessionState(STATE_SESSION_RUNNING)}
+                onClick={() => props.setSessionState(SessionState.RUNNING)}
                 style={{ marginTop: "20px" }}
             >
                 <ImageIcon fontSize="small" style={{ paddingRight: "10px" }} />
