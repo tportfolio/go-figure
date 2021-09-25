@@ -9,7 +9,7 @@ import * as logger from 'loglevel';
 import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";
-import ModifiableImage from "../../components/ModifiableImage";
+import ModifiableImage from "./ModifiableImage";
 import { toggleEnabledState } from "../../store/CanvasSettingsReducer";
 import {
     updateGlobalPictureState,
@@ -43,14 +43,13 @@ const Canvas = props => {
     }, []);
 
     const onDrop = acceptedFiles => {
-        console.log(`Received ${acceptedFiles}`);
         for (let f of acceptedFiles) {
+            console.log(`Received file from drag 'n' drop with name ${f.name} and size ${f.size}`);
             const reader = new FileReader();
             reader.readAsDataURL(f);
             reader.onload = () => {
                 const base64Data = reader.result.split(',')[1];
-                logger.debug(`Received data from drag 'n' drop: ${base64Data.slice(0, 100) + "..."}`);
-                props.addPicture(base64Data);
+                props.addPicture({data: base64Data});
             };
         }
     };

@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from "classnames";
 
-import { updatePictureState, togglePictureSelection } from "../store/ImageCacheReducer";
-import "./image.css";
+import { updatePictureState, togglePictureSelection } from "../../store/ImageCacheReducer";
 
 class ModifiableImage extends React.Component {
     constructor(props) {

@@ -4,11 +4,11 @@ import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 
 import Canvas from "./canvas/Canvas";
 import FigureDrawing from "./figuredrawing/FigureDrawing";
-import StatsOverview from "./StatsOverview";
-import Settings from "./Settings";
-import About from "./About";
+import StatsOverview from "./stats/StatsOverview";
+import Settings from "./settings/Settings";
+import About from "./about/About";
 import App from "../App";
-import Sidebar from "../sidebar/Sidebar";
+import Sidebar from "../components/Sidebar";
 import "./views.css";
 
 const styling = cached => cached ? { style: { display: "none" }} : { className: "cached-view-container" };

@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { mapEntryToAccordion } from '../utils/utils';
+import { mapEntryToAccordion } from '../../utils/utils';
 
 const faqEntries = [
     {
