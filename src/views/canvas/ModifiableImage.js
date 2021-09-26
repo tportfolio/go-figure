@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from "classnames";
+import { Resizable } from "re-resizable";
 
 import { updatePictureState, togglePictureSelection } from "../../store/ImageCacheReducer";
 
@@ -14,9 +15,11 @@ class ModifiableImage extends React.Component {
         // initial image loading getting/setting
         this.ref = React.createRef();
         this.hash = hash;
+        this.blob = blob;
 
         // prop setup
         this.imgProps = { ref: this.ref, src: blob, draggable: false, onLoad: e => this.onLoad(e.target) };
+        this.resizeEnableProps = { bottomRight: true, bottomLeft: true, topRight: true, topLeft: true };
 
         this.state = {
             isDragActive: false,
@@ -129,24 +132,42 @@ class ModifiableImage extends React.Component {
         return `${this.getMirrorStyle()} translate(${translate.x}px, ${translate.y}px) rotate(${rotate}deg)`;
     };
 
+    // TODO: adjust x/y based on anchor point
+    onResize = (e, direction, ref, delta) => {
+        this.props.updateProperties(this.hash, { dimensions: { height: ref.clientHeight, width: ref.clientWidth } });
+    };
+
     render() {
         const { isSelected } = this.props;
-        const className = classNames("modifiable-image", { selected: isSelected, dragging: this.state.isDragActive });
+        const resizableClassName = classNames("modifiable-image", { selected: isSelected, dragging: this.state.isDragActive });
+        const imageClassName = classNames({ selected: isSelected });
 
-        let extendedImgProps = { ...this.imgProps };
-
-        // if we've loaded the image, these can be added
         const { height, width } = this.getDimensions();
         const { x, y } = this.getPosition();
+        let extendedImgProps = this.imgProps;
+        
+        // if we've loaded the image, these can be added
         if (height && width) {
-            const styleProp = { position: "absolute", opacity: this.getOpacity(), height: height, width: width, left: x, top: y };
-            extendedImgProps = { ...extendedImgProps, style: styleProp, className: className };
+            const style = { opacity: this.getOpacity(), height, width };
+            extendedImgProps = { ...extendedImgProps, style };
         }
 
         return (
-            <div key={this.hash} draggable={false}>
-                <img {...extendedImgProps} alt="" onMouseDown={this.mouseDownHandler} />
-            </div>
+            <Resizable
+                className={resizableClassName}
+                size={{ width, height }}
+                onResize={this.onResize}
+                enable={this.resizeEnableProps}
+                lockAspectRatio
+                style={{ left: x, top: y, position: "absolute" }}
+            >
+                <img
+                    {...extendedImgProps}
+                    className={imageClassName}
+                    alt=""
+                    onMouseDown={this.mouseDownHandler}
+                />
+            </Resizable>
         );
     }
 }
