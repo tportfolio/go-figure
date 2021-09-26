@@ -1,8 +1,6 @@
 import React from 'react';
-import { Toolbar } from '@mui/material';
+import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import GetAppIcon from '@mui/icons-material/GetApp';
@@ -22,39 +20,57 @@ const onChangeHandler = event => {
     }
 }
 
+const buttons = [
+    {
+        icon: AddIcon,
+        text: "Add files to layout...",
+        additionalContent: (
+            <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                multiple
+                type="file"
+                onChange={onChangeHandler}
+            />
+        )
+    },
+    // TODO: future work
+    // {
+    //     icon: GetAppIcon,
+    //     text: "Load layout...",
+    // },
+    // {
+    //     icon: SaveIcon,
+    //     text: "Save current layout",
+    // },
+    // {
+    //     icon: SettingsApplicationsSharpIcon,
+    //     text: "Layout settings",
+    // },
+    {
+        icon: ClearSharpIcon,
+        text: "Clear layout...",
+        color: "red"
+    }
+];
+
 const CanvasToolbar = props => {
     const { theme } = props;
-    const inputFileRef = React.useRef(null);
 
     return (
-        <div>
-            <input type='file' id='file' multiple ref={inputFileRef} style={{ display: 'none' }} onChange={onChangeHandler} />
-            <Toolbar style={{ background: theme.palette.secondary.light, zIndex: 10 }} >
-                <Grid container justifyContent="center" alignItems="center">
-                    <Button onClick={() => inputFileRef.current.click()}>
-                        <AddIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                        Add to layout...
+        <>
+            <div id="toolbar">
+                {buttons.map(({ icon: Icon, text, additionalContent, color }) => (
+                    <Button key={text} variant="contained" component="label" style={{ margin: "5px" }} className="canvas-button">
+                        <Icon fontSize="small" style={{ margin: "5px", color: color ?? "white" }} />
+                        <Typography style={{ color: color ?? "white" }}>
+                            {text}
+                        </Typography>
+                        {additionalContent}
                     </Button>
-                    <Button>
-                        <GetAppIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                        Load layout...
-                    </Button>
-                    <Button>
-                        <SaveIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                        Save current layout
-                    </Button>
-                    <Button>
-                        <SettingsApplicationsSharpIcon fontSize="small" style={{ color: theme.palette.primary.dark }} />
-                        Layout settings
-                    </Button>
-                    <Divider orientation="vertical" flexItem />
-                    <Button style={{ color: "red" }}>
-                        <ClearSharpIcon fontSize="small" style={{ color: "red" }} />
-                        Clear layout...
-                    </Button>
-                </Grid>
-            </Toolbar>
-        </div>
+                ))}
+            </div>
+        </>
     )
 };
 

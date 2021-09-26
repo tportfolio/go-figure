@@ -30,7 +30,7 @@
 }
 
 .figure-drawing-settings-container, #figure-drawing-results-container {
-    width: 45%;
+    width: 50%;
     display: flex;
     flex-direction: column;
 }

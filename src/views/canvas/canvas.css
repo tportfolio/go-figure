@@ -3,6 +3,17 @@
     height: 100%;
 }
 
+#canvas-wrapper-div {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+/* removes orange outline from react-sketch canvas */
+#canvas-div div:focus-visible {
+    outline: none !important;
+}
+
 .disabled-canvas {
     pointer-events: none;
     cursor: default;
@@ -22,4 +33,22 @@ img.selected {
 
 .modifiable-image.selected.dragging {
     z-index: 9;
+}
+
+#toolbar {
+    z-index: 10;
+    bottom: 10px;
+    width: 50%;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.canvas-button {
+    flex-grow: 1;
+    display: flex;
+    text-align: center;
+    margin: 0 4px;
+    background: rgba(20, 35, 48, 0.445);
 }

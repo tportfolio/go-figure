@@ -91,7 +91,6 @@ class ModifiableImage extends React.Component {
     mouseMove = e => {
         const { pageX, pageY, which } = e;
 
-        // TODO: add resizing with aspect ratio locked
         if (e.shiftKey && this.state.isRotateActive && this.state.boxCenter) {
             const radians = Math.atan2(pageX - this.state.boxCenter.x, pageY - this.state.boxCenter.y);
             const degree = (radians * (180 / Math.PI) * -1) + 90;
@@ -132,7 +131,7 @@ class ModifiableImage extends React.Component {
         return `${this.getMirrorStyle()} translate(${translate.x}px, ${translate.y}px) rotate(${rotate}deg)`;
     };
 
-    // TODO: adjust x/y based on anchor point
+    // TODO: adjust x/y based on anchor
     onResize = (e, direction, ref, delta) => {
         this.props.updateProperties(this.hash, { dimensions: { height: ref.clientHeight, width: ref.clientWidth } });
     };

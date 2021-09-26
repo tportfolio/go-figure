@@ -55,7 +55,7 @@ const FigureDrawingResults = props => {
         <div className="view-container" id="figure-drawing-results-container">
             <p className="view-header">Session Results</p>
             <Paper id="figure-drawing-results" elevation={3}>
-                {dataEntries.map(entry => <ResultData {...entry} suffix={props[entry.suffixKey]} />)}
+                {dataEntries.map(entry => <ResultData {...entry} key={entry.suffixKey} suffix={props[entry.suffixKey]} />)}
                 <SettingsReturnButton onClickHandler={() => props.setSessionState(SessionState.SELECT_SETTINGS)} />
             </Paper>
         </div>

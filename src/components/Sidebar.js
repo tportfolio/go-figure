@@ -16,6 +16,7 @@ import classNames from 'classnames';
 const drawerWidth = 300;
 const useStyles = makeStyles((theme) => ({
     root: {
+        position: "absolute", // drawer expands over body as opposed to pushing content over
         display: 'flex',
         background: theme.palette.primary.dark
     },
