@@ -8,7 +8,7 @@ import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicati
 import ClearSharpIcon from '@mui/icons-material/ClearSharp';
 import { withTheme } from '@mui/styles';
 
-import { SENDER_CHANNEL } from "../../constants";
+import { channels } from "../../channels";
 
 const onChangeHandler = event => {
     console.log('onchange handler called');
@@ -16,7 +16,7 @@ const onChangeHandler = event => {
     if (files.length > 0) {
         const fileArray = Array.from(files).map(f => f.path);
         console.log(fileArray);
-        window.api.send(SENDER_CHANNEL, fileArray);
+        window.api.send(channels.SENDER_CHANNEL, fileArray);
     }
 }
 

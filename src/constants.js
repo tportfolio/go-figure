@@ -16,9 +16,3 @@ export const theme = createTheme({
         ].join(','),
     }
 });
-
-export const RECEIVER_CHANNEL = "fromMain";
-export const SENDER_CHANNEL = "toMain";
-
-export const FIGURE_DRAWING_FILE_RECEIVER_CHANNEL = "fromFigureDrawing";
-export const FIGURE_DRAWING_FILE_SENDER_CHANNEL = "toFigureDrawing";

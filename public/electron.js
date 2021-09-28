@@ -2,13 +2,7 @@ const { BrowserWindow, ipcMain, app, globalShortcut } = require('electron');
 const path = require("path");
 const fs = require("fs");
 const isDev = require('electron-is-dev');
-
-const { 
-  RECEIVER_CHANNEL, 
-  SENDER_CHANNEL,
-  FIGURE_DRAWING_FILE_RECEIVER_CHANNEL,
-  FIGURE_DRAWING_FILE_SENDER_CHANNEL
-} = require("./constants");
+const { channels } = require('../src/channels');
 
 let mainWindow;
 function createWindow() {
@@ -69,9 +63,9 @@ const retrieveImages = receiverChannel => {
 /**
  * Loader for image data from filesystem to reference canvas. 
  */
-ipcMain.on(SENDER_CHANNEL, retrieveImages(RECEIVER_CHANNEL));
+ipcMain.on(channels.SENDER_CHANNEL, retrieveImages(channels.RECEIVER_CHANNEL));
 
 /**
  * Loader for image data from filesystem to figure drawing session.
  */
-ipcMain.on(FIGURE_DRAWING_FILE_SENDER_CHANNEL, retrieveImages(FIGURE_DRAWING_FILE_RECEIVER_CHANNEL));
+ipcMain.on(channels.FIGURE_DRAWING_FILE_SENDER_CHANNEL, retrieveImages(channels.FIGURE_DRAWING_FILE_RECEIVER_CHANNEL));

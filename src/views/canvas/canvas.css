@@ -51,4 +51,5 @@ img.selected {
     text-align: center;
     margin: 0 4px;
     background: rgba(20, 35, 48, 0.445);
+    max-width: 300px;
 }

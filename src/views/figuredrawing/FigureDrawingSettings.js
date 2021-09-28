@@ -11,7 +11,7 @@ import { setSessionState, setImageDuration, setMaxImages, SortOrder, setSortOrde
 import SettingsSlider from './settings/SettingsSlider';
 import SettingsRadioButtonGroup from './settings/SettingsRadioButtonGroup';
 import { SessionState } from './figureDrawingConstants';
-import { FIGURE_DRAWING_FILE_SENDER_CHANNEL } from '../../constants';
+import { channels } from '../../channels';
 
 const DurationSlider = props => {
     return (
@@ -58,7 +58,7 @@ const FileInputSelect = () => {
         if (files.length > 0) {
             const fileArray = Array.from(files).map(f => f.path);
             console.log(fileArray);
-            window.api.send(FIGURE_DRAWING_FILE_SENDER_CHANNEL, fileArray);
+            window.api.send(channels.FIGURE_DRAWING_FILE_SENDER_CHANNEL, fileArray);
         }
     }
 
@@ -83,27 +83,46 @@ const FileInputSelect = () => {
     )
 }
 
+const StartSessionButton = props => {
+    return (
+        <Button
+            variant="contained"
+            component="label"
+            disabled={!props.numImages}
+            onClick={props.onClickHandler}
+            style={{ marginTop: "20px" }}
+        >
+            <ImageIcon fontSize="small" style={{ paddingRight: "10px" }} />
+            <Typography style={{ color: "white" }}>
+                Start session
+            </Typography>
+        </Button>
+    );
+}
+
 const FigureDrawingSettings = props => {
     return (
         <div className={classNames("view-container", "figure-drawing-settings-container")}>
             <p className="view-header">New Session Settings</p>
             <Paper className="figure-drawing-settings" elevation={3}>
-                <DurationSlider duration={props.imageDuration} onChangeHandler={props.setImageDuration} />
-                <MaxImagesSlider maxImages={props.maxImages} onChangeHandler={props.setMaxImages} />
-                <OrderingRadioButtons sortOrder={props.sortOrder} onChangeHandler={props.setSortOrder}/>
+                <DurationSlider
+                    duration={props.imageDuration}
+                    onChangeHandler={props.setImageDuration}
+                />
+                <MaxImagesSlider
+                    maxImages={props.maxImages}
+                    onChangeHandler={props.setMaxImages}
+                />
+                <OrderingRadioButtons
+                    sortOrder={props.sortOrder}
+                    onChangeHandler={props.setSortOrder}
+                />
                 <FileInputSelect />
             </Paper>
-            <Button
-                variant="contained"
-                component="label"
-                onClick={() => props.setSessionState(SessionState.RUNNING)}
-                style={{ marginTop: "20px" }}
-            >
-                <ImageIcon fontSize="small" style={{ paddingRight: "10px" }} />
-                <Typography style={{ color: "white" }}>
-                    Start session
-                </Typography>
-            </Button>
+            <StartSessionButton
+                numImages={Object.keys(props.sessionImages).length}
+                onClickHandler={() => props.setSessionState(SessionState.RUNNING)}
+            />
         </div>
     );
 }
@@ -112,7 +131,8 @@ const mapStateToProps = state => {
     return {
         imageDuration: state.figuredrawing.imageDuration,
         maxImages: state.figuredrawing.maxImages,
-        sortOrder: state.figuredrawing.sortOrder
+        sortOrder: state.figuredrawing.sortOrder,
+        sessionImages: state.figuredrawing.sessionImages
     }
 };
 

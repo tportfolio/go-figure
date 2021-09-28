@@ -6,6 +6,7 @@ import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from "classnames";
 import * as logger from 'loglevel';
+import { makeStyles, withTheme } from '@mui/styles';
 import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";
@@ -23,6 +24,12 @@ import {
 import "./canvas.css";
 
 const Canvas = props => {
+    const useStyles = makeStyles(theme => ({
+        canvas: {
+            marginLeft: theme.spacing(7)
+        }
+    }));
+
     // redux data:
     const { pictures, isCanvasEnabled } = props;
 
@@ -49,7 +56,7 @@ const Canvas = props => {
             reader.readAsDataURL(f);
             reader.onload = () => {
                 const base64Data = reader.result.split(',')[1];
-                props.addPicture({data: base64Data});
+                props.addPicture({ data: base64Data });
             };
         }
     };
@@ -76,8 +83,10 @@ const Canvas = props => {
     useHotkeys('h', () => toggleGlobalPictureState("mirrorH"));
     useHotkeys('v', () => toggleGlobalPictureState("mirrorV"));
 
+    const classes = useStyles();
+
     return (
-        <div id="canvas-wrapper-div">
+        <div id="canvas-wrapper-div" className={classes.canvas}>
             <CanvasToolbar />
             <div>
                 {Object.keys(pictures).map(k => <ModifiableImage key={k} metadata={pictures[k]} />)}
