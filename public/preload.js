@@ -6,12 +6,12 @@ const { channels } = require('../src/channels');
 contextBridge.exposeInMainWorld(
     "api", {
     send: (channel, data) => {
-        if ([channels.SENDER_CHANNEL, channels.FIGURE_DRAWING_FILE_SENDER_CHANNEL].includes(channel)) {
+        if ([channels.SENDER_CHANNEL, channels.FIGURE_DRAWING_FILE_SENDER_CHANNEL, channels.STATS_SENDER_CHANNEL].includes(channel)) {
             ipcRenderer.send(channel, data);
         }
     },
     receive: (channel, func) => {
-        if ([channels.RECEIVER_CHANNEL, channels.FIGURE_DRAWING_FILE_RECEIVER_CHANNEL].includes(channel)) {
+        if ([channels.RECEIVER_CHANNEL, channels.FIGURE_DRAWING_FILE_RECEIVER_CHANNEL, channels.STATS_RECEIVER_CHANNEL].includes(channel)) {
             // Deliberately strip event as it includes `sender` 
             ipcRenderer.on(channel, (event, ...args) => func(...args));
         }

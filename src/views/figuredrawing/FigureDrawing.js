@@ -5,6 +5,7 @@ import FigureDrawingSettings from './FigureDrawingSettings';
 import ActiveDrawingSessionLayout from './ActiveDrawingSessionLayout';
 import FigureDrawingResults from "./FigureDrawingResults";
 import { SessionState } from "./figureDrawingConstants";
+import { channels } from '../../channels';
 
 const formatTimeString = ms => {
     let hours, minutes, seconds;
@@ -12,7 +13,7 @@ const formatTimeString = ms => {
     [seconds, minutes] = [seconds % 60, Math.floor(seconds / 60)];
     [minutes, hours] = [minutes % 60, Math.floor(minutes / 60)];
 
-    const units = {hours, minutes, seconds};
+    const units = { hours, minutes, seconds };
     // if value is 0, use empty string (which gets filtered); otherwise, check whether to append "s" if value is not 1
     const valToString = val => units[val] ? units[val] + ` ${val.slice(0, -1)}` + (units[val] !== 1 ? "s" : "") : "";
 
@@ -20,12 +21,24 @@ const formatTimeString = ms => {
 };
 
 const FigureDrawing = props => {
-    const {sessionState, sessionImages} = props;
+    const { sessionState, sessionImages } = props;
     const [timeStarted, setTimeStarted] = useState(0);
+    const [timeElapsed, setTimeElapsed] = useState(0);
 
     useEffect(() => {
         if (sessionState === SessionState.RUNNING) {
             setTimeStarted(Date.now());
+        } else if (sessionState === SessionState.COMPLETE) {
+            const currentTime = Date.now();
+            const timeDiff = currentTime - timeStarted;
+            window.api.send(channels.STATS_SENDER_CHANNEL,
+                {
+                    timeEpochMsecs: currentTime,
+                    timeElapsedMsecs: timeDiff,
+                    numImages: Object.keys(sessionImages).length
+                }
+            );
+            setTimeElapsed(timeDiff);
         }
     }, [sessionState]);
 
@@ -37,7 +50,7 @@ const FigureDrawing = props => {
         case SessionState.COMPLETE:
             return (
                 <FigureDrawingResults
-                    timeElapsed={formatTimeString(Date.now() - timeStarted)}
+                    timeElapsed={formatTimeString(timeElapsed)}
                     numImages={Object.keys(sessionImages).length} // TODO: update for case where session stops early
                 />
             );
