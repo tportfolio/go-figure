@@ -16,7 +16,7 @@ const onChangeHandler = event => {
     if (files.length > 0) {
         const fileArray = Array.from(files).map(f => f.path);
         console.log(fileArray);
-        window.api.send(channels.SENDER_CHANNEL, fileArray);
+        window.api.send(channels.CANVAS_REQUEST_FILES, fileArray);
     }
 }
 

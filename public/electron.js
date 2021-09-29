@@ -6,10 +6,12 @@ const isDev = require('electron-is-dev');
 const { channels } = require('../src/channels');
 
 // create local data folder if it doesn't exist
-const appDataPath = path.join(os.homedir(), ".go-figure");
-if (!fs.existsSync(appDataPath)) {
-    fs.mkdirSync(appDataPath);
+const APP_DATA_PATH = path.join(os.homedir(), ".go-figure");
+if (!fs.existsSync(APP_DATA_PATH)) {
+    fs.mkdirSync(APP_DATA_PATH);
 }
+
+const STATS_FILE_PATH = path.join(APP_DATA_PATH, "stats.json");
 
 let mainWindow;
 function createWindow() {
@@ -70,33 +72,44 @@ const retrieveImages = receiverChannel => {
 /**
  * Loader for image data from filesystem to reference canvas. 
  */
-ipcMain.on(channels.SENDER_CHANNEL, retrieveImages(channels.RECEIVER_CHANNEL));
+ipcMain.on(channels.CANVAS_REQUEST_FILES, retrieveImages(channels.CANVAS_REQUEST_FILES_CALLBACK));
 
 /**
  * Loader for image data from filesystem to figure drawing session.
  */
-ipcMain.on(channels.FIGURE_DRAWING_FILE_SENDER_CHANNEL, retrieveImages(channels.FIGURE_DRAWING_FILE_RECEIVER_CHANNEL));
+ipcMain.on(channels.FIGURE_DRAWING_REQUEST_FILES, retrieveImages(channels.FIGURE_DRAWING_REQUEST_FILES_CALLBACK));
 
 /**
  * Writer for completed figure drawing session stats to local folder.
  */
-ipcMain.on(channels.STATS_SENDER_CHANNEL, (event, args) => {
-    const statsFilePath = path.join(appDataPath, "stats.json");
-
+ipcMain.on(channels.STATS_SAVE_TO_FILE, (event, args) => {
     let statsObject;
-    if (!fs.existsSync(statsFilePath)) {
+    if (!fs.existsSync(STATS_FILE_PATH)) {
         statsObject = { sessions: [args] };
     } else {
-        statsObject = JSON.parse(fs.readFileSync(statsFilePath));
+        statsObject = JSON.parse(fs.readFileSync(STATS_FILE_PATH));
         statsObject.sessions.push(args);
     }
 
     // third arg in stringify allows for spacing specification when written out
     // w+ truncates file and starts from beginning
-    fs.writeFile(statsFilePath, JSON.stringify(statsObject, null, '\t'), { flag: 'w+' }, err => {
+    fs.writeFile(STATS_FILE_PATH, JSON.stringify(statsObject, null, '\t'), { flag: 'w+' }, err => {
         if (err) {
             throw err;
         }
         console.log(`Saved session: ${JSON.stringify(args)}`);
     });
+});
+
+/**
+ * Loader for previously saved figure drawing session stats in local folder.
+ */
+ ipcMain.on(channels.STATS_LOAD_FROM_FILE, (event, args) => {
+    let statsObject;
+    if (!fs.existsSync(STATS_FILE_PATH)) {
+        statsObject = { sessions: [] };
+    } else {
+        statsObject = JSON.parse(fs.readFileSync(STATS_FILE_PATH));
+    }
+    mainWindow.webContents.send(channels.STATS_LOAD_CALLBACK, statsObject);
 });

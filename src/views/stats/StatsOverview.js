@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Button, ButtonGroup } from '@mui/material';
 import classNames from 'classnames';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import moment from "moment";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
+
+const dataProps = [
+    {
+        field: "timeElapsedSecs",
+        color: "#75b7c7"
+    },
+    {
+        field: "numImages",
+        color: "#f0a667"
+    }
+];
+
+const buttons = ["Individual", "Aggregate"];
 
 /**
  * Creates area chart based on input data and props.
@@ -18,12 +34,16 @@ const createAreaChart = (data, x, y, color) => {
         <ResponsiveContainer key={y} width="99%" height={300}>
             <AreaChart
                 data={data}
-                syncId="anyId"
-                margin={{top: 20}}
+                syncId="figureDrawing"
+                margin={{ top: 20, bottom: 20 }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey={x} />
-                <YAxis />
+                <XAxis dataKey={x} style={{ fill: "white" }}>
+                    <Label value={x} offset={0} position="bottom" style={{ fill: "gray" }} />
+                </XAxis>
+                <YAxis style={{ fill: "white" }}>
+                    <Label value={y} angle={-90} position="insideLeft" style={{ fill: "gray" }} />
+                </YAxis>
                 <Tooltip />
                 <Area type="monotone" dataKey={y} stroke={color} fill={color} />
             </AreaChart>
@@ -31,52 +51,53 @@ const createAreaChart = (data, x, y, color) => {
     );
 }
 
-const dataProps = [
-    {
-        field: "duration",
-        color: "#75b7c7"
-    },
-    {
-        field: "images",
-        color: "#f0a667"
-    }
-];
+const StatsOverview = props => {
+    const [selectedButton, setSelectedButton] = useState("Individual");
+    const { sessionHistory } = props;
 
-const StatsOverview = () => {
-    // TODO: replace placeholder
-    const data = [
-        {
-            date: '8/18/21',
-            duration: 10,
-            images: 20
-        },
-        {
-            date: '8/19/21',
-            duration: 50,
-            images: 40
-        },
-        {
-            date: '8/20/21',
-            duration: 50,
-            images: 30
-        },
-        {
-            date: '8/21/21',
-            duration: 30,
-            images: 10
-        },
-        {
-            date: '8/22/21',
-            duration: 20,
-            images: 50
+    let data = sessionHistory.sessions.map(session => {
+        const date = new Date(session.timeEpochMsecs);
+        return {
+            ...session,
+            timeElapsedSecs: Math.floor(session.timeElapsedMsecs / 1000),
+            date: moment(date).format("MM/DD/yyyy HH:mm:ss")
         }
-    ];
+    });
+
+    if (selectedButton === "Aggregate") {
+        data.reduce((acc, cur, i) => {
+            const timeElapsedSecs = acc.timeElapsedSecs + cur.timeElapsedSecs;
+            const numImages = acc.numImages + cur.numImages;
+
+            const ret = {timeElapsedSecs, numImages};
+            data[i] = {...data[i], ...ret};  
+            return ret;
+        }, {timeElapsedSecs: 0, numImages: 0});
+    }
+
     return (
         <div className={classNames("view-container", "stats-container")}>
-            <p className="view-header">App Statistics</p>
-            {dataProps.map(({field, color}) => createAreaChart(data, "date", field, color))}
+            <p className="view-header">Figure Drawing Statistics</p>
+            <ButtonGroup variant="contained" style={{ marginBottom: "50px" }}>
+                {buttons.map(button => (
+                    <Button
+                        key={button}
+                        style={{ background: button === selectedButton ? "#315e8a" : "#8696af" }}
+                        onClick={() => setSelectedButton(button)}
+                    >
+                        {button}
+                    </Button>
+                ))}
+            </ButtonGroup>
+            {dataProps.map(({ field, color }) => createAreaChart(data, "date", field, color))}
         </div>
     )
 }
 
-export default StatsOverview;
+const mapStateToProps = state => {
+    return {
+        sessionHistory: state.figuredrawing.sessionHistory
+    }
+};
+
+export default connect(mapStateToProps)(StatsOverview);

@@ -5,6 +5,7 @@ import FigureDrawingSettings from './FigureDrawingSettings';
 import ActiveDrawingSessionLayout from './ActiveDrawingSessionLayout';
 import FigureDrawingResults from "./FigureDrawingResults";
 import { SessionState } from "./figureDrawingConstants";
+import { appendToSessionHistory } from '../../store/FigureDrawingReducer';
 import { channels } from '../../channels';
 
 const formatTimeString = ms => {
@@ -31,13 +32,14 @@ const FigureDrawing = props => {
         } else if (sessionState === SessionState.COMPLETE) {
             const currentTime = Date.now();
             const timeDiff = currentTime - timeStarted;
-            window.api.send(channels.STATS_SENDER_CHANNEL,
-                {
-                    timeEpochMsecs: currentTime,
-                    timeElapsedMsecs: timeDiff,
-                    numImages: Object.keys(sessionImages).length
-                }
-            );
+            const session = {
+                timeEpochMsecs: currentTime,
+                timeElapsedMsecs: timeDiff,
+                numImages: Object.keys(sessionImages).length
+            };
+
+            window.api.send(channels.STATS_SAVE_TO_FILE, session);
+            props.appendToSessionHistory(session);
             setTimeElapsed(timeDiff);
         }
     }, [sessionState]);
@@ -67,4 +69,10 @@ const mapStateToProps = state => {
     }
 };
 
-export default connect(mapStateToProps)(FigureDrawing);
+const mapDispatchToProps = dispatch => {
+    return {
+        appendToSessionHistory: session => dispatch(appendToSessionHistory(session))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FigureDrawing);

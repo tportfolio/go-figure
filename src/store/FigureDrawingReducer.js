@@ -8,11 +8,13 @@ const ADD_SESSION_IMAGE = "add-session-image";
 const SET_IMAGE_DURATION = "set-image-duration";
 const SET_MAX_IMAGES = "set-max-images";
 const SET_SORT_ORDER = "set-sort-order";
+const INIT_SESSION_HISTORY = "init-session-history";
+const APPEND_TO_SESSION_HISTORY = "append-to-session-history";
 
 export const SortOrder = Object.freeze({
-    RANDOM: {name: "Random"},
-    ALPHABETICAL: {name: "Alphabetical"},
-    FILE_SIZE: {name: "File size"}
+    RANDOM: { name: "Random" },
+    ALPHABETICAL: { name: "Alphabetical" },
+    FILE_SIZE: { name: "File size" }
 });
 
 const initialState = {
@@ -20,13 +22,14 @@ const initialState = {
     sessionImages: {},
     imageDuration: 30,
     maxImages: 20,
-    sortOrder: SortOrder.RANDOM
+    sortOrder: SortOrder.RANDOM,
+    sessionHistory: {}
 };
 
 export const handleSettings = (state = initialState, action) => {
     switch (action.type) {
         case SET_SESSION_STATE:
-            const imagesProp = action.payload.value === SessionState.SELECT_SETTINGS ? {sessionImages: {}} : {};
+            const imagesProp = action.payload.value === SessionState.SELECT_SETTINGS ? { sessionImages: {} } : {};
             return {
                 ...state,
                 ...imagesProp,
@@ -35,10 +38,10 @@ export const handleSettings = (state = initialState, action) => {
         case ADD_SESSION_IMAGE:
             const hash = imageHash(action.payload.value.data);
             const blob = URL.createObjectURL(base64StringToBlob(action.payload.value.data, "image/png"));
-            const {filename, filesize} = action.payload.value;
+            const { filename, filesize } = action.payload.value;
             return {
                 ...state,
-                sessionImages: { ...state.sessionImages, [hash]: {hash, blob, filename, filesize} }
+                sessionImages: { ...state.sessionImages, [hash]: { hash, blob, filename, filesize } }
             };
         case SET_IMAGE_DURATION:
             return {
@@ -54,6 +57,18 @@ export const handleSettings = (state = initialState, action) => {
             return {
                 ...state,
                 sortOrder: action.payload.value
+            };
+        case INIT_SESSION_HISTORY:
+            return {
+                ...state,
+                sessionHistory: action.payload.value
+            };
+        case APPEND_TO_SESSION_HISTORY:
+            const newHistory = {...state.sessionHistory};
+            newHistory.sessions.push(action.payload.value);
+            return {
+                ...state,
+                sessionHistory: newHistory
             };
         default:
             return state;
@@ -101,6 +116,24 @@ export const setSortOrder = sortOrder => {
         type: SET_SORT_ORDER,
         payload: {
             value: sortOrder
+        }
+    }
+}
+
+export const initSessionHistory = history => {
+    return {
+        type: INIT_SESSION_HISTORY,
+        payload: {
+            value: history
+        }
+    }
+}
+
+export const appendToSessionHistory = session => {
+    return {
+        type: APPEND_TO_SESSION_HISTORY,
+        payload: {
+            value: session
         }
     }
 }

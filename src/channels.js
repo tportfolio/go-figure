@@ -1,11 +1,14 @@
+const channels = Object.freeze({
+    CANVAS_REQUEST_FILES: "CANVAS_REQUEST_FILES",
+    CANVAS_REQUEST_FILES_CALLBACK: "CANVAS_REQUEST_FILES_CALLBACK",
+    FIGURE_DRAWING_REQUEST_FILES: "FIGURE_DRAWING_REQUEST_FILES",
+    FIGURE_DRAWING_REQUEST_FILES_CALLBACK: "FIGURE_DRAWING_REQUEST_FILES_CALLBACK",
+    STATS_LOAD_FROM_FILE: "STATS_LOAD_FROM_FILE",
+    STATS_LOAD_CALLBACK: "STATS_LOAD_CALLBACK",
+    STATS_SAVE_TO_FILE: "STATS_SAVE_TO_FILE"
+});
+
 // shared module between React source and Electron source
 module.exports = {
-    channels: {
-        RECEIVER_CHANNEL: "fromMain",
-        SENDER_CHANNEL: "toMain",
-        FIGURE_DRAWING_FILE_RECEIVER_CHANNEL: "fromFigureDrawing",
-        FIGURE_DRAWING_FILE_SENDER_CHANNEL: "toFigureDrawing",
-        STATS_RECEIVER_CHANNEL: "fromStatsOverView",
-        STATS_SENDER_CHANNEL: "toStatsOverview"
-    }
+    channels: channels
 }

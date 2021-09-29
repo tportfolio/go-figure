@@ -58,7 +58,7 @@ const FileInputSelect = () => {
         if (files.length > 0) {
             const fileArray = Array.from(files).map(f => f.path);
             console.log(fileArray);
-            window.api.send(channels.FIGURE_DRAWING_FILE_SENDER_CHANNEL, fileArray);
+            window.api.send(channels.FIGURE_DRAWING_REQUEST_FILES, fileArray);
         }
     }
 
