@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { Typography, LinearProgress } from '@mui/material';
+import { withTheme } from '@mui/styles';
 import classNames from 'classnames';
 import { shuffle } from 'lodash';
 
@@ -16,7 +17,7 @@ const MAX_PROGRESS_COUNTER_VALUE = 100;
 const FADE_DURATION_SECS = 5;
 
 const ActiveDrawingSessionLayout = props => {
-    const { setSessionState, imageDuration, images, maxImages, sortOrder } = props;
+    const { setSessionState, imageDuration, images, maxImages, sortOrder, theme } = props;
     const [imageIndex, setImageIndex] = useState(0);
     const [secsRemaining, setSecsRemaining] = useState(imageDuration);
     const [isActive, setIsActive] = useState(true);
@@ -103,7 +104,7 @@ const ActiveDrawingSessionLayout = props => {
                 />
             </div>
             <div className="current-image-timer-container">
-                <Typography className="current-image-time-remaining">
+                <Typography className="current-image-time-remaining" style={{color: theme.palette.primary.dark}}>
                     {secsRemaining}
                 </Typography>
                 <LinearProgress className="current-image-timer" variant="determinate" value={secsRemaining * increment} />
@@ -134,4 +135,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActiveDrawingSessionLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ActiveDrawingSessionLayout));

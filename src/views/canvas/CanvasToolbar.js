@@ -50,7 +50,7 @@ const buttons = [
     {
         icon: ClearSharpIcon,
         text: "Clear layout...",
-        color: "red"
+        color: "#ff2424"
     }
 ];
 

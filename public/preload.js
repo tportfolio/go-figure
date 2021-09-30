@@ -5,13 +5,16 @@ const SEND_CHANNELS = [
     channels.CANVAS_REQUEST_FILES,
     channels.FIGURE_DRAWING_REQUEST_FILES,
     channels.STATS_SAVE_TO_FILE,
-    channels.STATS_LOAD_FROM_FILE
+    channels.STATS_LOAD_FROM_FILE,
+    channels.SETTINGS_LOAD_FROM_FILE,
+    channels.SETTINGS_SAVE_TO_FILE
 ];
 
 const RECEIVE_CHANNELS = [
     channels.CANVAS_REQUEST_FILES_CALLBACK,
     channels.FIGURE_DRAWING_REQUEST_FILES_CALLBACK,
-    channels.STATS_LOAD_CALLBACK
+    channels.STATS_LOAD_CALLBACK,
+    channels.SETTINGS_LOAD_CALLBACK
 ];
 
 // code to expose/abstract filesystem interactions

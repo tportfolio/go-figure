@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, ButtonGroup } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import moment from "moment";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
@@ -52,6 +53,15 @@ const createAreaChart = (data, x, y, color) => {
 }
 
 const StatsOverview = props => {
+    const useStyles = makeStyles((theme) => ({
+        button: {
+            background: theme.palette.secondary.main
+        },
+        selectedButton: {
+            background: theme.palette.secondary.dark
+        }
+    }));
+
     const [selectedButton, setSelectedButton] = useState("Individual");
     const { sessionHistory } = props;
 
@@ -69,11 +79,13 @@ const StatsOverview = props => {
             const timeElapsedSecs = acc.timeElapsedSecs + cur.timeElapsedSecs;
             const numImages = acc.numImages + cur.numImages;
 
-            const ret = {timeElapsedSecs, numImages};
-            data[i] = {...data[i], ...ret};  
+            const ret = { timeElapsedSecs, numImages };
+            data[i] = { ...data[i], ...ret };
             return ret;
-        }, {timeElapsedSecs: 0, numImages: 0});
+        }, { timeElapsedSecs: 0, numImages: 0 });
     }
+
+    const classes = useStyles();
 
     return (
         <div className={classNames("view-container", "stats-container")}>
@@ -81,8 +93,8 @@ const StatsOverview = props => {
             <ButtonGroup variant="contained" style={{ marginBottom: "50px" }}>
                 {buttons.map(button => (
                     <Button
+                        className={button === selectedButton ? classes.selectedButton : classes.button}
                         key={button}
-                        style={{ background: button === selectedButton ? "#315e8a" : "#8696af" }}
                         onClick={() => setSelectedButton(button)}
                     >
                         {button}

@@ -91,7 +91,6 @@
     height: auto;
     margin: 0 4px;
     color: white;
-    background: rgba(20, 35, 48, 0.445);
     align-self: center;
 }
 
@@ -127,4 +126,9 @@
 .accordion-container .Mui-expanded {
     margin: 10px auto;
 }
-  
+
+.accordion-container .MuiSwitch-root {
+    left: 85%;
+    position: absolute;
+    transform: translateY(-10%);
+}   

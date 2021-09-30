@@ -22,7 +22,7 @@ const formatTimeString = ms => {
 };
 
 const FigureDrawing = props => {
-    const { sessionState, sessionImages } = props;
+    const { sessionState, sessionImages, saveSessionData } = props;
     const [timeStarted, setTimeStarted] = useState(0);
     const [timeElapsed, setTimeElapsed] = useState(0);
 
@@ -37,8 +37,11 @@ const FigureDrawing = props => {
                 timeElapsedMsecs: timeDiff,
                 numImages: Object.keys(sessionImages).length
             };
-
-            window.api.send(channels.STATS_SAVE_TO_FILE, session);
+            
+            if (saveSessionData) {
+                window.api.send(channels.STATS_SAVE_TO_FILE, session);
+            }
+            
             props.appendToSessionHistory(session);
             setTimeElapsed(timeDiff);
         }
@@ -65,7 +68,8 @@ const FigureDrawing = props => {
 const mapStateToProps = state => {
     return {
         sessionState: state.figuredrawing.sessionState,
-        sessionImages: state.figuredrawing.sessionImages
+        sessionImages: state.figuredrawing.sessionImages,
+        saveSessionData: state.settings.saveSessionData
     }
 };
 

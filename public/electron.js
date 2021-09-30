@@ -12,6 +12,7 @@ if (!fs.existsSync(APP_DATA_PATH)) {
 }
 
 const STATS_FILE_PATH = path.join(APP_DATA_PATH, "stats.json");
+const SETTINGS_FILE_PATH = path.join(APP_DATA_PATH, "settings.json");
 
 let mainWindow;
 function createWindow() {
@@ -46,6 +47,17 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+
+/**
+ * Wrapper for writing content to a specified file.
+ * @param {*} path - full file path
+ * @param {*} data - JSON object to write to file
+ */
+const writeToFile = (path, data) => {
+    // third arg in stringify allows for spacing specification when written out
+    // w+ truncates file and starts from beginning
+    fs.writeFileSync(path, JSON.stringify(data, null, '\t'), { flag: 'w+' });
+}
 
 /**
  * Generic method for sending/receiving file data on a channel pair.
@@ -91,20 +103,13 @@ ipcMain.on(channels.STATS_SAVE_TO_FILE, (event, args) => {
         statsObject.sessions.push(args);
     }
 
-    // third arg in stringify allows for spacing specification when written out
-    // w+ truncates file and starts from beginning
-    fs.writeFile(STATS_FILE_PATH, JSON.stringify(statsObject, null, '\t'), { flag: 'w+' }, err => {
-        if (err) {
-            throw err;
-        }
-        console.log(`Saved session: ${JSON.stringify(args)}`);
-    });
+    writeToFile(STATS_FILE_PATH, statsObject);
 });
 
 /**
  * Loader for previously saved figure drawing session stats in local folder.
  */
- ipcMain.on(channels.STATS_LOAD_FROM_FILE, (event, args) => {
+ipcMain.on(channels.STATS_LOAD_FROM_FILE, (event, args) => {
     let statsObject;
     if (!fs.existsSync(STATS_FILE_PATH)) {
         statsObject = { sessions: [] };
@@ -112,4 +117,28 @@ ipcMain.on(channels.STATS_SAVE_TO_FILE, (event, args) => {
         statsObject = JSON.parse(fs.readFileSync(STATS_FILE_PATH));
     }
     mainWindow.webContents.send(channels.STATS_LOAD_CALLBACK, statsObject);
+});
+
+/**
+ * Writer for new app settings to local folder.
+ */
+ipcMain.on(channels.SETTINGS_SAVE_TO_FILE, (event, args) => {
+    const existingSettings = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH));
+    const newSettings = { ...existingSettings, ...args };
+
+    writeToFile(SETTINGS_FILE_PATH, newSettings);
+    console.log(`Saved settings: ${JSON.stringify(newSettings)}`);
+});
+
+/**
+ * Loader for previously saved app settings in local folder.
+ */
+ipcMain.on(channels.SETTINGS_LOAD_FROM_FILE, (event, args) => {
+    if (!fs.existsSync(SETTINGS_FILE_PATH)) {
+        console.log(`Settings file does not exist, writing default args to file`);
+        writeToFile(SETTINGS_FILE_PATH, args);
+    }
+
+    const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH));
+    mainWindow.webContents.send(channels.SETTINGS_LOAD_CALLBACK, settings);
 });

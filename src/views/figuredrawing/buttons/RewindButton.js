@@ -1,12 +1,14 @@
 import React from 'react';
 import { FastRewind as FastRewindIcon } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
+import BaseButton from './BaseButton';
 
 const RewindButton = props => {
     return (
-        <IconButton onClick={props.onClickHandler} className="figure-drawing-button" key="Rewind" size="large">
-            <FastRewindIcon />
-        </IconButton>
+        <BaseButton
+            onClickHandler={props.onClickHandler}
+            icon={FastRewindIcon}
+            key="Rewind"
+        />
     );
 };
 

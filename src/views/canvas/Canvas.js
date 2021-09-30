@@ -6,7 +6,7 @@ import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from "classnames";
 import * as logger from 'loglevel';
-import { makeStyles, withTheme } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";

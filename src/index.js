@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 import * as log from 'loglevel';
 
 import rootReducer from "./store/reducer";
 import ElectronListener from "./store/ElectronListener";
-import { theme } from "./constants";
 import Router from "./views/routing";
 import * as serviceWorker from './serviceWorker';
+import CustomThemeProvider from './components/CustomThemeProvider';
 
 import './index.css';
 
@@ -20,10 +20,10 @@ log.setLevel(!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? l
 ReactDOM.render(
     <Provider store={store}>
         <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
+            <CustomThemeProvider >
                 <Router />
                 <ElectronListener/>
-            </ThemeProvider>
+            </CustomThemeProvider>
         </StyledEngineProvider>
     </Provider>,
     document.getElementById('root'));
