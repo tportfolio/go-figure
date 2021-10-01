@@ -1,0 +1,51 @@
+#current-image-container {
+    padding: 0.5% 0;
+    height: 89%;
+    max-width: 97.5%;
+}
+
+#current-image {
+    max-height: 100%;
+    max-width: 100%;
+}
+  
+#figure-drawing-buttons-container {
+    flex-grow: 2;
+    display: flex;
+    flex-direction: row;
+}
+
+.MuiIconButton-root.figure-drawing-button {
+    max-width: 70px;
+    max-height: 70px;
+    width: auto;
+    height: auto;
+    margin: 0 4px;
+    color: white;
+    align-self: center;
+}
+
+#current-image-timer-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+#current-image-timer, #current-image-time-remaining  {
+    height: 20px;
+    width: 500px;
+    display: flex;
+    justify-content: center;
+}
+
+#current-image-time-remaining {
+    position: absolute;
+    z-index: 1;
+    transform: translateY(-25%);
+}
+
+.fade-out {
+    opacity: 0;
+    -webkit-transition: opacity 5000ms linear;
+    transition: opacity 5000ms linear;
+}

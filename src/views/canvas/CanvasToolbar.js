@@ -59,7 +59,7 @@ const CanvasToolbar = props => {
 
     return (
         <>
-            <div id="toolbar">
+            <div id="canvas-toolbar">
                 {buttons.map(({ icon: Icon, text, additionalContent, color }) => (
                     <Button key={text} variant="contained" component="label" style={{ margin: "5px" }} className="canvas-button">
                         <Icon fontSize="small" style={{ margin: "5px", color: color ?? "white" }} />

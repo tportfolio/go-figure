@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-import FigureDrawingSettings from './FigureDrawingSettings';
-import ActiveDrawingSessionLayout from './ActiveDrawingSessionLayout';
-import FigureDrawingResults from "./FigureDrawingResults";
+import FigureDrawingSettings from './settings/FigureDrawingSettings';
+import ActiveDrawingSessionLayout from './activesession/ActiveDrawingSessionLayout';
+import FigureDrawingResults from "./results/FigureDrawingResults";
 import { SessionState } from "./figureDrawingConstants";
 import { appendToSessionHistory } from '../../store/FigureDrawingReducer';
 import { channels } from '../../channels';
+
+import "./figuredrawing.css";
 
 const formatTimeString = ms => {
     let hours, minutes, seconds;
@@ -41,7 +43,7 @@ const FigureDrawing = props => {
             if (saveSessionData) {
                 window.api.send(channels.STATS_SAVE_TO_FILE, session);
             }
-            
+
             props.appendToSessionHistory(session);
             setTimeElapsed(timeDiff);
         }

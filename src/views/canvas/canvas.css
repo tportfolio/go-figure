@@ -14,28 +14,7 @@
     outline: none !important;
 }
 
-.disabled-canvas {
-    pointer-events: none;
-    cursor: default;
-}
-
-.modifiable-image {
-    z-index: 7;
-}
-
-.modifiable-image.selected {
-    z-index: 8;
-}
-
-img.selected {
-    box-shadow: 0 0 5px 5px #aef4af;
-}
-
-.modifiable-image.selected.dragging {
-    z-index: 9;
-}
-
-#toolbar {
+#canvas-toolbar {
     z-index: 10;
     bottom: 10px;
     width: 50%;
@@ -51,4 +30,26 @@ img.selected {
     text-align: center;
     margin: 0 4px;
     max-width: 300px;
+}
+
+/* class name from react-sketch for disabled canvas */
+.disabled-canvas {
+    pointer-events: none;
+    cursor: default;
+}
+
+img.selected {
+    box-shadow: 0 0 5px 5px #aef4af;
+}
+
+.modifiable-image {
+    z-index: 7;
+}
+
+.modifiable-image.selected {
+    z-index: 8;
+}
+
+.modifiable-image.selected.dragging {
+    z-index: 9;
 }

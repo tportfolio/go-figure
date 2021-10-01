@@ -25,98 +25,11 @@
     font-size: 48px !important;
 }
 
-.stats-container {
-    width: 90%;
-}
-
-.figure-drawing-settings-container, #figure-drawing-results-container {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-}
-
-.figure-drawing-settings, #figure-drawing-results {
-    padding: 20px 0 !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 90%;
-}
-
-.figure-drawing-settings {
-    height: 60%;
-}
-
-#figure-drawing-results {
-    height: 40%;
-}
-
-.figure-drawing-setting, .figure-drawing-result-data {
-    width: 90%;
-    flex-grow: 1;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.current-image-container {
-    padding: 0.5% 0;
-    height: 89%;
-    max-width: 97.5%;
-}
-
-.current-image {
-    max-height: 100%;
-    max-width: 100%;
-}
-
 .vertically-centered {
     /* for vertical centering: https://stackoverflow.com/a/28424339 */
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-}
-  
-.figure-drawing-buttons-container {
-    flex-grow: 2;
-    display: flex;
-    flex-direction: row;
-}
-
-.MuiIconButton-root.figure-drawing-button {
-    max-width: 70px;
-    max-height: 70px;
-    width: auto;
-    height: auto;
-    margin: 0 4px;
-    color: white;
-    align-self: center;
-}
-
-.current-image-timer-container {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-}
-
-.current-image-timer, .current-image-time-remaining  {
-    height: 20px;
-    width: 500px;
-    display: flex;
-    justify-content: center;
-}
-
-.current-image-time-remaining {
-    position: absolute;
-    z-index: 1;
-    transform: translateY(-25%);
-}
-
-.fade-out {
-    opacity: 0;
-    -webkit-transition: opacity 5000ms linear;
-    transition: opacity 5000ms linear;
 }
 
 .accordion-container .MuiAccordion-root {

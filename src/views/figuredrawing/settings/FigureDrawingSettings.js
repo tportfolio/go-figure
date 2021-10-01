@@ -7,11 +7,13 @@ import {
 } from '@mui/icons-material';
 import classNames from 'classnames';
 
-import { setSessionState, setImageDuration, setMaxImages, SortOrder, setSortOrder } from "../../store/FigureDrawingReducer";
-import SettingsSlider from './settings/SettingsSlider';
-import SettingsRadioButtonGroup from './settings/SettingsRadioButtonGroup';
-import { SessionState } from './figureDrawingConstants';
-import { channels } from '../../channels';
+import { setSessionState, setImageDuration, setMaxImages, SortOrder, setSortOrder } from "../../../store/FigureDrawingReducer";
+import SettingsSlider from './SettingsSlider';
+import SettingsRadioButtonGroup from './SettingsRadioButtonGroup';
+import { SessionState } from './../figureDrawingConstants';
+import { channels } from '../../../channels';
+
+import "./sessionsettings.css";
 
 const DurationSlider = props => {
     return (
@@ -63,7 +65,7 @@ const FileInputSelect = () => {
     }
 
     return (
-        <div className="figure-drawing-setting">
+        <div className="figure-drawing-display-panel-row">
             <Button
                 variant="contained"
                 component="label"
@@ -102,9 +104,9 @@ const StartSessionButton = props => {
 
 const FigureDrawingSettings = props => {
     return (
-        <div className={classNames("view-container", "figure-drawing-settings-container")}>
+        <div className={classNames("view-container", "figure-drawing-display-panel-container")}>
             <p className="view-header">New Session Settings</p>
-            <Paper className="figure-drawing-settings" elevation={3}>
+            <Paper id="figure-drawing-settings" className={"figure-drawing-display-panel-body"} elevation={3}>
                 <DurationSlider
                     duration={props.imageDuration}
                     onChangeHandler={props.setImageDuration}

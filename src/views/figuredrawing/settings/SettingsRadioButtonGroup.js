@@ -5,7 +5,7 @@ import { FormControl, FormControlLabel, RadioGroup, Radio, Typography } from '@m
 const SettingsRadioButtonGroup = props => {
     const { header, options, selected, onChangeHandler } = props;
     return (
-        <div className="figure-drawing-setting">
+        <div className="figure-drawing-display-panel-row">
             <FormControl component="fieldset">
                 <Typography gutterBottom>
                     {header}

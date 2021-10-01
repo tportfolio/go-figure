@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import moment from "moment";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
 
+import "./stats.css";
+
 const dataProps = [
     {
         field: "timeElapsedSecs",
@@ -88,7 +90,7 @@ const StatsOverview = props => {
     const classes = useStyles();
 
     return (
-        <div className={classNames("view-container", "stats-container")}>
+        <div id="stats-container" className="view-container" >
             <p className="view-header">Figure Drawing Statistics</p>
             <ButtonGroup variant="contained" style={{ marginBottom: "50px" }}>
                 {buttons.map(button => (

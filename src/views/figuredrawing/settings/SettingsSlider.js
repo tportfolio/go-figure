@@ -24,7 +24,7 @@ const SettingsSlider = props => {
     };
 
     return (
-        <div className="figure-drawing-setting">
+        <div className="figure-drawing-display-panel-row">
             <Typography gutterBottom>
                 {header}
             </Typography>

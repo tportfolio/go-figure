@@ -10,8 +10,10 @@ import RestartButton from './buttons/RestartButton';
 import StopButton from './buttons/StopButton';
 import ForwardButton from './buttons/ForwardButton';
 import RewindButton from './buttons/RewindButton';
-import { setSessionState, SortOrder } from "../../store/FigureDrawingReducer";
-import { SessionState } from './figureDrawingConstants';
+import { setSessionState, SortOrder } from "../../../store/FigureDrawingReducer";
+import { SessionState } from '../figureDrawingConstants';
+
+import "./activesession.css";
 
 const MAX_PROGRESS_COUNTER_VALUE = 100;
 const FADE_DURATION_SECS = 5;
@@ -95,21 +97,21 @@ const ActiveDrawingSessionLayout = props => {
 
     return (
         <>
-            <div className="current-image-container">
+            <div id="current-image-container">
                 {/* note: key property is needed to force image to refresh during transition; see https://stackoverflow.com/a/62934425 */}
-                <img className={classNames("current-image", "vertically-centered", { "fade-out": secsRemaining <= 5 && isActive })}
+                <img id="current-image" className={classNames("vertically-centered", { "fade-out": secsRemaining <= 5 && isActive })}
                     src={sortedImages[imageIndex]?.blob}
                     key={imageIndex}
                     alt=""
                 />
             </div>
-            <div className="current-image-timer-container">
-                <Typography className="current-image-time-remaining" style={{color: theme.palette.primary.dark}}>
+            <div id="current-image-timer-container">
+                <Typography id="current-image-time-remaining" style={{color: theme.palette.primary.dark}}>
                     {secsRemaining}
                 </Typography>
-                <LinearProgress className="current-image-timer" variant="determinate" value={secsRemaining * increment} />
+                <LinearProgress id="current-image-timer" variant="determinate" value={secsRemaining * increment} />
             </div>
-            <div className="figure-drawing-buttons-container">
+            <div id="figure-drawing-buttons-container">
                 <RestartButton onClickHandler={refreshTimer} />
                 <RewindButton onClickHandler={goToPrevious} />
                 <PlayPauseButton onClickHandler={toggleActiveState} isActive={isActive} />
