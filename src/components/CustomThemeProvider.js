@@ -29,8 +29,20 @@ const monochromeTheme = createTheme({
     palette: {
         primary: { light: "#777", main: "#444", dark: "#111" },
         secondary: { light: "#EEE", main: "#444", dark: "#000" },
-        background: {
-            default: "#222"
+        background: { 
+            default: "#2d2d2d"
+        },
+        action: {
+            disabledBackground: "rgba(0, 0, 0, 0.3)"
+        },
+    },
+    components: {
+        MuiLinearProgress: {
+            styleOverrides: {
+                bar1Determinate: { 
+                    background: "#7e7e7e" 
+                },
+            }
         }
     },
     ...typography

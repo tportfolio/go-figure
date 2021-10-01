@@ -86,15 +86,17 @@ const FileInputSelect = () => {
 }
 
 const StartSessionButton = props => {
+    const { isEnabled, onClickHandler } = props;
+
     return (
         <Button
             variant="contained"
             component="label"
-            disabled={!props.numImages}
-            onClick={props.onClickHandler}
-            style={{ marginTop: "20px" }}
+            disabled={!isEnabled}
+            onClick={onClickHandler}
+            style={{ marginTop: "20px", opacity: isEnabled ? "100%" : "50%" }}
         >
-            <ImageIcon fontSize="small" style={{ paddingRight: "10px" }} />
+            <ImageIcon fontSize="large" style={{ paddingRight: "10px", color: "white" }} />
             <Typography style={{ color: "white" }}>
                 Start session
             </Typography>
@@ -122,7 +124,7 @@ const FigureDrawingSettings = props => {
                 <FileInputSelect />
             </Paper>
             <StartSessionButton
-                numImages={Object.keys(props.sessionImages).length}
+                isEnabled={Object.keys(props.sessionImages).length}
                 onClickHandler={() => props.setSessionState(SessionState.RUNNING)}
             />
         </div>
