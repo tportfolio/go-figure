@@ -9,16 +9,7 @@ import ClearSharpIcon from '@mui/icons-material/ClearSharp';
 import { withTheme } from '@mui/styles';
 
 import { channels } from "../../channels";
-
-const onChangeHandler = event => {
-    console.log('onchange handler called');
-    const { files } = event.target; // this is a FileList; convert to array for ease
-    if (files.length > 0) {
-        const fileArray = Array.from(files).map(f => f.path);
-        console.log(fileArray);
-        window.api.send(channels.CANVAS_REQUEST_FILES, fileArray);
-    }
-}
+import { requestImages } from '../../utils/utils';
 
 const buttons = [
     {
@@ -30,7 +21,7 @@ const buttons = [
                 style={{ display: 'none' }}
                 multiple
                 type="file"
-                onChange={onChangeHandler}
+                onChange={requestImages(channels.CANVAS_REQUEST_FILES)}
             />
         )
     },

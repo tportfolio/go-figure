@@ -12,6 +12,7 @@ import SettingsSlider from './SettingsSlider';
 import SettingsRadioButtonGroup from './SettingsRadioButtonGroup';
 import { SessionState } from './../figureDrawingConstants';
 import { channels } from '../../../channels';
+import { requestImages } from '../../../utils/utils';
 
 import "./sessionsettings.css";
 
@@ -55,15 +56,6 @@ const OrderingRadioButtons = props => {
 }
 
 const FileInputSelect = () => {
-    const onChangeHandler = event => {
-        const { files } = event.target; // this is a FileList; convert to array for ease
-        if (files.length > 0) {
-            const fileArray = Array.from(files).map(f => f.path);
-            console.log(fileArray);
-            window.api.send(channels.FIGURE_DRAWING_REQUEST_FILES, fileArray);
-        }
-    }
-
     return (
         <div className="figure-drawing-display-panel-row">
             <Button
@@ -78,7 +70,7 @@ const FileInputSelect = () => {
                     style={{ display: 'none' }}
                     multiple
                     type="file"
-                    onChange={onChangeHandler}
+                    onChange={requestImages(channels.FIGURE_DRAWING_REQUEST_FILES)}
                 />
             </Button>
         </div>

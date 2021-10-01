@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import * as logger from 'loglevel';
 
 import FigureDrawingSettings from './settings/FigureDrawingSettings';
 import ActiveDrawingSessionLayout from './activesession/ActiveDrawingSessionLayout';
@@ -62,7 +63,7 @@ const FigureDrawing = props => {
                 />
             );
         default:
-            console.warn(`Unknown session state ${sessionState}`);
+            logger.warn(`Unknown session state ${sessionState}`);
             return null;
     }
 }

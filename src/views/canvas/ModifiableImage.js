@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from "classnames";
 import { Resizable } from "re-resizable";
+import * as logger from 'loglevel';
 
 import { updatePictureState, togglePictureSelection } from "../../store/ImageCacheReducer";
 
@@ -43,8 +44,8 @@ class ModifiableImage extends React.Component {
         const { left, top, width, height } = this.ref.current.getBoundingClientRect();
         const { pageX, pageY } = e;
 
-        console.log(`left is ${left}, top is ${top}, width is ${width}, height is ${height}`);
-        console.log(`mouse x is ${pageX}, mouse y is ${pageY}`);
+        logger.trace(`mouseDownHandler: left is ${left}, top is ${top}, width is ${width}, height is ${height}`);
+        logger.trace(`mouseDownHandler: mouse x is ${pageX}, mouse y is ${pageY}`);
 
         if (e.shiftKey) {
             const boxCenterX = left + width / 2;

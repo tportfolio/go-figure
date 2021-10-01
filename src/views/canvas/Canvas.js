@@ -51,7 +51,7 @@ const Canvas = props => {
 
     const onDrop = acceptedFiles => {
         for (let f of acceptedFiles) {
-            console.log(`Received file from drag 'n' drop with name ${f.name} and size ${f.size}`);
+            logger.debug(`Received file from drag 'n' drop with name ${f.name} and size ${f.size}`);
             const reader = new FileReader();
             reader.readAsDataURL(f);
             reader.onload = () => {

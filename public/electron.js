@@ -66,8 +66,6 @@ const writeToFile = (path, data) => {
  */
 const retrieveImages = receiverChannel => {
     return (event, args) => {
-        console.log(args);
-
         args.forEach(f => {
             fs.readFile(f, "base64", (error, data) => {
                 const metadata = {
@@ -127,7 +125,7 @@ ipcMain.on(channels.SETTINGS_SAVE_TO_FILE, (event, args) => {
     const newSettings = { ...existingSettings, ...args };
 
     writeToFile(SETTINGS_FILE_PATH, newSettings);
-    console.log(`Saved settings: ${JSON.stringify(newSettings)}`);
+    console.debug(`Saved settings: ${JSON.stringify(newSettings)}`);
 });
 
 /**
@@ -135,7 +133,7 @@ ipcMain.on(channels.SETTINGS_SAVE_TO_FILE, (event, args) => {
  */
 ipcMain.on(channels.SETTINGS_LOAD_FROM_FILE, (event, args) => {
     if (!fs.existsSync(SETTINGS_FILE_PATH)) {
-        console.log(`Settings file does not exist, writing default args to file`);
+        console.trace(`Settings file does not exist, writing default args to file`);
         writeToFile(SETTINGS_FILE_PATH, args);
     }
 

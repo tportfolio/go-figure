@@ -28,3 +28,12 @@ export const mapEntryToAccordion = ({ summary, details, component }) => {
         </Accordion>
     );
 }
+
+export const requestImages = channel => event => {
+    const { files } = event.target; // this is a FileList; convert to array for ease
+    if (files.length > 0) {
+        const fileArray = Array.from(files).map(f => f.path);
+        logger.debug(`Requesting the following files on channel ${channel}: ${JSON.stringify(fileArray)}`);
+        window.api.send(channel, fileArray);
+    }
+}

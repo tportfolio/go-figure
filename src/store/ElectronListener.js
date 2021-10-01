@@ -25,7 +25,7 @@ const ElectronListener = props => {
     });   
 
     window.api.receive(channels.FIGURE_DRAWING_REQUEST_FILES_CALLBACK, data => {
-        logger.info(`Received ${data.filename} of size ${data.filesize} for figure drawing session`);
+        logger.trace(`Received ${data.filename} of size ${data.filesize} for figure drawing session`);
         props.addSessionImage(data);
     });   
 
@@ -35,7 +35,7 @@ const ElectronListener = props => {
     });
 
     window.api.receive(channels.SETTINGS_LOAD_CALLBACK, data => {
-        logger.info(`Received settings: ${JSON.stringify(data)}`);
+        logger.info(`Received saved settings: ${JSON.stringify(data)}`);
         props.loadSettings(data);
     });
 
