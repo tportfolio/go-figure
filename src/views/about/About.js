@@ -12,13 +12,25 @@ const faqEntries = [
         for figure drawing and image reference organization.`
     },
     {
-        summary: "What are the hot keys for the program?",
+        summary: "What are the hot keys for the reference canvas?",
         details: (
             <span>
-                DEL - removes highlighted image(s)<br />
-                CTRL - selects/deselects image on click
+                <b>C</b> - toggles drawing ability on canvas<br />
+                <b>CTRL + A</b> - selects all images on canvas<br />
+                <b>CTRL + D</b> - deselects all images on canvas<br />
+                <b>H</b> - horizontally mirrors selected image(s)<br />
+                <b>V</b> - vertically mirrors selected image(s)<br />
+                <b>[0-9]</b> - changes opacity of selected images(s), where 0 = 100% opacity<br />
+                <b>DEL</b> - removes selected image(s)<br />
+                <b>CTRL</b> - selects/deselects image on click<br />
+                <b>SHIFT</b> - rotates image on click and drag<br />
             </span>
         )
+    },
+    {
+        summary: "Where can application files be found on my machine?",
+        details: <span>All files are written to <i>/path/to/home/.go-figure</i>.</span>,
+
     }
 ];
 
