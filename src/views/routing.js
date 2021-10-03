@@ -2,17 +2,22 @@ import React from 'react';
 import { Route, HashRouter } from 'react-router-dom';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 
-import Canvas from "./canvas/Canvas";
-import FigureDrawing from "./figuredrawing/FigureDrawing";
-import StatsOverview from "./stats/StatsOverview";
-import Settings from "./settings/Settings";
-import About from "./about/About";
-import App from "../App";
+import Canvas from './canvas/Canvas';
+import FigureDrawing from './figuredrawing/FigureDrawing';
+import StatsOverview from './stats/StatsOverview';
+import Settings from './settings/Settings';
+import About from './about/About';
+import App from '../App';
 import Sidebar from "../components/Sidebar";
+
 import "./views.css";
 
+// hides parent div of any route that is currently inactive
 const styling = cached => cached ? { style: { display: "none" }} : { className: "cached-view-container" };
 
+/**
+ * List of distinct pages reachable from sidebar.
+ */
 const routes = [
     {
         path: "/canvas",
@@ -37,6 +42,10 @@ const routes = [
     
 ]
 
+/**
+ * Maps route descriptions to components.
+ * @returns Router component
+ */
 const Router = () => {
     return (
         <HashRouter>

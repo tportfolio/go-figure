@@ -1,21 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Paper, Button, Typography } from '@mui/material';
-import {
-    AccessTime as AccessTimeIcon,
-    Image as ImageIcon
-} from '@mui/icons-material';
+import { AccessTime as AccessTimeIcon, Image as ImageIcon } from '@mui/icons-material';
 import classNames from 'classnames';
 
-import { setSessionState, setImageDuration, setMaxImages, SortOrder, setSortOrder } from "../../../store/FigureDrawingReducer";
+import { 
+    setSessionState, 
+    setImageDuration, 
+    setMaxImages, 
+    SortOrder, 
+    setSortOrder 
+} from '../../../store/FigureDrawingReducer';
 import SettingsSlider from './SettingsSlider';
 import SettingsRadioButtonGroup from './SettingsRadioButtonGroup';
 import { SessionState } from './../figureDrawingConstants';
 import { channels } from '../../../channels';
 import { requestImages } from '../../../utils/utils';
 
-import "./sessionsettings.css";
+import './sessionsettings.css';
 
+/**
+ * Controls duration per image.
+ * @param {*} props 
+ * @returns DurationSlider component
+ */
 const DurationSlider = props => {
     return (
         <SettingsSlider
@@ -30,6 +38,11 @@ const DurationSlider = props => {
     );
 };
 
+/**
+ * Controls max images per session.
+ * @param {*} props 
+ * @returns MaxImagesSlider component
+ */
 const MaxImagesSlider = props => {
     return (
         <SettingsSlider
@@ -44,6 +57,11 @@ const MaxImagesSlider = props => {
     );
 }
 
+/**
+ * Controls ordering of images during session.
+ * @param {*} props 
+ * @returns OrderingRadioButtons component
+ */
 const OrderingRadioButtons = props => {
     return (
         <SettingsRadioButtonGroup
@@ -55,6 +73,10 @@ const OrderingRadioButtons = props => {
     );
 }
 
+/**
+ * Allows user to select images from file explorer to use during session.
+ * @returns FileInputSelect component
+ */
 const FileInputSelect = () => {
     return (
         <div className="figure-drawing-display-panel-row">
@@ -77,6 +99,11 @@ const FileInputSelect = () => {
     )
 }
 
+/**
+ * Transitions figure drawing route to active session state.
+ * @param {*} props 
+ * @returns 
+ */
 const StartSessionButton = props => {
     const { isEnabled, onClickHandler } = props;
 
@@ -96,6 +123,11 @@ const StartSessionButton = props => {
     );
 }
 
+/**
+ * Displays entirety of figure drawing settings, including start button.
+ * @param {*} props 
+ * @returns FigureDrawingSettings component
+ */
 const FigureDrawingSettings = props => {
     return (
         <div className={classNames("view-container", "figure-drawing-display-panel-container")}>

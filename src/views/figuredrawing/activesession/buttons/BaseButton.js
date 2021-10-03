@@ -2,6 +2,11 @@ import React from 'react';
 import { makeStyles } from '@mui/styles';
 import IconButton from '@mui/material/IconButton';
 
+/**
+ * Baseline button for active drawing session.
+ * @param {*} props 
+ * @returns BaseButton component
+ */
 const BaseButton = props => {
     const useStyles = makeStyles(theme => ({
         root: {

@@ -1,8 +1,14 @@
 import React from 'react';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
+
 import BaseButton from './BaseButton';
 
-const RestartButton = props => {
+/**
+ * Refreshes the time for current image.
+ * @param {*} props 
+ * @returns RefreshButton component
+ */
+const RefreshButton = props => {
     return (
         <BaseButton
             onClickHandler={props.onClickHandler}
@@ -12,4 +18,4 @@ const RestartButton = props => {
     );
 };
 
-export default RestartButton;
+export default RefreshButton;

@@ -8,10 +8,21 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as logger from 'loglevel';
 
-// https://stackoverflow.com/a/34842797
-export const imageHash = s => '' + (s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0) >>> 0); //bit shift in order to get unsigned integer
+/**
+ * Utility method to get hash from base64 string. 
+ * Bit shift at end in order to get unsigned integer.
+ * From: https://stackoverflow.com/a/34842797
+ * @param {*} s - base64 string
+ * @returns hash value
+ */
+export const imageHash = s => '' + (s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0) >>> 0); 
 
-// baseline source from simple accordion example: https://material-ui.com/components/accordion/
+/**
+ * Creates accordion component from JSON object.
+ * Baseline source from: https://material-ui.com/components/accordion/
+ * @param {*} (object with summary, details, and component type [optional] provided) 
+ * @returns accordion component
+ */
 export const mapEntryToAccordion = ({ summary, details, component }) => {
     return (
         <Accordion key={summary}>
@@ -30,6 +41,11 @@ export const mapEntryToAccordion = ({ summary, details, component }) => {
     );
 }
 
+/**
+ * Request files to loaded on a certain data channel.
+ * @param {*} channel - requesting channel
+ * @returns none
+ */
 export const requestImages = channel => event => {
     const { files } = event.target; // this is a FileList; convert to array for ease
     if (files.length > 0) {

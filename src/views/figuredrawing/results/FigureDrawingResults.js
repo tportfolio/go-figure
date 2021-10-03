@@ -7,11 +7,16 @@ import {
     Image as ImageIcon
 } from '@mui/icons-material';
 
-import { setSessionState } from "../../../store/FigureDrawingReducer";
+import { setSessionState } from '../../../store/FigureDrawingReducer';
 import { SessionState } from '../figureDrawingConstants';
 
-import "./sessionresults.css";
+import './sessionresults.css';
 
+/**
+ * Brings user back to settings menu for figure drawing.
+ * @param {*} props 
+ * @returns SettingsReturnButton component
+ */
 const SettingsReturnButton = props => {
     return (
         <div className="figure-drawing-display-panel-row">
@@ -28,6 +33,9 @@ const SettingsReturnButton = props => {
     )
 }
 
+/**
+ * List of data points to display.
+ */
 const dataEntries = [
     {
         prefix: "Time elapsed",
@@ -41,18 +49,28 @@ const dataEntries = [
     }
 ];
 
+/**
+ * Representation of each row of data in results.
+ * @param {*} props 
+ * @returns ResultData component
+ */
 const ResultData = props => {
     const {prefix, suffix, icon: Icon} = props;
     return (
         <div className="figure-drawing-display-panel-row">
             <Typography variant={"h4"}>
-                <Icon fontSize={"20px"} className="vertically-centered" style={{ paddingRight: "10px" }} />
+                <Icon className="vertically-centered" fontSize={"20px"} style={{ paddingRight: "10px" }} />
                 <b>{prefix}:</b> {suffix}
             </Typography>
         </div>
     );
 }
 
+/**
+ * Shows all results from figure drawing session.
+ * @param {*} props 
+ * @returns FigureDrawingResults component
+ */
 const FigureDrawingResults = props => {
     return (
         <div className={classNames("view-container", "figure-drawing-display-panel-container")} >

@@ -1,16 +1,16 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { connect } from 'react-redux';
-import keys from "lodash/keys";
 import { SketchField, Tools } from 'react-sketch';
 import { useHotkeys } from 'react-hotkeys-hook';
-import classNames from "classnames";
-import * as logger from 'loglevel';
+import classNames from 'classnames';
+import { range } from 'lodash';
 import { makeStyles } from '@mui/styles';
+import * as logger from 'loglevel';
 
-import CanvasToolbar from "./CanvasToolbar";
-import ModifiableImage from "./ModifiableImage";
-import { toggleWritingEnabled } from "../../store/CanvasSettingsReducer";
+import CanvasToolbar from './CanvasToolbar';
+import ModifiableImage from './ModifiableImage';
+import { toggleWritingEnabled } from '../../store/CanvasSettingsReducer';
 import {
     updateSelectedPictureProperties,
     selectAllPictures,
@@ -18,37 +18,48 @@ import {
     deleteSelectedImages,
     toggleSelectedPictureProperty,
     addPicture
-} from "../../store/ImageCacheReducer";
+} from '../../store/ImageCacheReducer';
 
-import "./canvas.css";
+import './canvas.css';
 
+/**
+ * Representation of canvas route display.
+ * @param {*} props 
+ * @returns Canvas component
+ */
 const Canvas = props => {
-    const useStyles = makeStyles(theme => ({
-        canvas: {
-            marginLeft: theme.spacing(7)
-        }
-    }));
-
     const [canvasHeight, setCanvasHeight] = React.useState(window.innerHeight);
 
+    // adjust sketch canvas dimensions whenever window size updates
     React.useEffect(() => {
         const handleResize = () => setCanvasHeight(window.innerHeight);
         window.addEventListener('resize', handleResize);
-
         return () => window.removeEventListener('resize', handleResize);
-     }, []);
+    }, []);
 
-    // redux data:
+    // Redux data
     const { pictures, isCanvasWritingEnabled } = props;
 
-    // redux setters:
-    const { updateSelectedPictureProperties, toggleCanvasEnabledState, selectAllPictures, clearSelection, deleteSelected, toggleSelectedPictureProperty } = props;
+    // Redux setters
+    const {
+        addPicture,
+        updateSelectedPictureProperties,
+        toggleCanvasEnabledState,
+        selectAllPictures,
+        clearSelection,
+        deleteSelected,
+        toggleSelectedPictureProperty
+    } = props;
 
     let canvasProps = { tool: Tools.Pencil, lineColor: 'black', lineWidth: 3 };
     if (canvasHeight) {
         canvasProps = { ...canvasProps, height: canvasHeight, className: classNames({ "disabled-canvas": !isCanvasWritingEnabled }) };
     }
 
+    /**
+     * Load images that are dropped onto the canvas.
+     * @param {*} acceptedFiles - image files
+     */
     const onDrop = acceptedFiles => {
         for (let f of acceptedFiles) {
             logger.debug(`Received file from drag 'n' drop with name ${f.name} and size ${f.size}`);
@@ -56,23 +67,13 @@ const Canvas = props => {
             reader.readAsDataURL(f);
             reader.onload = () => {
                 const base64Data = reader.result.split(',')[1];
-                props.addPicture({ data: base64Data });
+                addPicture({ data: base64Data });
             };
         }
     };
-
     const { getRootProps, getInputProps } = useDropzone({ onDrop, noClick: true })
 
-    useHotkeys('1', () => updateSelectedPictureProperties({ opacity: 0.1 }));
-    useHotkeys('2', () => updateSelectedPictureProperties({ opacity: 0.2 }));
-    useHotkeys('3', () => updateSelectedPictureProperties({ opacity: 0.3 }));
-    useHotkeys('4', () => updateSelectedPictureProperties({ opacity: 0.4 }));
-    useHotkeys('5', () => updateSelectedPictureProperties({ opacity: 0.5 }));
-    useHotkeys('6', () => updateSelectedPictureProperties({ opacity: 0.6 }));
-    useHotkeys('7', () => updateSelectedPictureProperties({ opacity: 0.7 }));
-    useHotkeys('8', () => updateSelectedPictureProperties({ opacity: 0.8 }));
-    useHotkeys('9', () => updateSelectedPictureProperties({ opacity: 0.9 }));
-    useHotkeys('0', () => updateSelectedPictureProperties({ opacity: 1 }));
+    // single use hot keys
     useHotkeys('c', () => toggleCanvasEnabledState());
     useHotkeys('ctrl+a', e => {
         e.preventDefault(); // don't want the standard select all behavior from browser
@@ -83,6 +84,19 @@ const Canvas = props => {
     useHotkeys('h', () => toggleSelectedPictureProperty("mirrorH"));
     useHotkeys('v', () => toggleSelectedPictureProperty("mirrorV"));
 
+    // keys 0 to 9; written out to string as "0, 1, 2..."
+    useHotkeys(range(10).map(i => i.toString()).join(', '), (_, handler) => {
+        const keyToNum = Number(handler.key);
+        const opacity = keyToNum === 0 ? 1 : keyToNum / 10;
+        updateSelectedPictureProperties({ opacity });
+    });
+
+    // add margin to left side of view to account for sidebar
+    const useStyles = makeStyles(theme => ({
+        canvas: {
+            marginLeft: theme.spacing(7)
+        }
+    }));
     const classes = useStyles();
 
     return (
@@ -123,7 +137,7 @@ const mapDispatchToProps = dispatch => {
 // 1. canvas only cares when the number of pictures changes on the screen; the pictures themselves are self-managing
 // 2. canvas needs to know when hot key for canvas enabling has changed
 const isEqual = (prevProps, nextProps) => {
-    const isKeyLengthEqual = keys(prevProps.pictures).length === keys(nextProps.pictures).length;
+    const isKeyLengthEqual = Object.keys(prevProps.pictures).length === Object.keys(nextProps.pictures).length;
     const isCanvasStateEqual = prevProps.isCanvasWritingEnabled === nextProps.isCanvasWritingEnabled;
     return isKeyLengthEqual && isCanvasStateEqual;
 }

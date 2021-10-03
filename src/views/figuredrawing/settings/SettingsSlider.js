@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Slider, Typography, Grid, Input } from '@mui/material';
 
-// base example from: https://mui.com/components/slider/#InputSlider.js
+/**
+ * Slider that manipulates a numeric setting for figure drawing session.
+ * base example from: https://mui.com/components/slider/#InputSlider.js
+ * @param {*} props 
+ * @returns SettingsSlider component
+ */
 const SettingsSlider = props => {
     const { minValue, maxValue, step, defaultValue, header, displayIcon, onChangeHandler } = props;
     const [value, setValue] = useState(defaultValue);
@@ -15,6 +20,7 @@ const SettingsSlider = props => {
         setValue(event.target.value === '' ? '' : Number(event.target.value));
     };
 
+    // correct value within range upon losing focus
     const handleBlur = () => {
         if (value < minValue) {
             setValue(minValue);

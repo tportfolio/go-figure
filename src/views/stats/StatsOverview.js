@@ -7,6 +7,10 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 import "./stats.css";
 
+// controls how to display data (separate or cumulative)
+const buttons = ["Individual", "Aggregate"];
+
+// fields to use as y axis, with color prop
 const dataProps = [
     {
         field: "timeElapsedSecs",
@@ -17,8 +21,6 @@ const dataProps = [
         color: "#f0a667"
     }
 ];
-
-const buttons = ["Individual", "Aggregate"];
 
 /**
  * Creates area chart based on input data and props.
@@ -53,6 +55,11 @@ const createAreaChart = (data, x, y, color) => {
     );
 }
 
+/**
+ * Renders historical figure drawing statistics.
+ * @param {*} props 
+ * @returns StatsOverview component
+ */
 const StatsOverview = props => {
     const useStyles = makeStyles((theme) => ({
         button: {
@@ -75,6 +82,7 @@ const StatsOverview = props => {
         }
     });
 
+    // sum over each y-axis field for this option
     if (selectedButton === "Aggregate") {
         data.reduce((acc, cur, i) => {
             const timeElapsedSecs = acc.timeElapsedSecs + cur.timeElapsedSecs;

@@ -2,6 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import { mapEntryToAccordion } from '../../utils/utils';
 
+/**
+ * Objects to be represented as accordion entries. 
+ */
 const faqEntries = [
     {
         summary: "What is Go Figure?",
@@ -19,6 +22,10 @@ const faqEntries = [
     }
 ];
 
+/**
+ * Creates a list of accordion entries for the above object list.
+ * @returns About component
+ */
 const About = () => {
     return (
         <div className={classNames("view-container", "accordion-container")}>

@@ -4,13 +4,18 @@ import * as logger from 'loglevel';
 
 import FigureDrawingSettings from './settings/FigureDrawingSettings';
 import ActiveDrawingSessionLayout from './activesession/ActiveDrawingSessionLayout';
-import FigureDrawingResults from "./results/FigureDrawingResults";
-import { SessionState } from "./figureDrawingConstants";
+import FigureDrawingResults from './results/FigureDrawingResults';
+import { SessionState } from './figureDrawingConstants';
 import { appendToSessionHistory } from '../../store/FigureDrawingReducer';
 import { channels } from '../../channels';
 
-import "./figuredrawing.css";
+import './figuredrawing.css';
 
+/**
+ * Writes out duration of session in human-readable format, e.g. 10 minutes, 45 seconds.
+ * @param {*} ms duration in milliseconds
+ * @returns human-readable duration string
+ */
 const formatTimeString = ms => {
     let hours, minutes, seconds;
     seconds = Math.floor(ms / 1000);
@@ -24,6 +29,11 @@ const formatTimeString = ms => {
     return Object.keys(units).map(valToString).filter(s => s).join(", ");
 };
 
+/**
+ * Wrapper that controls the figure drawing subpage that is actively rendered, based on state.
+ * @param {*} props 
+ * @returns figure drawing sub-component
+ */
 const FigureDrawing = props => {
     const { sessionState, sessionImages, saveSessionData, appendToSessionHistory } = props;
     const [timeStarted, setTimeStarted] = useState(0);

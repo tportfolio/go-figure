@@ -10,6 +10,9 @@ import ClearSharpIcon from '@mui/icons-material/ClearSharp';
 import { channels } from "../../channels";
 import { requestImages } from '../../utils/utils';
 
+/**
+ * Buttons available on the canvas toolbar.
+ */
 const buttons = [
     {
         icon: AddIcon,
@@ -44,13 +47,30 @@ const buttons = [
     }
 ];
 
+/**
+ * Toolbar that resides at the bottom of the canvas.
+ * @param {*} props 
+ * @returns 
+ */
 const CanvasToolbar = props => {
     return (
         <>
             <div id="canvas-toolbar">
                 {buttons.map(({ icon: Icon, text, additionalContent, color }) => (
-                    <Button key={text} variant="contained" component="label" style={{ margin: "5px" }} className="canvas-button">
-                        <Icon fontSize="small" style={{ margin: "5px", color: color ?? "white" }} />
+                    <Button
+                        className="canvas-button"
+                        key={text}
+                        variant="contained"
+                        component="label"
+                        style={{ margin: "5px" }}
+                    >
+                        <Icon
+                            fontSize="small"
+                            style={{
+                                margin: "5px",
+                                color: color ?? "white"
+                            }}
+                        />
                         <Typography style={{ color: color ?? "white" }}>
                             {text}
                         </Typography>

@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { shuffle } from 'lodash';
 
 import PlayPauseButton from './buttons/PlayPauseButton';
-import RestartButton from './buttons/RestartButton';
+import RefreshButton from './buttons/RefreshButton';
 import StopButton from './buttons/StopButton';
 import ForwardButton from './buttons/ForwardButton';
 import RewindButton from './buttons/RewindButton';
@@ -18,6 +18,11 @@ import "./activesession.css";
 const MAX_PROGRESS_COUNTER_VALUE = 100;
 const FADE_DURATION_SECS = 5;
 
+/**
+ * Representation of the entire active figure drawing session.
+ * @param {*} props 
+ * @returns ActiveDrawingSessionLayout component
+ */
 const ActiveDrawingSessionLayout = props => {
     const { setSessionState, imageDuration, images, maxImages, sortOrder, theme } = props;
     const [imageIndex, setImageIndex] = useState(0);
@@ -112,7 +117,7 @@ const ActiveDrawingSessionLayout = props => {
                 <LinearProgress id="current-image-timer" variant="determinate" value={secsRemaining * increment} />
             </div>
             <div id="figure-drawing-buttons-container">
-                <RestartButton onClickHandler={refreshTimer} />
+                <RefreshButton onClickHandler={refreshTimer} />
                 <RewindButton onClickHandler={goToPrevious} />
                 <PlayPauseButton onClickHandler={toggleActiveState} isActive={isActive} />
                 <ForwardButton onClickHandler={goToNext} />

@@ -3,6 +3,7 @@
     height: 100%;
 }
 
+/* parent-level div for canvas route */
 #canvas-wrapper-div {
     display: flex;
     justify-content: center;
@@ -14,8 +15,9 @@
     outline: none !important;
 }
 
+/* bottom area of canvas */
 #canvas-toolbar {
-    z-index: 10;
+    z-index: 10; /* always sits above images */
     bottom: 10px;
     width: 50%;
     position: absolute;
@@ -42,6 +44,7 @@ img.selected {
     box-shadow: 0 0 5px 5px #aef4af;
 }
 
+/* image on canvas */
 .modifiable-image {
     z-index: 7;
 }
