@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as logger from 'loglevel';
 
-import { addPicture } from "./ImageCacheReducer";
+import { addPicture } from './ImageCacheReducer';
 import { addSessionImage, initSessionHistory } from './FigureDrawingReducer';
 import { initialStateForElectron, loadSettings } from './SettingsReducer';
-import { channels } from "../channels";
+import { channels } from '../channels';
 
 /**
  * Kludge to separate out async return from the canvas itself.

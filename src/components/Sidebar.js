@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, withTheme } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { green, yellow, lightBlue, grey } from '@mui/material/colors';
 import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -14,7 +14,7 @@ import classNames from 'classnames';
 // baseline template from MUI:
 // https://material-ui.com/components/drawers/#MiniDrawer.js
 const drawerWidth = 300;
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     root: {
         position: "absolute", // drawer expands over body as opposed to pushing content over
         display: 'flex',
@@ -54,75 +54,68 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const topIcons = theme => {
+/**
+ * Routes that sit above the sidebar divider.
+ */
+const topIcons = [
+    {
+        icon: <PlayCircleFilledOutlinedIcon style={{ color: green["A700"] }} />,
+        text: "Start session",
+        link: "/figuredrawing"
+    },
+    {
+        icon: <PictureInPictureIcon style={{ color: yellow[700] }} />,
+        text: "Open reference canvas",
+        link: "/canvas"
+    },
+    {
+        icon: <EqualizerIcon style={{ color: lightBlue[700] }} />,
+        text: "View personal statistics",
+        link: "/statsoverview"
+    }
+];
+
+
+/**
+ * Routes that sit below the sidebar divider.
+ */
+const bottomIcons = [
+    {
+        icon: <SettingsIcon style={{ color: grey[500] }} />,
+        text: "Settings",
+        link: "/settings"
+    },
+    {
+        icon: <InfoIcon style={{ color: lightBlue[50] }} />,
+        text: "About app",
+        link: "/about"
+    }
+];
+
+/**
+ * Map icons to a MUI list containing route links.
+ * @param {*} icons - icons embodying routes
+ * @param {*} classes - styling
+ * @returns 
+ */
+const mapToIconList = (icons, classes) => {
     return (
-        [
-            {
-                icon: <PlayCircleFilledOutlinedIcon style={{ color: green["A700"] }} />,
-                text: "Start session",
-                link: "/figuredrawing"
-            },
-            {
-                icon: <PictureInPictureIcon style={{ color: yellow[700] }} />,
-                text: "Open reference canvas",
-                link: "/canvas"
-            },
-            {
-                icon: <EqualizerIcon style={{ color: lightBlue[700] }} />,
-                text: "View personal statistics",
-                link: "/statsoverview"
-            }
-        ]
+        <List>
+            {icons.map(i => (
+                <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                        <ListItemIcon>{i.icon}</ListItemIcon>
+                        <ListItemText primary={i.text} className={classes.list} />
+                    </ListItem>
+                </Link>
+            ))}
+        </List>
     )
 };
 
-const bottomIcons = theme => {
-    return (
-        [
-            {
-                icon: <SettingsIcon style={{ color: grey[500] }} />,
-                text: "Settings",
-                link: "/settings"
-            },
-            {
-                icon: <InfoIcon style={{ color: lightBlue[50] }} />,
-                text: "About app",
-                link: "/about"
-            }
-        ]
-    )
-};
-
-const MiniSidebar = props => {
-    const { theme } = props;
+const Sidebar = props => {
     const classes = useStyles();
     const [isExpanded, setExpanded] = React.useState(false);
-
-    const sideList = () => (
-        <>
-            <List>
-                {topIcons(theme).map(i => (
-                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
-                        <ListItem button>
-                            <ListItemIcon>{i.icon}</ListItemIcon>
-                            <ListItemText primary={i.text} className={classes.list} />
-                        </ListItem>
-                    </Link>
-                ))}
-            </List>
-            <Divider classes={{ root: classes.divider }} />
-            <List>
-                {bottomIcons(theme).map(i => (
-                    <Link to={i.link} key={i.text} style={{ textDecoration: 'none' }}>
-                        <ListItem button>
-                            <ListItemIcon>{i.icon}</ListItemIcon>
-                            <ListItemText primary={i.text} className={classes.list} />
-                        </ListItem>
-                    </Link>
-                ))}
-            </List>
-        </>
-    );
 
     const expandDrawer = React.useCallback(() => {
         setExpanded(true);
@@ -132,6 +125,13 @@ const MiniSidebar = props => {
         setExpanded(false);
     }, []);
 
+    const sideList = (
+        <>
+            {mapToIconList(topIcons, classes)}
+            <Divider classes={{ root: classes.divider }} />
+            {mapToIconList(bottomIcons, classes)}
+        </>
+    );
 
     return (
         <div className={classes.root}>
@@ -150,12 +150,10 @@ const MiniSidebar = props => {
                     }),
                 }}
             >
-                {sideList()}
+                {sideList}
             </Drawer>
         </div>
     );
 }
-
-const Sidebar = withTheme(MiniSidebar);
 
 export default Sidebar;

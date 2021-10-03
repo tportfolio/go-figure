@@ -25,7 +25,7 @@ const formatTimeString = ms => {
 };
 
 const FigureDrawing = props => {
-    const { sessionState, sessionImages, saveSessionData } = props;
+    const { sessionState, sessionImages, saveSessionData, appendToSessionHistory } = props;
     const [timeStarted, setTimeStarted] = useState(0);
     const [timeElapsed, setTimeElapsed] = useState(0);
 
@@ -45,10 +45,10 @@ const FigureDrawing = props => {
                 window.api.send(channels.STATS_SAVE_TO_FILE, session);
             }
 
-            props.appendToSessionHistory(session);
+            appendToSessionHistory(session);
             setTimeElapsed(timeDiff);
         }
-    }, [sessionState]);
+    }, [sessionState, sessionImages, timeStarted, saveSessionData, appendToSessionHistory]);
 
     switch (sessionState) {
         case SessionState.SELECT_SETTINGS:

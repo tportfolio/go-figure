@@ -14,17 +14,23 @@ const typography = {
     }
 };
 
+/**
+ * Blue theme used as the default setting for the app.
+ */
 const defaultTheme = createTheme({
     palette: {
-        primary: { light: "rgb(152, 177, 217)", main: "rgb(93, 115, 150)", dark: "rgb(31, 48, 68)" },
+        primary: { light: "#98b1d9", main: "#5d7396", dark: "#1f3044" },
         secondary: { light: "#f3f8ff", main: "#8696af", dark: "#315e8a" },
         background: {
-            default: "rgb(55, 73, 94)"
+            default: "#37495e"
         }
     },
     ...typography
 });
 
+/**
+ * Black and white theme available as a toggle option in settings.
+ */
 const monochromeTheme = createTheme({
     palette: {
         primary: { light: "#777", main: "#444", dark: "#111" },
@@ -48,6 +54,11 @@ const monochromeTheme = createTheme({
     ...typography
 });
 
+/**
+ * Wrapper for theme provider that changes theme based on toggle option in settings.
+ * @param {*} props 
+ * @returns ThemeProvider
+ */
 const CustomThemeProvider = props => {
     const theme = props.useMonochromeTheme ? monochromeTheme : defaultTheme;
     return (
@@ -58,6 +69,11 @@ const CustomThemeProvider = props => {
     );
 }
 
+/**
+ * Tie component to Redux for getting the state of the 'useMonochromeTheme' option.
+ * @param {*} state 
+ * @returns 
+ */
 const mapStateToProps = state => {
     return {
         useMonochromeTheme: state.settings.useMonochromeTheme

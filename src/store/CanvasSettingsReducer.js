@@ -1,25 +1,38 @@
-const TOGGLE_ENABLED = "TOGGLE_ENABLED";
+// valid action types for canvas reducer
+const CanvasActionTypes = Object.freeze({
+    TOGGLE_WRITING_ENABLED: "TOGGLE_WRITING_ENABLED"
+});
 
+// state representation for canvas
 const initialState = {
-    isEnabled: false
+    isCanvasWritingEnabled: false
 };
 
+/**
+ * Update canvas settings based on incoming action.
+ * @param {*} state - current state
+ * @param {*} action - incoming action
+ * @returns updated state
+ */
 export const handleSettings = (state = initialState, action) => {
     switch (action.type) {
-        case TOGGLE_ENABLED:
+        case CanvasActionTypes.TOGGLE_WRITING_ENABLED:
             return {
                 ...state,
-                isEnabled: !state.isEnabled
+                isCanvasWritingEnabled: !state.isCanvasWritingEnabled
             };
         default:
             return state;
     }
 }
 
-export const toggleEnabledState = () => {
+/**
+ * Toggles ability to write on canvas.
+ * @returns action object
+ */
+export const toggleWritingEnabled = () => {
     return {
-        type: TOGGLE_ENABLED,
-        payload: {}
+        type: CanvasActionTypes.TOGGLE_WRITING_ENABLED
     }
 }
 

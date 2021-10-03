@@ -1,8 +1,9 @@
 const { BrowserWindow, ipcMain, app, globalShortcut } = require('electron');
-const path = require("path");
-const fs = require("fs");
-const os = require("os");
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const isDev = require('electron-is-dev');
+
 const { channels } = require('../src/channels');
 
 // create local data folder if it doesn't exist
@@ -11,11 +12,17 @@ if (!fs.existsSync(APP_DATA_PATH)) {
     fs.mkdirSync(APP_DATA_PATH);
 }
 
+// full paths of files managed by the application
 const STATS_FILE_PATH = path.join(APP_DATA_PATH, "stats.json");
 const SETTINGS_FILE_PATH = path.join(APP_DATA_PATH, "settings.json");
 
+// create main window at global level so it can be used for sending data back to React side
 let mainWindow;
-function createWindow() {
+
+/**
+ * Create Electron window with default params. 
+ */
+const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1920,
         height: 1080,
@@ -29,6 +36,7 @@ function createWindow() {
 
     mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
     mainWindow.setMenuBarVisibility(isDev);
+
     globalShortcut.unregister("Control+A"); // remove default behavior for select all in favor of app-specific shortcut
 }
 
@@ -92,7 +100,7 @@ ipcMain.on(channels.FIGURE_DRAWING_REQUEST_FILES, retrieveImages(channels.FIGURE
 /**
  * Writer for completed figure drawing session stats to local folder.
  */
-ipcMain.on(channels.STATS_SAVE_TO_FILE, (event, args) => {
+ipcMain.on(channels.STATS_SAVE_TO_FILE, (e, args) => {
     let statsObject;
     if (!fs.existsSync(STATS_FILE_PATH)) {
         statsObject = { sessions: [args] };
@@ -107,7 +115,7 @@ ipcMain.on(channels.STATS_SAVE_TO_FILE, (event, args) => {
 /**
  * Loader for previously saved figure drawing session stats in local folder.
  */
-ipcMain.on(channels.STATS_LOAD_FROM_FILE, (event, args) => {
+ipcMain.on(channels.STATS_LOAD_FROM_FILE, (e, args) => {
     let statsObject;
     if (!fs.existsSync(STATS_FILE_PATH)) {
         statsObject = { sessions: [] };
@@ -120,7 +128,7 @@ ipcMain.on(channels.STATS_LOAD_FROM_FILE, (event, args) => {
 /**
  * Writer for new app settings to local folder.
  */
-ipcMain.on(channels.SETTINGS_SAVE_TO_FILE, (event, args) => {
+ipcMain.on(channels.SETTINGS_SAVE_TO_FILE, (e, args) => {
     const existingSettings = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH));
     const newSettings = { ...existingSettings, ...args };
 
@@ -131,10 +139,10 @@ ipcMain.on(channels.SETTINGS_SAVE_TO_FILE, (event, args) => {
 /**
  * Loader for previously saved app settings in local folder.
  */
-ipcMain.on(channels.SETTINGS_LOAD_FROM_FILE, (event, args) => {
+ipcMain.on(channels.SETTINGS_LOAD_FROM_FILE, (e, defaultSettings) => {
     if (!fs.existsSync(SETTINGS_FILE_PATH)) {
-        console.trace(`Settings file does not exist, writing default args to file`);
-        writeToFile(SETTINGS_FILE_PATH, args);
+        console.trace(`Settings file does not exist, writing default settings to file`);
+        writeToFile(SETTINGS_FILE_PATH, defaultSettings);
     }
 
     const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH));

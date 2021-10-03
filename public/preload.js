@@ -1,6 +1,9 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer } = require('electron');
 const { channels } = require('../src/channels');
 
+/**
+ * Channels in the direction of React to Electron.
+ */
 const SEND_CHANNELS = [
     channels.CANVAS_REQUEST_FILES,
     channels.FIGURE_DRAWING_REQUEST_FILES,
@@ -10,6 +13,9 @@ const SEND_CHANNELS = [
     channels.SETTINGS_SAVE_TO_FILE
 ];
 
+/**
+ * Channels in the direction of Electron to React.
+ */
 const RECEIVE_CHANNELS = [
     channels.CANVAS_REQUEST_FILES_CALLBACK,
     channels.FIGURE_DRAWING_REQUEST_FILES_CALLBACK,
@@ -19,8 +25,7 @@ const RECEIVE_CHANNELS = [
 
 // code to expose/abstract filesystem interactions
 // template from: https://github.com/electron/electron/issues/9920#issuecomment-575839738
-contextBridge.exposeInMainWorld(
-    "api", {
+contextBridge.exposeInMainWorld("api", {
     send: (channel, data) => {
         if (SEND_CHANNELS.includes(channel)) {
             ipcRenderer.send(channel, data);
@@ -32,5 +37,4 @@ contextBridge.exposeInMainWorld(
             ipcRenderer.on(channel, (event, ...args) => func(...args));
         }
     }
-}
-);
+});

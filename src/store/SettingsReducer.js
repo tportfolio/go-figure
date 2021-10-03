@@ -1,24 +1,35 @@
+// valid action types for settings reducer
+const SettingsActionTypes = Object.freeze({
+    LOAD_SETTINGS: "LOAD_SETTINGS",
+    TOGGLE_SAVE_SESSION_DATA: "TOGGLE_SAVE_SESSION_DATA",
+    TOGGLE_USE_MONOCHROME_THEME: "TOGGLE_USE_MONOCHROME_THEME"
+});
+
+// default values sent to Electron in case there is no settings file
 export const initialStateForElectron = Object.freeze({
     saveSessionData: true,
     useMonochromeTheme: false
 });
 
+// state representation for app settings
 const initialState = { ...initialStateForElectron };
 
-const LOAD_SETTINGS = "load-settings";
-const TOGGLE_SAVE_SESSION_DATA = "toggle-save-session-data";
-const TOGGLE_USE_DARKER_MODE = "toggle-use-monochrome-mode";
-
+/**
+ * Update app settings based on incoming action.
+ * @param {*} state - current state
+ * @param {*} action - incoming action
+ * @returns updated state
+ */
 export const handleSettings = (state = initialState, action) => {
     switch (action.type) {
-        case LOAD_SETTINGS:
+        case SettingsActionTypes.LOAD_SETTINGS:
             return action.payload.value;
-        case TOGGLE_SAVE_SESSION_DATA:
+        case SettingsActionTypes.TOGGLE_SAVE_SESSION_DATA:
             return {
                 ...state,
                 saveSessionData: !state.saveSessionData
             };
-        case TOGGLE_USE_DARKER_MODE:
+        case SettingsActionTypes.TOGGLE_USE_MONOCHROME_THEME:
             return {
                 ...state,
                 useMonochromeTheme: !state.useMonochromeTheme
@@ -28,24 +39,37 @@ export const handleSettings = (state = initialState, action) => {
     }
 }
 
+/**
+ * Load settings from disk.
+ * @param {*} settings - app settings
+ * @returns action object
+ */
 export const loadSettings = settings => {
     return {
-        type: LOAD_SETTINGS,
+        type: SettingsActionTypes.LOAD_SETTINGS,
         payload: {
             value: settings
         }
     }
 }
 
+/**
+ * Toggle whether to save figure drawing session data.
+ * @returns action object
+ */
 export const toggleSaveSessionData = () => {
     return {
-        type: TOGGLE_SAVE_SESSION_DATA,
+        type: SettingsActionTypes.TOGGLE_SAVE_SESSION_DATA
     }
 }
 
+/**
+ * Toggle whether to use monochrome theme for app.
+ * @returns action object
+ */
 export const toggleUseMonochromeTheme = () => {
     return {
-        type: TOGGLE_USE_DARKER_MODE
+        type: SettingsActionTypes.TOGGLE_USE_MONOCHROME_THEME
     }
 }
 

@@ -5,15 +5,15 @@ import { mapEntryToAccordion } from '../../utils/utils';
 const faqEntries = [
     {
         summary: "What is Go Figure?",
-        details: "Go Figure is a program intended to support artists who need a one-stop shop \
-        for figure drawing and image reference organization."
+        details: `Go Figure is a program intended to support artists who need a one-stop shop \
+        for figure drawing and image reference organization.`
     },
     {
         summary: "What are the hot keys for the program?",
         details: (
             <span>
                 DEL - removes highlighted image(s)<br />
-                CTRL - selects/deselects image
+                CTRL - selects/deselects image on click
             </span>
         )
     }

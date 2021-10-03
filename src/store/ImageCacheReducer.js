@@ -1,134 +1,136 @@
-import pull from "lodash/pull";
-import { imageHash } from "../utils/utils";
-import keys from "lodash/keys";
-import omit from "lodash/omit";
-import { base64StringToBlob } from 'blob-util';
+import { omit } from 'lodash';
+import { createImageObject } from './reducerUtils';
 
+// valid action types for image cache reducer
+const ImageCacheActionTypes = Object.freeze({
+    ADD_PICTURE_ACTION: "ADD_PICTURE",
+    UPDATE_PICTURE_STATE: "UPDATE_PICTURE_STATE",
+    TOGGLE_PICTURE_SELECTION: "TOGGLE_PICTURE_SELECTION",
+    UPDATE_SELECTED_PICTURE_PROPERTIES: "UPDATE_SELECTED_PICTURE_PROPERTIES",
+    SELECT_ALL_PICTURES: "SELECT_ALL_PICTURES",
+    CLEAR_SELECTION: "CLEAR_SELECTION",
+    DELETE_SELECTED: "DELETE_SELECTED",
+    TOGGLE_SELECTED_PICTURE_PROPERTY: "TOGGLE_SELECTED_PICTURE_PROPERTY"
+});
 
-const ADD_PICTURE_ACTION = "ADD_PICTURE";
-const UPDATE_PICTURE_STATE = "UPDATE_PICTURE_STATE";
-const TOGGLE_PICTURE_SELECTION = "TOGGLE_PICTURE_SELECTION";
-const UPDATE_GLOBAL_PICTURE_STATE = "UPDATE_GLOBAL_PICTURE_STATE";
-const SELECT_ALL_PICTURES = "SELECT_ALL_PICTURES";
-const CLEAR_SELECTION = "CLEAR_SELECTION";
-const DELETE_SELECTED = "DELETE_SELECTED";
-const TOGGLE_GLOBAL_PICTURE_STATE = "TOGGLE_GLOBAL_PICTURE_STATE";
-
+// state representation for image cache
 const initialState = {
-    pictures: {},               // k: hash, v: metadata (filename, size, blob, etc.)
-    pictureProperties: {},      // properties only (k: hash, v: {...})
+    pictures: {},               // k: hash, v: file metadata (filename, size, blob, etc.)
+    pictureProperties: {},      // k: hash, v: current properties (x, y, height, width, etc.)
     selectedPictures: []
 };
 
+/**
+ * Update image cache settings based on incoming action.
+ * @param {*} state - current state
+ * @param {*} action - incoming action
+ * @returns updated state
+ */
 export const managePictures = (state = initialState, action) => {
     switch (action.type) {
-        case ADD_PICTURE_ACTION:
+        case ImageCacheActionTypes.ADD_PICTURE_ACTION: {
             return {
                 ...state,
-                pictures: addNewModifiableImage(state, action.payload.data)
+                pictures: { ...state.pictures, ...createImageObject(action.payload.value) }
             };
-        case UPDATE_PICTURE_STATE:
+        }
+        case ImageCacheActionTypes.UPDATE_PICTURE_STATE: {
+            const { hash, updatedProperties } = action.payload;
             return {
                 ...state,
-                pictureProperties: updateImageProperties(state, action.payload.hash, action.payload.updatedProperties)
+                pictureProperties: { ...state.pictureProperties, [hash]: { ...state.pictureProperties[hash], ...updatedProperties } }
             };
-        case TOGGLE_PICTURE_SELECTION:
-            return {
-                ...state,
-                selectedPictures: toggleModifiableImageSelection(state, action.payload.hash, action.payload.isCtrlKeyPressed)
-            };
-        case UPDATE_GLOBAL_PICTURE_STATE:
-            return {
-                ...state,
-                pictureProperties: updateGlobalImageProperties(state, action.payload.updatedProperties)
-            };
-        case TOGGLE_GLOBAL_PICTURE_STATE:
-            return {
-                ...state,
-                pictureProperties: toggleGlobalImageProperty(state, action.payload.propertyToToggle)
+        }
+        case ImageCacheActionTypes.TOGGLE_PICTURE_SELECTION: {
+            const { hash, isCtrlKeyPressed } = action.payload;
+
+            // if regular click, just set list equal to clicked picture; with CTRL mask, "toggle" hash in list
+            let newSelectedPictures = [hash];
+            if (isCtrlKeyPressed) {
+                if (state.selectedPictures.includes(hash)) {
+                    newSelectedPictures = state.selectedPictures.filter(value => value !== hash);
+                } else {
+                    newSelectedPictures = [...state.selectedPictures, hash];
+                }
             }
-        case SELECT_ALL_PICTURES:
             return {
                 ...state,
-                selectedPictures: keys(state.pictures)
+                selectedPictures: newSelectedPictures
             };
-        case CLEAR_SELECTION:
+        }
+        case ImageCacheActionTypes.UPDATE_SELECTED_PICTURE_PROPERTIES: {
+            // apply property change to all selected pictures
+            const updatedImages = state.selectedPictures.reduce((acc, hash) => {
+                acc[hash] = { ...state.pictureProperties[hash], ...action.payload.updatedProperties };
+                return acc;
+            }, {});
+
+            return {
+                ...state,
+                pictureProperties: { ...state.pictureProperties, ...updatedImages }
+            };
+        }
+        case ImageCacheActionTypes.TOGGLE_SELECTED_PICTURE_PROPERTY: {
+            // toggle boolean property for all selected pictures
+            const { propertyToToggle: property } = action.payload;
+            const toggledPropImages = state.selectedPictures.reduce((acc, hash) => {
+                acc[hash] = { ...state.pictureProperties[hash], [property]: !state.pictureProperties[hash][property] };
+                return acc;
+            }, {});
+
+            return {
+                ...state,
+                pictureProperties: { ...state.pictureProperties, ...toggledPropImages }
+            }
+        }
+        case ImageCacheActionTypes.SELECT_ALL_PICTURES: {
+            return {
+                ...state,
+                selectedPictures: Object.keys(state.pictures)
+            };
+        }
+        case ImageCacheActionTypes.CLEAR_SELECTION: {
             return {
                 ...state,
                 selectedPictures: []
             };
-        case DELETE_SELECTED:
+        }
+        case ImageCacheActionTypes.DELETE_SELECTED: {
             return {
                 ...state,
-                ...removePictures(state)
+                pictures: omit(state.pictures, state.selectedPictures),
+                pictureProperties: omit(state.pictureProperties, state.selectedPictures),
+                selectedPictures: []
             }
+        }
         default:
             return state;
     }
 }
 
-const addNewModifiableImage = (state, value) => {
-    const hash = imageHash(value.data);
-    const blob = URL.createObjectURL(base64StringToBlob(value.data, "image/png"));
-    const {filename, filesize} = value;
-    return { ...state.pictures, [hash]: {hash, blob, filename, filesize} };
-};
-
-const updateImageProperties = (state, hash, properties) => {
-    return { ...state.pictureProperties, [hash]: Object.assign({ ...state.pictureProperties[hash] }, properties) };
-};
-
-const updateGlobalImageProperties = (state, properties) => {
-    const updatedImages = [...state.selectedPictures].map(hash => ({ [hash]: Object.assign({ ...state.pictureProperties[hash] }, properties) }));
-    return Object.assign({ ...state.pictureProperties }, ...updatedImages);
-};
-
-const toggleGlobalImageProperty = (state, property) => {
-    const updatedImages = [...state.selectedPictures].map(hash => ({ [hash]: { ...state.pictureProperties[hash], [property]: !state.pictureProperties[hash][property] } }));
-    return Object.assign({ ...state.pictureProperties }, ...updatedImages);
-};
-
-const toggleModifiableImageSelection = (state, hash, isCtrlKeyPressed) => {
-    let result;
-    if (isCtrlKeyPressed) {
-        if (state.selectedPictures.includes(hash)) {
-            result = pull([...state.selectedPictures], hash);
-        } else {
-            result = [...state.selectedPictures, hash];
-        }
-    } else {
-        result = [hash];
-    }
-    return result;
-};
-
-const removePictures = state => {
-    const updatedData = omit(state.pictures, state.selectedPictures);
-    const updatedProperties = omit(state.pictureProperties, state.selectedPictures);
+/**
+ * Add picture to canvas.
+ * @param {*} picture - picture metadata
+ * @returns action object
+ */
+export const addPicture = picture => {
     return {
-        pictures: updatedData,
-        pictureProperties: updatedProperties,
-        selectedPictures: []
-    };
-};
-
-
-/*
-* dispatch methods
-*/
-
-export const addPicture = data => {
-    return {
-        type: ADD_PICTURE_ACTION,
+        type: ImageCacheActionTypes.ADD_PICTURE_ACTION,
         payload: {
-            data: data
+            value: picture
         }
     }
 };
 
+/**
+ * Update properties of a picture on the canvas.
+ * @param {*} hash - hash of image
+ * @param {*} updatedProperties - properties to update
+ * @returns action object
+ */
 export const updatePictureState = (hash, updatedProperties) => {
     return {
-        type: UPDATE_PICTURE_STATE,
+        type: ImageCacheActionTypes.UPDATE_PICTURE_STATE,
         payload: {
             hash: hash,
             updatedProperties: updatedProperties
@@ -136,27 +138,43 @@ export const updatePictureState = (hash, updatedProperties) => {
     }
 };
 
-export const updateGlobalPictureState = (updatedProperties) => {
+/**
+ * Update properties of all selected pictures on canvas.
+ * @param {*} updatedProperties - properties to update
+ * @returns action object
+ */
+export const updateSelectedPictureProperties = (updatedProperties) => {
     return {
-        type: UPDATE_GLOBAL_PICTURE_STATE,
+        type: ImageCacheActionTypes.UPDATE_SELECTED_PICTURE_PROPERTIES,
         payload: {
             updatedProperties: updatedProperties
         }
     }
 };
 
-export const toggleGlobalPictureState = propertyToToggle => {
+/**
+ * Toggle property of all selected pictures on canvas.
+ * @param {*} propertyToToggle - property to toggle (e.g., mirror horizontally)
+ * @returns action object
+ */
+export const toggleSelectedPictureProperty = propertyToToggle => {
     return {
-        type: TOGGLE_GLOBAL_PICTURE_STATE,
+        type: ImageCacheActionTypes.TOGGLE_SELECTED_PICTURE_PROPERTY,
         payload: {
             propertyToToggle: propertyToToggle
         }
     }
 };
 
+/**
+ * Select or deselect picture by hash.
+ * @param {*} hash - hash of picture
+ * @param {*} isCtrlKeyPressed - whether CTRL mask is on
+ * @returns action object
+ */
 export const togglePictureSelection = (hash, isCtrlKeyPressed) => {
     return {
-        type: TOGGLE_PICTURE_SELECTION,
+        type: ImageCacheActionTypes.TOGGLE_PICTURE_SELECTION,
         payload: {
             hash: hash,
             isCtrlKeyPressed: isCtrlKeyPressed
@@ -164,27 +182,34 @@ export const togglePictureSelection = (hash, isCtrlKeyPressed) => {
     }
 };
 
+/**
+ * Select all pictures on canvas.
+ * @returns action object
+ */
 export const selectAllPictures = () => {
     return {
-        type: SELECT_ALL_PICTURES,
-        payload: {}
+        type: ImageCacheActionTypes.SELECT_ALL_PICTURES
     }
 }
 
-
+/**
+ * Clear selected picture list.
+ * @returns action object
+ */
 export const clearSelection = () => {
     return {
-        type: CLEAR_SELECTION,
-        payload: {}
+        type: ImageCacheActionTypes.CLEAR_SELECTION
     }
 }
 
+/**
+ * Delete selected pictures from canvas.
+ * @returns action object
+ */
 export const deleteSelectedImages = () => {
     return {
-        type: DELETE_SELECTED,
-        payload: {}
+        type: ImageCacheActionTypes.DELETE_SELECTED
     }
 }
-
 
 export default managePictures;

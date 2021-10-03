@@ -6,7 +6,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicationsSharp';
 import ClearSharpIcon from '@mui/icons-material/ClearSharp';
-import { withTheme } from '@mui/styles';
 
 import { channels } from "../../channels";
 import { requestImages } from '../../utils/utils';
@@ -46,8 +45,6 @@ const buttons = [
 ];
 
 const CanvasToolbar = props => {
-    const { theme } = props;
-
     return (
         <>
             <div id="canvas-toolbar">
@@ -65,4 +62,4 @@ const CanvasToolbar = props => {
     )
 };
 
-export default withTheme(CanvasToolbar);
+export default CanvasToolbar;

@@ -7,17 +7,16 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from "classnames";
 import * as logger from 'loglevel';
 import { makeStyles } from '@mui/styles';
-import { SelectableGroup } from 'react-selectable-fast';
 
 import CanvasToolbar from "./CanvasToolbar";
 import ModifiableImage from "./ModifiableImage";
-import { toggleEnabledState } from "../../store/CanvasSettingsReducer";
+import { toggleWritingEnabled } from "../../store/CanvasSettingsReducer";
 import {
-    updateGlobalPictureState,
+    updateSelectedPictureProperties,
     selectAllPictures,
     clearSelection,
     deleteSelectedImages,
-    toggleGlobalPictureState,
+    toggleSelectedPictureProperty,
     addPicture
 } from "../../store/ImageCacheReducer";
 
@@ -30,24 +29,25 @@ const Canvas = props => {
         }
     }));
 
+    const [canvasHeight, setCanvasHeight] = React.useState(window.innerHeight);
+
+    React.useEffect(() => {
+        const handleResize = () => setCanvasHeight(window.innerHeight);
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+     }, []);
+
     // redux data:
-    const { pictures, isCanvasEnabled } = props;
+    const { pictures, isCanvasWritingEnabled } = props;
 
     // redux setters:
-    const { updateGlobalPictureProperties, toggleCanvasEnabledState, selectAllPictures, clearSelection, deleteSelected, toggleGlobalPictureState } = props;
+    const { updateSelectedPictureProperties, toggleCanvasEnabledState, selectAllPictures, clearSelection, deleteSelected, toggleSelectedPictureProperty } = props;
 
     let canvasProps = { tool: Tools.Pencil, lineColor: 'black', lineWidth: 3 };
-    const [canvasHeight, setCanvasHeight] = React.useState(null);
-    const canvasDivRef = React.useRef();
-
     if (canvasHeight) {
-        canvasProps = { ...canvasProps, height: canvasHeight, className: classNames({ "disabled-canvas": !isCanvasEnabled }) };
+        canvasProps = { ...canvasProps, height: canvasHeight, className: classNames({ "disabled-canvas": !isCanvasWritingEnabled }) };
     }
-
-    //TODO: listen for resize
-    React.useEffect(() => {
-        setCanvasHeight(canvasDivRef.current.offsetHeight);
-    }, []);
 
     const onDrop = acceptedFiles => {
         for (let f of acceptedFiles) {
@@ -63,16 +63,16 @@ const Canvas = props => {
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop, noClick: true })
 
-    useHotkeys('1', () => updateGlobalPictureProperties({ opacity: 0.1 }));
-    useHotkeys('2', () => updateGlobalPictureProperties({ opacity: 0.2 }));
-    useHotkeys('3', () => updateGlobalPictureProperties({ opacity: 0.3 }));
-    useHotkeys('4', () => updateGlobalPictureProperties({ opacity: 0.4 }));
-    useHotkeys('5', () => updateGlobalPictureProperties({ opacity: 0.5 }));
-    useHotkeys('6', () => updateGlobalPictureProperties({ opacity: 0.6 }));
-    useHotkeys('7', () => updateGlobalPictureProperties({ opacity: 0.7 }));
-    useHotkeys('8', () => updateGlobalPictureProperties({ opacity: 0.8 }));
-    useHotkeys('9', () => updateGlobalPictureProperties({ opacity: 0.9 }));
-    useHotkeys('0', () => updateGlobalPictureProperties({ opacity: 1 }));
+    useHotkeys('1', () => updateSelectedPictureProperties({ opacity: 0.1 }));
+    useHotkeys('2', () => updateSelectedPictureProperties({ opacity: 0.2 }));
+    useHotkeys('3', () => updateSelectedPictureProperties({ opacity: 0.3 }));
+    useHotkeys('4', () => updateSelectedPictureProperties({ opacity: 0.4 }));
+    useHotkeys('5', () => updateSelectedPictureProperties({ opacity: 0.5 }));
+    useHotkeys('6', () => updateSelectedPictureProperties({ opacity: 0.6 }));
+    useHotkeys('7', () => updateSelectedPictureProperties({ opacity: 0.7 }));
+    useHotkeys('8', () => updateSelectedPictureProperties({ opacity: 0.8 }));
+    useHotkeys('9', () => updateSelectedPictureProperties({ opacity: 0.9 }));
+    useHotkeys('0', () => updateSelectedPictureProperties({ opacity: 1 }));
     useHotkeys('c', () => toggleCanvasEnabledState());
     useHotkeys('ctrl+a', e => {
         e.preventDefault(); // don't want the standard select all behavior from browser
@@ -80,8 +80,8 @@ const Canvas = props => {
     });
     useHotkeys('ctrl+d', () => clearSelection());
     useHotkeys('del', () => deleteSelected());
-    useHotkeys('h', () => toggleGlobalPictureState("mirrorH"));
-    useHotkeys('v', () => toggleGlobalPictureState("mirrorV"));
+    useHotkeys('h', () => toggleSelectedPictureProperty("mirrorH"));
+    useHotkeys('v', () => toggleSelectedPictureProperty("mirrorV"));
 
     const classes = useStyles();
 
@@ -91,7 +91,7 @@ const Canvas = props => {
             <div>
                 {Object.keys(pictures).map(k => <ModifiableImage key={k} metadata={pictures[k]} />)}
             </div>
-            <div id="canvas-div" ref={canvasDivRef}>
+            <div id="canvas-div">
                 <div {...getRootProps()}>
                     <input {...getInputProps()} />
                     <SketchField {...canvasProps} />
@@ -104,16 +104,16 @@ const Canvas = props => {
 const mapStateToProps = state => {
     return {
         pictures: state.imagecache.pictures,
-        isCanvasEnabled: state.canvassettings.isEnabled
+        isCanvasWritingEnabled: state.canvassettings.isCanvasWritingEnabled
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         addPicture: picture => dispatch(addPicture(picture)),
-        updateGlobalPictureProperties: properties => dispatch(updateGlobalPictureState(properties)),
-        toggleGlobalPictureState: property => dispatch(toggleGlobalPictureState(property)),
-        toggleCanvasEnabledState: () => dispatch(toggleEnabledState()),
+        updateSelectedPictureProperties: properties => dispatch(updateSelectedPictureProperties(properties)),
+        toggleSelectedPictureProperty: property => dispatch(toggleSelectedPictureProperty(property)),
+        toggleCanvasEnabledState: () => dispatch(toggleWritingEnabled()),
         selectAllPictures: () => dispatch(selectAllPictures()),
         clearSelection: () => dispatch(clearSelection()),
         deleteSelected: () => dispatch(deleteSelectedImages())
@@ -124,7 +124,7 @@ const mapDispatchToProps = dispatch => {
 // 2. canvas needs to know when hot key for canvas enabling has changed
 const isEqual = (prevProps, nextProps) => {
     const isKeyLengthEqual = keys(prevProps.pictures).length === keys(nextProps.pictures).length;
-    const isCanvasStateEqual = prevProps.isCanvasEnabled === nextProps.isCanvasEnabled;
+    const isCanvasStateEqual = prevProps.isCanvasWritingEnabled === nextProps.isCanvasWritingEnabled;
     return isKeyLengthEqual && isCanvasStateEqual;
 }
 

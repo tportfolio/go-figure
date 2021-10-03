@@ -11,6 +11,7 @@
     U+2215, U+FEFF, U+FFFD;
 }
 
+/* font used for title screen */
 @import url('https://fonts.googleapis.com/css?family=Marck+Script');
 
 p {
