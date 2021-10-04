@@ -9,15 +9,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as logger from 'loglevel';
 
 /**
- * Utility method to get hash from base64 string. 
- * Bit shift at end in order to get unsigned integer.
- * From: https://stackoverflow.com/a/34842797
- * @param {*} s - base64 string
- * @returns hash value
- */
-export const imageHash = s => '' + (s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0) >>> 0); 
-
-/**
  * Creates accordion component from JSON object.
  * Baseline source from: https://material-ui.com/components/accordion/
  * @param {*} (object with summary, details, and component type [optional] provided) 

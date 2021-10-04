@@ -1,5 +1,13 @@
 import { base64StringToBlob } from 'blob-util';
-import { imageHash } from '../utils/utils';
+
+/**
+ * Utility method to get hash from base64 string. 
+ * Bit shift at end in order to get unsigned integer.
+ * From: https://stackoverflow.com/a/34842797
+ * @param {*} s - base64 string
+ * @returns hash value
+ */
+const imageHash = s => '' + (s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0) >>> 0); 
 
 /**
  * Creates image object used in reducer keyed by hash.

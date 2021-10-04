@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 import { createImageObject } from './reducerUtils';
 
 // valid action types for image cache reducer
-const ImageCacheActionTypes = Object.freeze({
+export const ImageCacheActionTypes = Object.freeze({
     ADD_PICTURE_ACTION: "ADD_PICTURE",
     UPDATE_PICTURE_STATE: "UPDATE_PICTURE_STATE",
     TOGGLE_PICTURE_SELECTION: "TOGGLE_PICTURE_SELECTION",
@@ -14,11 +14,11 @@ const ImageCacheActionTypes = Object.freeze({
 });
 
 // state representation for image cache
-const initialState = {
+export const initialState = () => ({
     pictures: {},               // k: hash, v: file metadata (filename, size, blob, etc.)
     pictureProperties: {},      // k: hash, v: current properties (x, y, height, width, etc.)
     selectedPictures: []
-};
+});
 
 /**
  * Update image cache settings based on incoming action.
@@ -26,7 +26,7 @@ const initialState = {
  * @param {*} action - incoming action
  * @returns updated state
  */
-export const managePictures = (state = initialState, action) => {
+export const managePictures = (state = initialState(), action) => {
     switch (action.type) {
         case ImageCacheActionTypes.ADD_PICTURE_ACTION: {
             return {
