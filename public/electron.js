@@ -4,7 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const isDev = require('electron-is-dev');
 
-const { channels } = require('../src/channels');
+const { channels } = require('./channels');
 
 // create local data folder if it doesn't exist
 const APP_DATA_PATH = path.join(os.homedir(), ".go-figure");

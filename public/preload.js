@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const { channels } = require('../src/channels');
+const { channels } = require('./channels');
 
 /**
  * Channels in the direction of React to Electron.
