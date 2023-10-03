@@ -30,7 +30,10 @@ const createWindow = () => {
         minHeight: 1080,
         icon: path.join(__dirname, "favicon.ico"),
         webPreferences: {
-            preload: path.join(__dirname, "preload.js") // use a preload script
+            preload: path.join(__dirname, "preload.js"),
+            // disabling sandbox feature due to breaking impact on relative imports
+            // https://github.com/electron/electron/pull/35125
+            sandbox: false,
         }
     });
 
